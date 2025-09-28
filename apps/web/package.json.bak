@@ -63,12 +63,6 @@
     "@stripe/stripe-js": "^2.4.0",
     "micro": "^10.0.1",
     "raw-body": "^2.5.2",
-    "reactflow": "^11.10.4",
-    "@reactflow/minimap": "^11.7.4",
-    "@reactflow/controls": "^11.2.4",
-    "bull": "^4.12.2",
-    "node-cron": "^3.0.3",
-    "uuid": "^9.0.1",
     "@react-pdf/renderer": "^3.1.14",
     "recharts": "^2.8.0",
     "exceljs": "^4.4.0",
@@ -84,8 +78,6 @@
     "@types/speakeasy": "^2.0.10",
     "@types/qrcode": "^1.5.5",
     "@types/papaparse": "^5.3.14",
-    "@types/uuid": "^9.0.8",
-    "@types/bull": "^4.10.0",
     "@types/node-cron": "^3.0.11",
     "typescript": "^5"
   }

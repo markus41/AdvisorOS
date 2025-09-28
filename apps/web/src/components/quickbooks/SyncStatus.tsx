@@ -1,329 +1,211 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { AlertCircle, CheckCircle, Clock, RefreshCw, Pause, Play, X } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { RefreshCw, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
-interface SyncProgress {
-  organizationId: string;
-  status: 'idle' | 'running' | 'completed' | 'failed' | 'paused';
-  currentEntity?: string;
-  totalEntities: number;
-  completedEntities: number;
-  startedAt?: string;
-  estimatedCompletion?: string;
-  lastError?: string;
-}
-
-interface ConnectionInfo {
-  realmId: string;
-  expiresAt: string;
-  lastSyncAt?: string;
-  needsRefresh: boolean;
+interface SyncRecord {
+  id: string;
+  syncType: string;
+  entityType: string;
+  status: string;
+  startedAt: string;
+  completedAt?: string;
+  recordsTotal?: number;
+  recordsProcessed: number;
+  recordsSuccess: number;
+  recordsFailed: number;
+  errorMessage?: string;
 }
 
 interface SyncStatusData {
-  connected: boolean;
-  connection?: ConnectionInfo;
-  currentSync?: SyncProgress;
-  error?: string;
+  syncs: SyncRecord[];
+  currentSync?: SyncRecord;
+  lastSyncAt: string | null;
 }
 
 export function SyncStatus() {
   const [syncData, setSyncData] = useState<SyncStatusData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const fetchSyncStatus = async () => {
-    try {
-      const response = await fetch('/api/quickbooks/sync/status');
-      const data = await response.json();
-      setSyncData(data);
-    } catch (error) {
-      console.error('Failed to fetch sync status:', error);
-      setSyncData({ connected: false, error: 'Failed to fetch sync status' });
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  const triggerSync = async (syncType: 'full' | 'incremental' = 'incremental') => {
-    try {
-      const response = await fetch('/api/quickbooks/sync/trigger', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ syncType })
-      });
-
-      if (response.ok) {
-        // Refresh status after triggering sync
-        setTimeout(fetchSyncStatus, 1000);
-      } else {
-        const error = await response.json();
-        alert(`Failed to trigger sync: ${error.error}`);
-      }
-    } catch (error) {
-      console.error('Failed to trigger sync:', error);
-      alert('Failed to trigger sync');
-    }
-  };
-
-  const controlSync = async (action: 'pause' | 'resume' | 'cancel') => {
-    try {
-      const response = await fetch('/api/quickbooks/sync/control', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action })
-      });
-
-      if (response.ok) {
-        fetchSyncStatus();
-      } else {
-        const error = await response.json();
-        alert(`Failed to ${action} sync: ${error.error}`);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} sync:`, error);
-      alert(`Failed to ${action} sync`);
-    }
-  };
-
-  const refreshStatus = () => {
-    setRefreshing(true);
-    fetchSyncStatus();
-  };
 
   useEffect(() => {
     fetchSyncStatus();
 
-    // Auto-refresh every 30 seconds if sync is running
+    // Poll for updates every 10 seconds if there's an active sync
     const interval = setInterval(() => {
-      if (syncData?.currentSync?.status === 'running') {
+      if (syncData?.currentSync) {
         fetchSyncStatus();
       }
-    }, 30000);
+    }, 10000);
 
     return () => clearInterval(interval);
-  }, [syncData?.currentSync?.status]);
+  }, [syncData?.currentSync]);
 
-  if (loading) {
+  const fetchSyncStatus = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/quickbooks/sync');
+
+      if (response.ok) {
+        const data = await response.json();
+        setSyncData(data);
+      }
+    } catch (error) {
+      console.error('Error fetching sync status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+      case 'in_progress':
+        return <RefreshCw className="h-4 w-4 text-blue-600 animate-spin" />;
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'failed':
+        return <XCircle className="h-4 w-4 text-red-600" />;
+      default:
+        return <AlertTriangle className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const variants = {
+      pending: 'secondary',
+      in_progress: 'default',
+      completed: 'default',
+      failed: 'destructive'
+    } as const;
+
+    const colors = {
+      pending: 'bg-yellow-100 text-yellow-800',
+      in_progress: 'bg-blue-100 text-blue-800',
+      completed: 'bg-green-100 text-green-800',
+      failed: 'bg-red-100 text-red-800'
+    } as const;
+
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <RefreshCw className="h-5 w-5 animate-spin" />
-            Loading Sync Status...
-          </CardTitle>
-        </CardHeader>
-      </Card>
+      <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
+        <span className={colors[status as keyof typeof colors] || ''}>
+          {status.replace('_', ' ').toUpperCase()}
+        </span>
+      </Badge>
     );
-  }
+  };
 
-  if (!syncData?.connected) {
+  const calculateProgress = (sync: SyncRecord) => {
+    if (!sync.recordsTotal || sync.recordsTotal === 0) return 0;
+    return Math.round((sync.recordsProcessed / sync.recordsTotal) * 100);
+  };
+
+  const formatEntityType = (entityType: string) => {
+    return entityType.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  };
+
+  if (loading && !syncData) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-red-500" />
-            QuickBooks Not Connected
-          </CardTitle>
+          <CardTitle>Sync Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {syncData?.error || 'Please connect your QuickBooks account to enable synchronization.'}
-            </AlertDescription>
-          </Alert>
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  const { connection, currentSync } = syncData;
-  const hasActiveSync = currentSync && ['running', 'paused'].includes(currentSync.status);
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'running':
-        return <Badge variant="default" className="bg-blue-100 text-blue-800">Running</Badge>;
-      case 'completed':
-        return <Badge variant="default" className="bg-green-100 text-green-800">Completed</Badge>;
-      case 'failed':
-        return <Badge variant="destructive">Failed</Badge>;
-      case 'paused':
-        return <Badge variant="secondary">Paused</Badge>;
-      default:
-        return <Badge variant="outline">Idle</Badge>;
-    }
-  };
-
-  const getProgressPercentage = () => {
-    if (!currentSync || currentSync.totalEntities === 0) return 0;
-    return Math.round((currentSync.completedEntities / currentSync.totalEntities) * 100);
-  };
-
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
-
-  const getEstimatedCompletion = () => {
-    if (!currentSync?.estimatedCompletion) return null;
-    const estimated = new Date(currentSync.estimatedCompletion);
-    const now = new Date();
-    const diff = estimated.getTime() - now.getTime();
-
-    if (diff <= 0) return 'Any moment now';
-
-    const minutes = Math.ceil(diff / (1000 * 60));
-    if (minutes < 60) return `~${minutes} minutes`;
-
-    const hours = Math.ceil(minutes / 60);
-    return `~${hours} hours`;
-  };
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            QuickBooks Sync Status
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={refreshStatus}
-            disabled={refreshing}
-          >
-            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          </Button>
+        <CardTitle className="flex items-center gap-2">
+          <RefreshCw className="h-5 w-5" />
+          Sync Status
         </CardTitle>
+        <CardDescription>
+          {syncData?.lastSyncAt
+            ? `Last sync: ${new Date(syncData.lastSyncAt).toLocaleString()}`
+            : 'No syncs completed yet'
+          }
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Connection Status */}
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="font-medium">Realm ID:</span>
-            <p className="text-muted-foreground">{connection?.realmId}</p>
-          </div>
-          <div>
-            <span className="font-medium">Token Expires:</span>
-            <p className="text-muted-foreground">
-              {connection?.expiresAt ? formatTime(connection.expiresAt) : 'Unknown'}
-              {connection?.needsRefresh && (
-                <Badge variant="outline" className="ml-2 text-amber-600">
-                  Needs Refresh
-                </Badge>
-              )}
-            </p>
-          </div>
-          <div>
-            <span className="font-medium">Last Sync:</span>
-            <p className="text-muted-foreground">
-              {connection?.lastSyncAt ? formatTime(connection.lastSyncAt) : 'Never'}
-            </p>
-          </div>
-        </div>
-
-        {/* Current Sync Status */}
-        {currentSync && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="font-medium">Current Sync:</span>
-              {getStatusBadge(currentSync.status)}
+        {syncData?.currentSync && (
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                {getStatusIcon(syncData.currentSync.status)}
+                <span className="font-medium">
+                  {formatEntityType(syncData.currentSync.entityType)} Sync
+                </span>
+              </div>
+              {getStatusBadge(syncData.currentSync.status)}
             </div>
 
-            {hasActiveSync && (
-              <>
-                <Progress value={getProgressPercentage()} className="w-full" />
-                <div className="flex justify-between text-sm text-muted-foreground">
+            {syncData.currentSync.recordsTotal && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
                   <span>
-                    {currentSync.completedEntities} of {currentSync.totalEntities} entities completed
-                    {currentSync.currentEntity && ` (${currentSync.currentEntity})`}
+                    {syncData.currentSync.recordsProcessed} of {syncData.currentSync.recordsTotal} records
                   </span>
-                  <span>{getProgressPercentage()}%</span>
+                  <span>{calculateProgress(syncData.currentSync)}%</span>
                 </div>
-
-                {currentSync.estimatedCompletion && currentSync.status === 'running' && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span>Estimated completion: {getEstimatedCompletion()}</span>
-                  </div>
-                )}
-              </>
+                <Progress value={calculateProgress(syncData.currentSync)} />
+              </div>
             )}
 
-            {currentSync.lastError && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{currentSync.lastError}</AlertDescription>
-              </Alert>
-            )}
-
-            {currentSync.startedAt && (
-              <p className="text-sm text-muted-foreground">
-                Started: {formatTime(currentSync.startedAt)}
-              </p>
-            )}
+            <div className="text-xs text-gray-600 mt-2">
+              Started: {new Date(syncData.currentSync.startedAt).toLocaleString()}
+            </div>
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          {!hasActiveSync ? (
-            <>
-              <Button
-                onClick={() => triggerSync('incremental')}
-                size="sm"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Sync Now
-              </Button>
-              <Button
-                onClick={() => triggerSync('full')}
-                variant="outline"
-                size="sm"
-              >
-                Full Sync
-              </Button>
-            </>
+        <div className="space-y-3">
+          <h4 className="font-medium text-sm">Recent Syncs</h4>
+          {syncData?.syncs && syncData.syncs.length > 0 ? (
+            <div className="space-y-2">
+              {syncData.syncs.slice(0, 5).map((sync) => (
+                <div key={sync.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    {getStatusIcon(sync.status)}
+                    <div>
+                      <div className="font-medium text-sm">
+                        {formatEntityType(sync.entityType)}
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        {new Date(sync.startedAt).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    {getStatusBadge(sync.status)}
+                    {sync.status === 'completed' && (
+                      <div className="text-xs text-gray-600 mt-1">
+                        {sync.recordsSuccess}/{sync.recordsTotal || sync.recordsProcessed} records
+                      </div>
+                    )}
+                    {sync.status === 'failed' && sync.errorMessage && (
+                      <div className="text-xs text-red-600 mt-1 max-w-48 truncate">
+                        {sync.errorMessage}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <>
-              {currentSync?.status === 'running' && (
-                <Button
-                  onClick={() => controlSync('pause')}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Pause className="h-4 w-4 mr-2" />
-                  Pause
-                </Button>
-              )}
-              {currentSync?.status === 'paused' && (
-                <Button
-                  onClick={() => controlSync('resume')}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Play className="h-4 w-4 mr-2" />
-                  Resume
-                </Button>
-              )}
-              <Button
-                onClick={() => controlSync('cancel')}
-                variant="destructive"
-                size="sm"
-              >
-                <X className="h-4 w-4 mr-2" />
-                Cancel
-              </Button>
-            </>
+            <div className="text-center py-8 text-gray-500">
+              <RefreshCw className="h-12 w-12 mx-auto mb-2 opacity-20" />
+              <p>No sync history available</p>
+            </div>
           )}
         </div>
       </CardContent>

@@ -1,196 +1,188 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Check, Star, Users, Database, FileText, Crown, Shield } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { PricingTier, PricingConfig } from '@/lib/billing/pricing-config';
+import { Check, Star, Zap, Crown } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
+interface PricingFeature {
+  name: string;
+  included: boolean;
+  limit?: string;
+}
+
+interface PricingTier {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  interval: string;
+  features: {
+    maxClients: number;
+    maxUsers: number;
+    storageGB: number;
+    supportLevel: string;
+    integrations: string[];
+    advancedReporting: boolean;
+    customBranding: boolean;
+    whiteLabel?: boolean;
+  };
+}
 
 interface PricingCardProps {
   tier: PricingTier;
-  config: PricingConfig;
-  isPopular?: boolean;
-  isCurrent?: boolean;
-  isSelected?: boolean;
-  yearly?: boolean;
-  userCount?: number;
-  onSelect?: () => void;
-  onUpgrade?: () => void;
-  showDetails?: boolean;
+  currentPlan?: string;
+  popular?: boolean;
+  onSelect: (planId: string) => void;
+  loading?: boolean;
 }
 
-export function PricingCard({
-  tier,
-  config,
-  isPopular = false,
-  isCurrent = false,
-  isSelected = false,
-  yearly = false,
-  userCount = 1,
-  onSelect,
-  onUpgrade,
-  showDetails = true
-}: PricingCardProps) {
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
+export function PricingCard({ tier, currentPlan, popular, onSelect, loading }: PricingCardProps) {
+  const [selecting, setSelecting] = useState(false);
 
-  const calculatePrice = () => {
-    const basePrice = yearly ? config.basePriceYearly : config.basePriceMonthly;
-    const includedUsers = config.limits.users;
-    const extraUsers = Math.max(0, userCount - includedUsers);
-    const userPrice = extraUsers * config.perUserPrice * (yearly ? 12 : 1);
-    return basePrice + userPrice;
-  };
-
-  const getIcon = () => {
-    switch (tier) {
-      case PricingTier.STARTER:
-        return <Users className="h-5 w-5 text-blue-500" />;
-      case PricingTier.PROFESSIONAL:
-        return <Crown className="h-5 w-5 text-purple-500" />;
-      case PricingTier.ENTERPRISE:
-        return <Shield className="h-5 w-5 text-green-500" />;
-      default:
-        return <FileText className="h-5 w-5" />;
+  const handleSelect = async () => {
+    try {
+      setSelecting(true);
+      await onSelect(tier.id);
+    } catch (error) {
+      console.error('Error selecting plan:', error);
+      toast.error('Failed to select plan');
+    } finally {
+      setSelecting(false);
     }
   };
 
-  const featuresToShow = showAllFeatures ? config.features : config.features.slice(0, 8);
-  const hasMoreFeatures = config.features.length > 8;
+  const isCurrentPlan = currentPlan === tier.id;
+  const isDisabled = loading || selecting || isCurrentPlan;
+
+  const getCardIcon = () => {
+    switch (tier.id) {
+      case 'starter':
+        return <Star className="h-6 w-6 text-blue-600" />;
+      case 'professional':
+        return <Zap className="h-6 w-6 text-purple-600" />;
+      case 'enterprise':
+        return <Crown className="h-6 w-6 text-yellow-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const formatLimit = (value: number) => {
+    return value === -1 ? 'Unlimited' : value.toString();
+  };
+
+  const features: PricingFeature[] = [
+    {
+      name: `${formatLimit(tier.features.maxClients)} clients`,
+      included: true
+    },
+    {
+      name: `${formatLimit(tier.features.maxUsers)} team members`,
+      included: true
+    },
+    {
+      name: `${tier.features.storageGB}GB storage`,
+      included: true
+    },
+    {
+      name: `${tier.features.supportLevel} support`,
+      included: true
+    },
+    {
+      name: 'QuickBooks integration',
+      included: tier.features.integrations.includes('quickbooks')
+    },
+    {
+      name: 'Stripe integration',
+      included: tier.features.integrations.includes('stripe')
+    },
+    {
+      name: 'Microsoft 365 integration',
+      included: tier.features.integrations.includes('microsoft365')
+    },
+    {
+      name: 'Advanced reporting',
+      included: tier.features.advancedReporting
+    },
+    {
+      name: 'Custom branding',
+      included: tier.features.customBranding
+    },
+    {
+      name: 'White label solution',
+      included: tier.features.whiteLabel || false
+    }
+  ];
 
   return (
-    <Card className={`relative transition-all duration-200 ${
-      isSelected ? 'ring-2 ring-primary' : ''
-    } ${isPopular ? 'border-primary' : ''} ${isCurrent ? 'bg-primary/5' : ''}`}>
-      {isPopular && (
+    <Card className={`relative ${popular ? 'border-primary shadow-lg scale-105' : ''} ${isCurrentPlan ? 'ring-2 ring-green-500' : ''}`}>
+      {popular && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-          <Badge className="bg-primary text-primary-foreground">
-            <Star className="mr-1 h-3 w-3" />
+          <Badge className="bg-primary text-primary-foreground px-3 py-1">
             Most Popular
           </Badge>
         </div>
       )}
 
-      {isCurrent && (
-        <div className="absolute -top-3 right-4">
-          <Badge variant="secondary">
-            <Check className="mr-1 h-3 w-3" />
-            Current Plan
-          </Badge>
+      <CardHeader className="text-center">
+        <div className="flex items-center justify-center mb-2">
+          {getCardIcon()}
         </div>
-      )}
-
-      <CardHeader className="text-center pb-4">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          {getIcon()}
-          <CardTitle className="text-xl capitalize">{tier}</CardTitle>
-        </div>
-        <CardDescription className="min-h-[3rem] flex items-center justify-center">
-          {config.description}
+        <CardTitle className="text-2xl font-bold">{tier.name}</CardTitle>
+        <CardDescription>
+          <div className="flex items-baseline justify-center gap-1">
+            <span className="text-3xl font-bold text-foreground">
+              ${tier.price}
+            </span>
+            <span className="text-muted-foreground">/{tier.interval}</span>
+          </div>
         </CardDescription>
-
-        <div className="text-3xl font-bold">
-          {formatCurrency(calculatePrice(), 'usd')}
-          <span className="text-base font-normal text-muted-foreground">
-            /{yearly ? 'year' : 'month'}
-          </span>
-        </div>
-
-        {yearly && (
-          <p className="text-sm text-green-600">Save 17% annually</p>
-        )}
-
-        {userCount > config.limits.users && (
-          <p className="text-xs text-muted-foreground">
-            Includes {userCount - config.limits.users} additional user{userCount - config.limits.users > 1 ? 's' : ''}
-          </p>
-        )}
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {showDetails && (
-          <>
-            <div className="space-y-2">
-              {featuresToShow.map((feature: string) => (
-                <div key={feature} className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">{feature}</span>
-                </div>
-              ))}
-
-              {hasMoreFeatures && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
-                  onClick={() => setShowAllFeatures(!showAllFeatures)}
-                >
-                  {showAllFeatures
-                    ? 'Show less'
-                    : `+${config.features.length - 8} more features`
-                  }
-                </Button>
-              )}
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <h4 className="font-medium text-sm">Plan Limits</h4>
-              <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Users className="h-3 w-3" />
-                  {config.limits.users === 999999 ? 'Unlimited' : config.limits.users} users
-                </div>
-                <div className="flex items-center gap-1">
-                  <FileText className="h-3 w-3" />
-                  {config.limits.clients === 999999 ? 'Unlimited' : config.limits.clients} clients
-                </div>
-                <div className="flex items-center gap-1">
-                  <Database className="h-3 w-3" />
-                  {config.limits.storage_gb === 999999 ? 'Unlimited' : `${config.limits.storage_gb} GB`}
-                </div>
-                <div className="flex items-center gap-1">
-                  <FileText className="h-3 w-3" />
-                  {config.limits.documents_processed === 999999 ? 'Unlimited' : config.limits.documents_processed} docs
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        <div className="pt-4">
-          {isCurrent ? (
-            <Button disabled className="w-full">
-              <Check className="mr-2 h-4 w-4" />
-              Current Plan
-            </Button>
-          ) : (
-            <div className="space-y-2">
-              <Button
-                variant={isSelected ? 'default' : 'outline'}
-                className="w-full"
-                onClick={onSelect}
+        <div className="space-y-3">
+          {features.map((feature, index) => (
+            <div key={index} className="flex items-center gap-3">
+              <Check
+                className={`h-4 w-4 ${
+                  feature.included
+                    ? 'text-green-600'
+                    : 'text-gray-300'
+                }`}
+              />
+              <span
+                className={`text-sm ${
+                  feature.included
+                    ? 'text-foreground'
+                    : 'text-muted-foreground line-through'
+                }`}
               >
-                {tier === PricingTier.STARTER ? 'Downgrade' : 'Select Plan'}
-              </Button>
-
-              {onUpgrade && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="w-full"
-                  onClick={onUpgrade}
-                >
-                  Upgrade Now
-                </Button>
-              )}
+                {feature.name}
+              </span>
             </div>
-          )}
+          ))}
         </div>
       </CardContent>
+
+      <CardFooter>
+        <Button
+          className="w-full"
+          onClick={handleSelect}
+          disabled={isDisabled}
+          variant={isCurrentPlan ? 'outline' : 'default'}
+        >
+          {isCurrentPlan ? (
+            'Current Plan'
+          ) : selecting ? (
+            'Selecting...'
+          ) : (
+            `Choose ${tier.name}`
+          )}
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
