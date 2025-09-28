@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                String   @id @default(cuid())
+  name              String
+  subdomain         String   @unique
+  subscriptionTier  String   @default("trial")
+  stripeCustomerId  String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relations
+  users             User[]
+  clients           Client[]
+  documents         Document[]
+  quickbooksToken   QuickBooksToken?
+  
+  @@map("organizations")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String
+  role           String   // "owner", "admin", "cpa", "staff"
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relations
+  uploadedDocuments Document[] @relation("DocumentUploader")
+  
+  @@map("users")
+}
+
+model Client {
+  id                 String   @id @default(cuid())
+  businessName       String
+  taxId              String?
+  quickbooksId       String?
+  organizationId     String
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  primaryContactEmail String
+  primaryContactName String
+  status             String   @default("active")
+  financialData      Json?    // Store QuickBooks sync data
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  // Relations
+  documents          Document[]
+  notes              Note[]
+  
+  @@map("clients")
+}
+
+model Document {
+  id             String   @id @default(cuid())
+  fileName       String
+  fileUrl        String
+  fileType       String
+  category       String   // "tax_return", "financial_statement", "receipt", etc.
+  year           Int?
+  clientId       String
+  client         Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploadedBy     String
+  uploader       User     @relation("DocumentUploader", fields: [uploadedBy], references: [id])
+  extractedData  Json?    // OCR results
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@map("documents")
+}
+
+model QuickBooksToken {
+  id           String   @id @default(cuid())
+  organizationId String @unique
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accessToken  String   @db.Text
+  refreshToken String   @db.Text
+  realmId      String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("quickbooks_tokens")
+}
+
+model Note {
+  id             String   @id @default(cuid())
+  content        String   @db.Text
+  clientId       String
+  client         Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  authorId       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@map("notes")
+}

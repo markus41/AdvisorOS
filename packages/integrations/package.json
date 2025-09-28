@@ -1,0 +1,32 @@
+{
+  "name": "@cpa-platform/integrations",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./quickbooks": "./src/quickbooks/index.ts",
+    "./azure": "./src/azure/index.ts",
+    "./entra-id": "./src/entra-id/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.0.0",
+    "@azure/keyvault-secrets": "^4.8.0",
+    "@azure/storage-blob": "^12.17.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "intuit-oauth": "^4.0.0",
+    "node-quickbooks": "^2.0.40"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "eslint": "^8",
+    "jest": "^29",
+    "typescript": "^5"
+  }
+}

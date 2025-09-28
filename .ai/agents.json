@@ -1,0 +1,164 @@
+{
+  "version": "1.0.0",
+  "description": "AI Agent configuration for CPA Platform development",
+  "agents": {
+    "frontend_builder": {
+      "model": "claude-3-opus",
+      "description": "Builds React/Next.js components and pages",
+      "context": [
+        "./packages/web",
+        "./packages/ui",
+        "./docs/design-system.md"
+      ],
+      "capabilities": [
+        "create_components",
+        "style_with_tailwind",
+        "write_tests",
+        "implement_forms",
+        "create_dashboards",
+        "handle_state_management"
+      ],
+      "tools": [
+        "file_operations",
+        "code_generation",
+        "test_runner"
+      ]
+    },
+    "api_developer": {
+      "model": "claude-3-opus",
+      "description": "Creates API endpoints and backend logic",
+      "context": [
+        "./packages/api",
+        "./packages/database",
+        "./docs/api-specs.md"
+      ],
+      "capabilities": [
+        "create_endpoints",
+        "write_sql",
+        "implement_auth",
+        "handle_validation",
+        "create_middleware",
+        "optimize_queries"
+      ],
+      "tools": [
+        "database_operations",
+        "api_testing",
+        "prisma_cli"
+      ]
+    },
+    "integration_specialist": {
+      "model": "claude-3-opus",
+      "description": "Handles third-party integrations and external APIs",
+      "context": [
+        "./packages/integrations",
+        "./docs/third-party-apis.md"
+      ],
+      "capabilities": [
+        "api_integration",
+        "webhook_handling",
+        "data_mapping",
+        "oauth_implementation",
+        "error_handling",
+        "rate_limiting"
+      ],
+      "tools": [
+        "http_client",
+        "oauth_handler",
+        "webhook_server"
+      ]
+    },
+    "test_engineer": {
+      "model": "claude-3-opus",
+      "description": "Creates comprehensive test suites",
+      "context": [
+        "./packages",
+        "./docs/test-requirements.md"
+      ],
+      "capabilities": [
+        "write_unit_tests",
+        "create_e2e_tests",
+        "generate_fixtures",
+        "mock_dependencies",
+        "coverage_analysis",
+        "performance_testing"
+      ],
+      "tools": [
+        "jest",
+        "playwright",
+        "testing_library"
+      ]
+    },
+    "azure_architect": {
+      "model": "claude-3-opus",
+      "description": "Designs and implements Azure infrastructure",
+      "context": [
+        "./infrastructure",
+        "./docs/azure-architecture.md"
+      ],
+      "capabilities": [
+        "terraform_scripts",
+        "azure_configuration",
+        "cost_optimization",
+        "security_hardening",
+        "monitoring_setup",
+        "deployment_pipelines"
+      ],
+      "tools": [
+        "terraform",
+        "azure_cli",
+        "bicep"
+      ]
+    },
+    "security_specialist": {
+      "model": "claude-3-opus",
+      "description": "Implements security best practices",
+      "context": [
+        "./packages",
+        "./infrastructure",
+        "./docs/security-requirements.md"
+      ],
+      "capabilities": [
+        "security_auditing",
+        "implement_rbac",
+        "encrypt_data",
+        "secure_api_endpoints",
+        "oauth_configuration",
+        "compliance_checks"
+      ],
+      "tools": [
+        "security_scanner",
+        "dependency_checker",
+        "secret_manager"
+      ]
+    }
+  },
+  "orchestration": {
+    "default_workflow": "parallel",
+    "error_handling": "retry_with_fallback",
+    "max_retries": 3,
+    "timeout_seconds": 300,
+    "communication": {
+      "method": "shared_context",
+      "format": "json"
+    }
+  },
+  "shared_context": {
+    "project_type": "multi_tenant_saas",
+    "tech_stack": {
+      "frontend": "Next.js 14 with TypeScript",
+      "backend": "API Routes with Prisma",
+      "database": "PostgreSQL",
+      "authentication": "NextAuth.js with Azure AD B2C",
+      "hosting": "Azure Static Web Apps and Functions",
+      "styling": "Tailwind CSS",
+      "charts": "Tremor UI"
+    },
+    "coding_standards": {
+      "typescript": "strict",
+      "linting": "eslint",
+      "formatting": "prettier",
+      "testing": "jest + playwright",
+      "commits": "conventional"
+    }
+  }
+}
