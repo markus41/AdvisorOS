@@ -1,0 +1,65 @@
+# CPA Platform Infrastructure Configuration Example
+# Copy this file to terraform.tfvars and fill in your values
+
+# Basic Configuration
+resource_group_name = "cpa-platform-rg"
+location           = "East US"
+app_name           = "cpa-platform"
+environment        = "prod"
+
+# App Service Configuration
+app_service_sku = "B1"  # Basic tier - upgrade to "S1" or "P1V2" for production
+
+# Database Configuration
+postgres_sku      = "B_Gen5_1"  # Basic tier - upgrade to "GP_Gen5_2" for production
+database_name     = "cpa_platform_db"
+db_admin_username = "cpaadmin"
+# db_admin_password = "Your-Secure-Password-Here"  # Set via environment variable or CI/CD
+
+# Azure AD B2C Configuration
+b2c_tenant_name             = "cpaplatform"
+b2c_data_residency_location = "United States"
+
+# Cognitive Services Configuration
+cognitive_services_sku = "S0"  # Standard tier
+openai_sku            = "S0"  # Standard tier
+
+# Function App Configuration
+function_app_sku = "Y1"  # Consumption plan
+
+# Key Vault Configuration
+key_vault_sku = "standard"
+
+# Auto-scaling Configuration
+min_instances = 1
+max_instances = 10
+
+# Secrets (Set these via environment variables or CI/CD secrets)
+# nextauth_secret           = "your-nextauth-secret"
+# quickbooks_client_id      = "your-quickbooks-client-id"
+# quickbooks_client_secret  = "your-quickbooks-client-secret"
+# stripe_api_key           = "your-stripe-api-key"
+# stripe_webhook_secret    = "your-stripe-webhook-secret"
+# admin_email              = "admin@yourcompany.com"
+
+# Tags
+tags = {
+  Environment = "production"
+  Project     = "cpa-platform"
+  Owner       = "DevOps Team"
+  CostCenter  = "IT"
+}
+
+# Production Environment Overrides (uncomment for production)
+# app_service_sku = "P1V2"
+# postgres_sku = "GP_Gen5_2"
+# min_instances = 2
+# max_instances = 20
+
+# Development Environment Overrides (uncomment for dev)
+# app_service_sku = "F1"
+# postgres_sku = "B_Gen5_1"
+# cognitive_services_sku = "F0"
+# openai_sku = "F0"
+# min_instances = 1
+# max_instances = 3

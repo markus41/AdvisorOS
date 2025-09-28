@@ -1,0 +1,486 @@
+name: Maintenance and Monitoring
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC for maintenance tasks
+    - cron: '0 2 * * *'
+    # Run weekly on Sundays at 3 AM UTC for comprehensive checks
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Maintenance task to run'
+        required: true
+        type: choice
+        options:
+          - health-check
+          - backup-verification
+          - security-scan
+          - performance-analysis
+          - cost-analysis
+          - all
+        default: 'health-check'
+      environment:
+        description: 'Environment to check'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+          - all
+        default: 'all'
+
+permissions:
+  contents: read
+  id-token: write
+  security-events: write
+  issues: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      environments: ${{ steps.env.outputs.environments }}
+      is-scheduled: ${{ steps.schedule.outputs.is-scheduled }}
+    steps:
+      - name: Determine environments
+        id: env
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "all" ] || [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "environments=[\"dev\",\"staging\",\"prod\"]" >> $GITHUB_OUTPUT
+          else
+            echo "environments=[\"${{ github.event.inputs.environment }}\"]" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if scheduled
+        id: schedule
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "is-scheduled=true" >> $GITHUB_OUTPUT
+          else
+            echo "is-scheduled=false" >> $GITHUB_OUTPUT
+          fi
+
+  health-check:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.task == 'health-check' || github.event.inputs.task == 'all' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.setup.outputs.environments) }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Health Check Application
+        id: health
+        run: |
+          APP_NAME="cpa-platform-${{ matrix.environment }}"
+          RESOURCE_GROUP="cpa-platform-${{ matrix.environment }}-rg"
+
+          echo "🏥 Running health checks for ${{ matrix.environment }}..."
+
+          # Check App Service status
+          APP_STATUS=$(az webapp show --name "$APP_NAME" --resource-group "$RESOURCE_GROUP" --query "state" -o tsv 2>/dev/null || echo "NotFound")
+          echo "App Service Status: $APP_STATUS"
+
+          # Check Database status
+          DB_STATUS=$(az postgres server show --name "$APP_NAME-postgres" --resource-group "$RESOURCE_GROUP" --query "userVisibleState" -o tsv 2>/dev/null || echo "NotFound")
+          echo "Database Status: $DB_STATUS"
+
+          # Check Function App status
+          FUNC_STATUS=$(az functionapp show --name "$APP_NAME-functions" --resource-group "$RESOURCE_GROUP" --query "state" -o tsv 2>/dev/null || echo "NotFound")
+          echo "Function App Status: $FUNC_STATUS"
+
+          # Test application endpoints
+          if [ "$APP_STATUS" == "Running" ]; then
+            APP_URL="https://$APP_NAME.azurewebsites.net"
+
+            # Test health endpoint
+            if curl -f -s "$APP_URL/api/health" >/dev/null 2>&1; then
+              echo "✅ Health endpoint is responding"
+              HEALTH_STATUS="healthy"
+            else
+              echo "❌ Health endpoint is not responding"
+              HEALTH_STATUS="unhealthy"
+            fi
+
+            # Test main page
+            if curl -f -s "$APP_URL" >/dev/null 2>&1; then
+              echo "✅ Main page is accessible"
+              MAIN_PAGE_STATUS="accessible"
+            else
+              echo "❌ Main page is not accessible"
+              MAIN_PAGE_STATUS="inaccessible"
+            fi
+          else
+            HEALTH_STATUS="down"
+            MAIN_PAGE_STATUS="down"
+          fi
+
+          # Set outputs for reporting
+          echo "app-status=$APP_STATUS" >> $GITHUB_OUTPUT
+          echo "db-status=$DB_STATUS" >> $GITHUB_OUTPUT
+          echo "func-status=$FUNC_STATUS" >> $GITHUB_OUTPUT
+          echo "health-status=$HEALTH_STATUS" >> $GITHUB_OUTPUT
+          echo "main-page-status=$MAIN_PAGE_STATUS" >> $GITHUB_OUTPUT
+
+      - name: Create Issue on Failure
+        if: steps.health.outputs.health-status == 'unhealthy' || steps.health.outputs.app-status != 'Running'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `🚨 Health Check Failed - ${{ matrix.environment }} Environment`;
+            const body = `
+            ## Health Check Failure Report
+
+            **Environment:** ${{ matrix.environment }}
+            **Date:** ${new Date().toISOString()}
+
+            ### Service Status
+            - **App Service:** ${{ steps.health.outputs.app-status }}
+            - **Database:** ${{ steps.health.outputs.db-status }}
+            - **Function App:** ${{ steps.health.outputs.func-status }}
+            - **Health Endpoint:** ${{ steps.health.outputs.health-status }}
+            - **Main Page:** ${{ steps.health.outputs.main-page-status }}
+
+            ### Action Required
+            Please investigate and resolve the issues with the ${{ matrix.environment }} environment.
+
+            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            `;
+
+            // Check if similar issue already exists
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'health-check,alert',
+              state: 'open'
+            });
+
+            const existingIssue = issues.find(issue =>
+              issue.title.includes('Health Check Failed') &&
+              issue.title.includes('${{ matrix.environment }}')
+            );
+
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['health-check', 'alert', 'bug', '${{ matrix.environment }}']
+              });
+            }
+
+  backup-verification:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.task == 'backup-verification' || github.event.inputs.task == 'all' || needs.setup.outputs.is-scheduled == 'true'
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.setup.outputs.environments) }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify Database Backups
+        run: |
+          echo "🗄️ Verifying database backups for ${{ matrix.environment }}..."
+
+          RESOURCE_GROUP="cpa-platform-${{ matrix.environment }}-rg"
+          SERVER_NAME="cpa-platform-${{ matrix.environment }}-postgres"
+
+          # Check latest backup
+          LATEST_BACKUP=$(az postgres server-logs list \
+            --resource-group "$RESOURCE_GROUP" \
+            --server-name "$SERVER_NAME" \
+            --query "max_by([], &lastModifiedTime).name" -o tsv 2>/dev/null || echo "None")
+
+          if [ "$LATEST_BACKUP" != "None" ]; then
+            echo "✅ Latest backup found: $LATEST_BACKUP"
+          else
+            echo "❌ No recent backups found"
+          fi
+
+      - name: Verify Storage Backups
+        run: |
+          echo "💾 Verifying storage backups for ${{ matrix.environment }}..."
+
+          RESOURCE_GROUP="cpa-platform-${{ matrix.environment }}-rg"
+          STORAGE_ACCOUNT="cpaplatform${{ matrix.environment }}storage"
+
+          # Check backup container
+          BACKUP_COUNT=$(az storage blob list \
+            --account-name "$STORAGE_ACCOUNT" \
+            --container-name "backups" \
+            --query "length(@)" -o tsv 2>/dev/null || echo "0")
+
+          echo "Backup files found: $BACKUP_COUNT"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.task == 'security-scan' || github.event.inputs.task == 'all' || needs.setup.outputs.is-scheduled == 'true'
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.setup.outputs.environments) }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Security Configuration Check
+        run: |
+          echo "🔒 Running security checks for ${{ matrix.environment }}..."
+
+          RESOURCE_GROUP="cpa-platform-${{ matrix.environment }}-rg"
+          APP_NAME="cpa-platform-${{ matrix.environment }}"
+
+          # Check if HTTPS is enforced
+          HTTPS_ONLY=$(az webapp show \
+            --name "$APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query "httpsOnly" -o tsv 2>/dev/null || echo "false")
+
+          echo "HTTPS Only: $HTTPS_ONLY"
+
+          # Check minimum TLS version
+          TLS_VERSION=$(az webapp config show \
+            --name "$APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query "minTlsVersion" -o tsv 2>/dev/null || echo "Unknown")
+
+          echo "Minimum TLS Version: $TLS_VERSION"
+
+          # Check Key Vault access policies
+          KV_NAME=$(az keyvault list \
+            --resource-group "$RESOURCE_GROUP" \
+            --query "[0].name" -o tsv 2>/dev/null || echo "None")
+
+          if [ "$KV_NAME" != "None" ]; then
+            echo "Key Vault found: $KV_NAME"
+            # Additional Key Vault security checks can be added here
+          fi
+
+      - name: Run Trivy Infrastructure Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: './infrastructure'
+          format: 'sarif'
+          output: 'trivy-infrastructure.sarif'
+
+      - name: Upload Infrastructure Scan Results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-infrastructure.sarif'
+
+  performance-analysis:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.task == 'performance-analysis' || github.event.inputs.task == 'all' || needs.setup.outputs.is-scheduled == 'true'
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.setup.outputs.environments) }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Performance Metrics Analysis
+        run: |
+          echo "📊 Analyzing performance metrics for ${{ matrix.environment }}..."
+
+          RESOURCE_GROUP="cpa-platform-${{ matrix.environment }}-rg"
+          APP_NAME="cpa-platform-${{ matrix.environment }}"
+
+          # Get CPU utilization (last 24 hours)
+          CPU_AVG=$(az monitor metrics list \
+            --resource "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Web/serverfarms/cpa-platform-${{ matrix.environment }}-plan" \
+            --metric "CpuPercentage" \
+            --interval PT1H \
+            --query "value[0].timeseries[0].data[-24:] | avg(@.average)" \
+            --output tsv 2>/dev/null || echo "0")
+
+          echo "Average CPU (24h): ${CPU_AVG}%"
+
+          # Get Memory utilization
+          MEM_AVG=$(az monitor metrics list \
+            --resource "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Web/serverfarms/cpa-platform-${{ matrix.environment }}-plan" \
+            --metric "MemoryPercentage" \
+            --interval PT1H \
+            --query "value[0].timeseries[0].data[-24:] | avg(@.average)" \
+            --output tsv 2>/dev/null || echo "0")
+
+          echo "Average Memory (24h): ${MEM_AVG}%"
+
+          # Check response times from Application Insights
+          echo "Response time analysis would be performed here with Application Insights data"
+
+  cost-analysis:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.task == 'cost-analysis' || github.event.inputs.task == 'all' || needs.setup.outputs.is-scheduled == 'true'
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.setup.outputs.environments) }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Cost Analysis
+        run: |
+          echo "💰 Analyzing costs for ${{ matrix.environment }}..."
+
+          RESOURCE_GROUP="cpa-platform-${{ matrix.environment }}-rg"
+
+          # Get current month costs
+          CURRENT_COSTS=$(az consumption usage list \
+            --query "[?contains(instanceName, '$RESOURCE_GROUP')] | [?contains(usageStart, '$(date +%Y-%m)')] | sum([?pretaxCost != null].pretaxCost)" \
+            --output tsv 2>/dev/null || echo "0")
+
+          echo "Current month costs: $${CURRENT_COSTS}"
+
+          # Check budget alerts
+          echo "Budget status and alerts would be checked here"
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [setup, health-check, backup-verification, security-scan, performance-analysis, cost-analysis]
+    if: always()
+    steps:
+      - name: Generate Maintenance Summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const environments = ${{ needs.setup.outputs.environments }};
+            const date = new Date().toISOString().split('T')[0];
+
+            let summary = `# 🔧 Maintenance Report - ${date}
+
+            ## Summary
+            This report contains the results of scheduled maintenance tasks.
+
+            ## Task Results
+            `;
+
+            // Add health check results
+            if ('${{ needs.health-check.result }}' !== 'skipped') {
+              summary += `
+            ### 🏥 Health Checks
+            Status: ${{ needs.health-check.result }}
+            `;
+            }
+
+            // Add backup verification results
+            if ('${{ needs.backup-verification.result }}' !== 'skipped') {
+              summary += `
+            ### 🗄️ Backup Verification
+            Status: ${{ needs.backup-verification.result }}
+            `;
+            }
+
+            // Add security scan results
+            if ('${{ needs.security-scan.result }}' !== 'skipped') {
+              summary += `
+            ### 🔒 Security Scan
+            Status: ${{ needs.security-scan.result }}
+            `;
+            }
+
+            // Add performance analysis results
+            if ('${{ needs.performance-analysis.result }}' !== 'skipped') {
+              summary += `
+            ### 📊 Performance Analysis
+            Status: ${{ needs.performance-analysis.result }}
+            `;
+            }
+
+            // Add cost analysis results
+            if ('${{ needs.cost-analysis.result }}' !== 'skipped') {
+              summary += `
+            ### 💰 Cost Analysis
+            Status: ${{ needs.cost-analysis.result }}
+            `;
+            }
+
+            summary += `
+            ## Workflow Details
+            - **Run ID:** ${{ github.run_id }}
+            - **Triggered by:** ${{ github.event_name }}
+            - **Environments:** ${environments.join(', ')}
+
+            For detailed results, check the individual job logs in the workflow run.
+            `;
+
+            console.log(summary);
+
+            // Create or update a maintenance issue for tracking
+            const title = `🔧 Maintenance Report - ${date}`;
+
+            try {
+              // Try to find existing maintenance issue for today
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'maintenance',
+                state: 'open'
+              });
+
+              const todayIssue = issues.find(issue => issue.title.includes(date));
+
+              if (todayIssue) {
+                // Update existing issue
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: todayIssue.number,
+                  body: summary
+                });
+              } else {
+                // Create new issue only if this is a scheduled run or there are failures
+                const hasFailures = [
+                  '${{ needs.health-check.result }}',
+                  '${{ needs.backup-verification.result }}',
+                  '${{ needs.security-scan.result }}',
+                  '${{ needs.performance-analysis.result }}',
+                  '${{ needs.cost-analysis.result }}'
+                ].includes('failure');
+
+                if ('${{ github.event_name }}' === 'schedule' || hasFailures) {
+                  await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: title,
+                    body: summary,
+                    labels: ['maintenance', 'report']
+                  });
+                }
+              }
+            } catch (error) {
+              console.log('Could not create/update maintenance issue:', error.message);
+            }

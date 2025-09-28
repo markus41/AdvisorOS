@@ -11,102 +11,684 @@ datasource db {
 }
 
 model Organization {
-  id                String   @id @default(cuid())
-  name              String
-  subdomain         String   @unique
-  subscriptionTier  String   @default("trial")
-  stripeCustomerId  String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
+  id               String    @id @default(cuid())
+  name             String
+  subdomain        String    @unique
+  subscriptionTier String    @default("trial")
+  stripeCustomerId String?
+  deletedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
   // Relations
-  users             User[]
-  clients           Client[]
-  documents         Document[]
-  quickbooksToken   QuickBooksToken?
-  
+  users                    User[]
+  clients                  Client[]
+  documents                Document[]
+  quickbooksToken          QuickBooksToken?
+  quickbooksSyncs          QuickBooksSync[]
+  quickbooksWebhookEvents  QuickBooksWebhookEvent[]
+  engagements              Engagement[]
+  workflows                Workflow[]
+  tasks                    Task[]
+  invoices                 Invoice[]
+  reports                  Report[]
+  auditLogs                AuditLog[]
+  authAttempts             AuthAttempt[]
+  authEvents               AuthEvent[]
+  teamMembers              TeamMember[]
+  subscription             Subscription?
+
   @@map("organizations")
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
+  id             String       @id @default(cuid())
+  email          String       @unique
   name           String
-  role           String   // "owner", "admin", "cpa", "staff"
+  password       String // Hashed password
+  role           String // "owner", "admin", "cpa", "staff"
+  isActive       Boolean      @default(true)
+  lastLoginAt    DateTime?
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  createdBy      String?
+  updatedBy      String?
+
   // Relations
-  uploadedDocuments Document[] @relation("DocumentUploader")
-  
+  uploadedDocuments   Document[]   @relation("DocumentUploader")
+  assignedTasks       Task[]       @relation("TaskAssignee")
+  createdTasks        Task[]       @relation("TaskCreator")
+  createdEngagements  Engagement[] @relation("EngagementCreator")
+  assignedEngagements Engagement[] @relation("EngagementAssignee")
+  createdInvoices     Invoice[]    @relation("InvoiceCreator")
+  createdReports      Report[]     @relation("ReportCreator")
+  createdAuditLogs    AuditLog[]   @relation("AuditLogCreator")
+  notes               Note[]
+  authAttempts        AuthAttempt[]
+  authEvents          AuthEvent[]
+  teamMember          TeamMember?
+  documentAnnotations DocumentAnnotation[]
+  documentComments    DocumentComment[]
+  documentShares      DocumentShare[]
+
+  @@index([organizationId])
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@index([lastLoginAt])
   @@map("users")
 }
 
 model Client {
-  id                 String   @id @default(cuid())
-  businessName       String
-  taxId              String?
-  quickbooksId       String?
-  organizationId     String
-  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id                  String       @id @default(cuid())
+  businessName        String
+  legalName           String?
+  taxId               String?
+  quickbooksId        String?
+  organizationId      String
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   primaryContactEmail String
-  primaryContactName String
-  status             String   @default("active")
-  financialData      Json?    // Store QuickBooks sync data
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  
+  primaryContactName  String
+  primaryContactPhone String?
+  businessAddress     String?
+  mailingAddress      String?
+  businessType        String? // "LLC", "Corporation", "Partnership", "Sole Proprietorship"
+  industry            String?
+  website             String?
+  status              String       @default("active") // "active", "inactive", "prospect"
+  riskLevel           String       @default("medium") // "low", "medium", "high"
+  annualRevenue       Decimal?
+  financialData       Json? // Store QuickBooks sync data
+  customFields        Json? // Additional client-specific data
+  deletedAt           DateTime?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  createdBy           String?
+  updatedBy           String?
+
   // Relations
-  documents          Document[]
-  notes              Note[]
-  
+  documents   Document[]
+  notes       Note[]
+  engagements Engagement[]
+  invoices    Invoice[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([businessName])
+  @@index([businessType])
+  @@index([industry])
+  @@index([riskLevel])
+  @@index([primaryContactEmail])
   @@map("clients")
 }
 
 model Document {
-  id             String   @id @default(cuid())
-  fileName       String
-  fileUrl        String
-  fileType       String
-  category       String   // "tax_return", "financial_statement", "receipt", etc.
-  year           Int?
-  clientId       String
-  client         Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  uploadedBy     String
-  uploader       User     @relation("DocumentUploader", fields: [uploadedBy], references: [id])
-  extractedData  Json?    // OCR results
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
+  id               String       @id @default(cuid())
+  fileName         String
+  fileUrl          String
+  thumbnailUrl     String?
+  fileType         String
+  mimeType         String?
+  fileSize         BigInt?
+  category         String // "tax_return", "financial_statement", "receipt", "invoice", "bank_statement", "w2", "1099", etc.
+  subcategory      String?
+  year             Int?
+  quarter          Int?
+  version          Int          @default(1)
+  isLatestVersion  Boolean      @default(true)
+  parentDocumentId String?
+  parentDocument   Document?    @relation("DocumentVersions", fields: [parentDocumentId], references: [id])
+  documentVersions Document[]   @relation("DocumentVersions")
+  tags             String[] // Array of tags for categorization
+  description      String?
+  clientId         String
+  client           Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploadedBy       String
+  uploader         User         @relation("DocumentUploader", fields: [uploadedBy], references: [id])
+
+  // OCR and Processing
+  ocrStatus        String       @default("pending") // "pending", "processing", "completed", "failed", "manual_review"
+  ocrConfidence    Float?       // Overall confidence score 0-1
+  ocrProcessedAt   DateTime?
+  extractedData    Json? // Structured OCR results
+  rawOcrData       Json? // Raw OCR output
+  ocrModel         String?      // Model used for OCR
+  needsReview      Boolean      @default(false)
+  reviewedAt       DateTime?
+  reviewedBy       String?
+
+  // Security and Compliance
+  metadata         Json? // Additional metadata
+  checksum         String? // File integrity verification
+  isConfidential   Boolean      @default(false)
+  accessLevel      String       @default("organization") // "public", "organization", "client", "restricted"
+  encryptionKey    String? // For encrypted documents
+  virusScanned     Boolean      @default(false)
+  virusScanDate    DateTime?
+  virusScanResult  String? // "clean", "infected", "quarantined"
+
+  // Retention and Lifecycle
+  retentionDate    DateTime? // When document should be deleted
+  archiveDate      DateTime? // When to archive
+  isArchived       Boolean      @default(false)
+
+  // Timestamps
+  deletedAt        DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  createdBy        String?
+  updatedBy        String?
+
+  // Relations
+  annotations      DocumentAnnotation[]
+  comments         DocumentComment[]
+  shares           DocumentShare[]
+
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([category])
+  @@index([subcategory])
+  @@index([year])
+  @@index([quarter])
+  @@index([isLatestVersion])
+  @@index([uploadedBy])
+  @@index([fileType])
+  @@index([isConfidential])
+  @@index([ocrStatus])
+  @@index([needsReview])
+  @@index([createdAt])
+  @@index([tags])
   @@map("documents")
 }
 
 model QuickBooksToken {
-  id           String   @id @default(cuid())
-  organizationId String @unique
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  accessToken  String   @db.Text
-  refreshToken String   @db.Text
-  realmId      String
-  expiresAt    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  id             String       @id @default(cuid())
+  organizationId String       @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accessToken    String       @db.Text
+  refreshToken   String       @db.Text
+  realmId        String
+  expiresAt      DateTime
+  lastSyncAt     DateTime?
+  isActive       Boolean      @default(true)
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  createdBy      String?
+  updatedBy      String?
+
   @@map("quickbooks_tokens")
 }
 
 model Note {
-  id             String   @id @default(cuid())
-  content        String   @db.Text
-  clientId       String
-  client         Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  authorId       String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
+  id           String      @id @default(cuid())
+  title        String?
+  content      String      @db.Text
+  noteType     String      @default("general") // "general", "meeting", "reminder", "follow_up"
+  priority     String      @default("normal") // "low", "normal", "high", "urgent"
+  isPrivate    Boolean     @default(false)
+  tags         String[] // Array of tags
+  clientId     String?
+  client       Client?     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  engagementId String?
+  engagement   Engagement? @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  taskId       String?
+  task         Task?       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  authorId     String
+  author       User        @relation(fields: [authorId], references: [id])
+  reminderDate DateTime?
+  deletedAt    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  createdBy    String?
+  updatedBy    String?
+
+  @@index([clientId])
+  @@index([engagementId])
+  @@index([taskId])
+  @@index([authorId])
   @@map("notes")
+}
+
+model Engagement {
+  id             String       @id @default(cuid())
+  name           String
+  description    String?      @db.Text
+  type           String // "tax_preparation", "bookkeeping", "advisory", "cfo_services", "audit", "review"
+  status         String       @default("planning") // "planning", "in_progress", "review", "completed", "on_hold", "cancelled"
+  priority       String       @default("normal") // "low", "normal", "high", "urgent"
+  startDate      DateTime?
+  dueDate        DateTime?
+  completedDate  DateTime?
+  estimatedHours Decimal?
+  actualHours    Decimal?
+  hourlyRate     Decimal?
+  fixedFee       Decimal?
+  clientId       String
+  client         Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignedToId   String?
+  assignedTo     User?        @relation("EngagementAssignee", fields: [assignedToId], references: [id])
+  createdById    String
+  createdBy      User         @relation("EngagementCreator", fields: [createdById], references: [id])
+  workflowId     String?
+  workflow       Workflow?    @relation(fields: [workflowId], references: [id])
+  year           Int?
+  quarter        Int?
+  customFields   Json? // Additional engagement-specific data
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  updatedBy      String?
+
+  // Relations
+  tasks    Task[]
+  notes    Note[]
+  invoices Invoice[]
+  reports  Report[]
+
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([type])
+  @@index([dueDate])
+  @@map("engagements")
+}
+
+model Workflow {
+  id             String       @id @default(cuid())
+  name           String
+  description    String?      @db.Text
+  type           String // "tax_preparation", "bookkeeping", "onboarding", "year_end", "custom"
+  isTemplate     Boolean      @default(true)
+  isActive       Boolean      @default(true)
+  version        Int          @default(1)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  steps          Json // Workflow steps configuration
+  settings       Json? // Workflow settings and rules
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  createdBy      String?
+  updatedBy      String?
+
+  // Relations
+  engagements Engagement[]
+  tasks       Task[]
+
+  @@index([organizationId])
+  @@index([type])
+  @@index([isActive])
+  @@map("workflows")
+}
+
+model Task {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?      @db.Text
+  status         String       @default("pending") // "pending", "in_progress", "review", "completed", "cancelled"
+  priority       String       @default("normal") // "low", "normal", "high", "urgent"
+  taskType       String // "document_review", "data_entry", "client_meeting", "preparation", "review", "custom"
+  estimatedHours Decimal?
+  actualHours    Decimal?
+  startDate      DateTime?
+  dueDate        DateTime?
+  completedDate  DateTime?
+  assignedToId   String?
+  assignedTo     User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  createdById    String
+  createdBy      User         @relation("TaskCreator", fields: [createdById], references: [id])
+  engagementId   String?
+  engagement     Engagement?  @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  workflowId     String?
+  workflow       Workflow?    @relation(fields: [workflowId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parentTaskId   String?
+  parentTask     Task?        @relation("TaskDependencies", fields: [parentTaskId], references: [id])
+  subTasks       Task[]       @relation("TaskDependencies")
+  dependencies   Json? // Task dependency rules
+  checklist      Json? // Task checklist items
+  attachments    Json? // File attachments metadata
+  customFields   Json? // Additional task-specific data
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  updatedBy      String?
+
+  // Relations
+  notes Note[]
+
+  @@index([organizationId])
+  @@index([assignedToId])
+  @@index([engagementId])
+  @@index([workflowId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@map("tasks")
+}
+
+model Invoice {
+  id             String       @id @default(cuid())
+  invoiceNumber  String       @unique
+  title          String?
+  description    String?      @db.Text
+  status         String       @default("draft") // "draft", "sent", "viewed", "partial", "paid", "overdue", "cancelled"
+  invoiceDate    DateTime     @default(now())
+  dueDate        DateTime
+  subtotal       Decimal      @db.Decimal(10, 2)
+  taxAmount      Decimal      @default(0) @db.Decimal(10, 2)
+  discountAmount Decimal      @default(0) @db.Decimal(10, 2)
+  totalAmount    Decimal      @db.Decimal(10, 2)
+  paidAmount     Decimal      @default(0) @db.Decimal(10, 2)
+  balanceAmount  Decimal      @db.Decimal(10, 2)
+  currency       String       @default("USD")
+  paymentTerms   String? // "net_30", "net_15", "due_on_receipt", etc.
+  clientId       String
+  client         Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  engagementId   String?
+  engagement     Engagement?  @relation(fields: [engagementId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdById    String
+  createdBy      User         @relation("InvoiceCreator", fields: [createdById], references: [id])
+  lineItems      Json // Invoice line items
+  paymentHistory Json? // Payment transaction history
+  emailHistory   Json? // Email send history
+  notes          String?      @db.Text
+  customFields   Json? // Additional invoice-specific data
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  paidAt         DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  updatedBy      String?
+
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([engagementId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([invoiceNumber])
+  @@map("invoices")
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  name           String
+  description    String?      @db.Text
+  reportType     String // "financial_statement", "tax_summary", "engagement_summary", "time_tracking", "custom"
+  format         String // "pdf", "excel", "csv", "html"
+  status         String       @default("generating") // "generating", "completed", "failed", "archived"
+  fileUrl        String?
+  fileSize       BigInt?
+  parameters     Json? // Report generation parameters
+  data           Json? // Report data/results
+  metadata       Json? // Additional report metadata
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  engagementId   String?
+  engagement     Engagement?  @relation(fields: [engagementId], references: [id])
+  createdById    String
+  createdBy      User         @relation("ReportCreator", fields: [createdById], references: [id])
+  generatedAt    DateTime?
+  expiresAt      DateTime?
+  downloadCount  Int          @default(0)
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  updatedBy      String?
+
+  @@index([organizationId])
+  @@index([engagementId])
+  @@index([reportType])
+  @@index([status])
+  @@index([createdById])
+  @@map("reports")
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  action         String // "create", "update", "delete", "login", "logout", "export", "import", etc.
+  entityType     String // "user", "client", "document", "engagement", "invoice", etc.
+  entityId       String?
+  oldValues      Json? // Previous state for updates
+  newValues      Json? // New state for updates
+  metadata       Json? // Additional context data
+  ipAddress      String?
+  userAgent      String?      @db.Text
+  sessionId      String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?        @relation("AuditLogCreator", fields: [userId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model AuthAttempt {
+  id             String       @id @default(cuid())
+  email          String
+  success        Boolean
+  failureReason  String?
+  ipAddress      String?
+  userAgent      String?      @db.Text
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?        @relation(fields: [userId], references: [id])
+  sessionId      String?
+  metadata       Json?        // Additional auth attempt data
+  createdAt      DateTime     @default(now())
+
+  @@index([email])
+  @@index([success])
+  @@index([ipAddress])
+  @@index([createdAt])
+  @@index([organizationId])
+  @@map("auth_attempts")
+}
+
+model AuthEvent {
+  id             String       @id @default(cuid())
+  eventType      String       // "login", "logout", "password_change", "mfa_enabled", "account_locked", etc.
+  success        Boolean
+  description    String?      @db.Text
+  ipAddress      String?
+  userAgent      String?      @db.Text
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?        @relation(fields: [userId], references: [id])
+  sessionId      String?
+  metadata       Json?        // Additional event data
+  createdAt      DateTime     @default(now())
+
+  @@index([eventType])
+  @@index([userId])
+  @@index([success])
+  @@index([createdAt])
+  @@index([organizationId])
+  @@map("auth_events")
+}
+
+model TeamMember {
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           String       // "owner", "admin", "manager", "senior_cpa", "cpa", "staff", "intern"
+  department     String?      // "tax", "audit", "advisory", "bookkeeping", "admin"
+  title          String?      // Job title
+  specializations String[]    // Areas of expertise
+  hourlyRate     Decimal?     @db.Decimal(8, 2)
+  isActive       Boolean      @default(true)
+  hireDate       DateTime?
+  terminationDate DateTime?
+  permissions    TeamMemberPermission[]
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  createdBy      String?
+  updatedBy      String?
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([role])
+  @@index([isActive])
+  @@map("team_members")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?  @db.Text
+  category    String   // "user_management", "client_management", "document_management", "billing", "reporting", etc.
+  action      String   // "create", "read", "update", "delete", "export", "import", etc.
+  resource    String   // "users", "clients", "documents", "invoices", "reports", etc.
+  isSystemLevel Boolean @default(false) // System-level permissions vs organization-level
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  teamMemberPermissions TeamMemberPermission[]
+
+  @@index([category])
+  @@index([resource])
+  @@index([action])
+  @@map("permissions")
+}
+
+model TeamMemberPermission {
+  id           String     @id @default(cuid())
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  granted      Boolean    @default(true)
+  grantedBy    String?
+  grantedAt    DateTime   @default(now())
+  revokedBy    String?
+  revokedAt    DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([teamMemberId, permissionId])
+  @@index([teamMemberId])
+  @@index([permissionId])
+  @@map("team_member_permissions")
+}
+
+model Subscription {
+  id                String       @id @default(cuid())
+  organizationId    String       @unique
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planName          String       // "trial", "starter", "professional", "enterprise"
+  planType          String       // "monthly", "yearly"
+  status            String       // "active", "past_due", "canceled", "incomplete", "trialing"
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd Boolean      @default(false)
+  canceledAt        DateTime?
+  trialStart        DateTime?
+  trialEnd          DateTime?
+  stripeSubscriptionId String?   @unique
+  stripePriceId     String?
+  stripeCustomerId  String?
+  quantity          Int          @default(1)
+  unitAmount        Decimal?     @db.Decimal(10, 2)
+  currency          String       @default("USD")
+  features          Json?        // Available features for this subscription
+  limits            Json?        // Usage limits (users, clients, storage, etc.)
+  usage             Json?        // Current usage stats
+  metadata          Json?        // Additional subscription data
+  deletedAt         DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  createdBy         String?
+  updatedBy         String?
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([planName])
+  @@index([currentPeriodEnd])
+  @@map("subscriptions")
+}
+
+model QuickBooksSync {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  syncType       String // "full", "incremental", "manual", "webhook"
+  entityType     String // "company", "accounts", "customers", "invoices", "reports", "transactions"
+  status         String // "pending", "in_progress", "completed", "failed", "cancelled"
+  startedAt      DateTime     @default(now())
+  completedAt    DateTime?
+  recordsTotal   Int?
+  recordsProcessed Int        @default(0)
+  recordsSuccess Int          @default(0)
+  recordsFailed  Int          @default(0)
+  errorMessage   String?      @db.Text
+  errorDetails   Json?
+  metadata       Json? // Additional sync context
+  lastSyncCursor String? // For incremental syncs
+  triggeredBy    String? // User ID or "system"
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+  @@index([syncType])
+  @@index([entityType])
+  @@index([status])
+  @@index([startedAt])
+  @@map("quickbooks_syncs")
+}
+
+model QuickBooksWebhookEvent {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  eventId        String       @unique // QuickBooks webhook event ID
+  eventType      String // "CREATE", "UPDATE", "DELETE", "VOID"
+  entityName     String // "Customer", "Invoice", "Item", etc.
+  entityId       String // QuickBooks entity ID
+  realmId        String
+  eventTime      DateTime // When the event occurred in QuickBooks
+  status         String       @default("pending") // "pending", "processed", "failed", "ignored"
+  processedAt    DateTime?
+  errorMessage   String?      @db.Text
+  retryCount     Int          @default(0)
+  maxRetries     Int          @default(3)
+  nextRetryAt    DateTime?
+  payload        Json // Full webhook payload
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+  @@index([eventType])
+  @@index([entityName])
+  @@index([status])
+  @@index([eventTime])
+  @@index([nextRetryAt])
+  @@map("quickbooks_webhook_events")
 }

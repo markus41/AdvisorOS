@@ -1,0 +1,377 @@
+name: Deploy CPA Platform
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - staging
+  pull_request:
+    branches:
+      - main
+      - develop
+      - staging
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  # Determine environment based on branch or manual input
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      app-name: ${{ steps.env.outputs.app-name }}
+      resource-group: ${{ steps.env.outputs.resource-group }}
+    steps:
+      - name: Determine Environment
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            ENVIRONMENT="${{ github.event.inputs.environment }}"
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            ENVIRONMENT="prod"
+          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            ENVIRONMENT="staging"
+          else
+            ENVIRONMENT="dev"
+          fi
+
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "app-name=cpa-platform-$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "resource-group=cpa-platform-$ENVIRONMENT-rg" >> $GITHUB_OUTPUT
+
+          echo "Deploying to: $ENVIRONMENT"
+
+  # Build and test the application
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Linting
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm run test:ci
+        env:
+          CI: true
+
+      - name: Run Security Audit
+        run: npm audit --audit-level=high
+
+      - name: Build Application
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: |
+            .next/
+            public/
+            package.json
+            package-lock.json
+          retention-days: 5
+
+  # Security scanning
+  security:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          languages: javascript
+
+  # Infrastructure deployment
+  infrastructure:
+    runs-on: ubuntu-latest
+    needs: [setup, build, security]
+    if: github.event_name != 'pull_request'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform Init
+        working-directory: ./infrastructure/azure
+        run: terraform init
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: true
+
+      - name: Terraform Plan
+        working-directory: ./infrastructure/azure
+        run: |
+          terraform plan \
+            -var="environment=${{ needs.setup.outputs.environment }}" \
+            -var="app_name=${{ needs.setup.outputs.app-name }}" \
+            -var="resource_group_name=${{ needs.setup.outputs.resource-group }}" \
+            -var="admin_email=${{ secrets.ADMIN_EMAIL }}" \
+            -var="db_admin_password=${{ secrets.DB_ADMIN_PASSWORD }}" \
+            -var="nextauth_secret=${{ secrets.NEXTAUTH_SECRET }}" \
+            -var="quickbooks_client_id=${{ secrets.QUICKBOOKS_CLIENT_ID }}" \
+            -var="quickbooks_client_secret=${{ secrets.QUICKBOOKS_CLIENT_SECRET }}" \
+            -var="stripe_api_key=${{ secrets.STRIPE_API_KEY }}" \
+            -var="stripe_webhook_secret=${{ secrets.STRIPE_WEBHOOK_SECRET }}" \
+            -out=tfplan
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: true
+
+      - name: Terraform Apply
+        working-directory: ./infrastructure/azure
+        run: terraform apply -auto-approve tfplan
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: true
+
+  # Database migrations
+  migrate:
+    runs-on: ubuntu-latest
+    needs: [setup, infrastructure]
+    if: github.event_name != 'pull_request'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get Database Connection String
+        id: db-connection
+        run: |
+          DB_CONNECTION=$(az keyvault secret show \
+            --vault-name "${{ needs.setup.outputs.app-name }}-kv-*" \
+            --name "database-connection-string" \
+            --query "value" -o tsv)
+          echo "::add-mask::$DB_CONNECTION"
+          echo "connection-string=$DB_CONNECTION" >> $GITHUB_OUTPUT
+
+      - name: Run Database Migrations
+        run: npm run db:migrate
+        env:
+          DATABASE_URL: ${{ steps.db-connection.outputs.connection-string }}
+
+  # Application deployment
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [setup, build, infrastructure, migrate]
+    if: github.event_name != 'pull_request'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ needs.setup.outputs.app-name }}
+          resource-group-name: ${{ needs.setup.outputs.resource-group }}
+          package: .
+
+      - name: Warm up Application
+        run: |
+          echo "Warming up application..."
+          for i in {1..5}; do
+            curl -f "https://${{ needs.setup.outputs.app-name }}.azurewebsites.net/api/health" || echo "Attempt $i failed"
+            sleep 10
+          done
+
+  # Health checks and post-deployment validation
+  validate:
+    runs-on: ubuntu-latest
+    needs: [setup, deploy]
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Health Check
+        run: |
+          echo "Running health checks..."
+
+          # Check if application is responding
+          HEALTH_URL="https://${{ needs.setup.outputs.app-name }}.azurewebsites.net/api/health"
+
+          for i in {1..10}; do
+            if curl -f "$HEALTH_URL"; then
+              echo "✅ Application is healthy"
+              exit 0
+            else
+              echo "⏳ Waiting for application to become healthy (attempt $i/10)"
+              sleep 30
+            fi
+          done
+
+          echo "❌ Application health check failed"
+          exit 1
+
+      - name: Smoke Tests
+        run: |
+          echo "Running smoke tests..."
+
+          # Test main pages
+          APP_URL="https://${{ needs.setup.outputs.app-name }}.azurewebsites.net"
+
+          # Test home page
+          curl -f "$APP_URL" || exit 1
+
+          # Test auth endpoints
+          curl -f "$APP_URL/api/auth/signin" || exit 1
+
+          echo "✅ Smoke tests passed"
+
+  # Rollback job (manual trigger only)
+  rollback:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'rollback'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Rollback to Previous Deployment
+        run: |
+          echo "Rolling back to previous deployment..."
+
+          # Get deployment history and rollback to previous
+          az webapp deployment list \
+            --name "${{ needs.setup.outputs.app-name }}" \
+            --resource-group "${{ needs.setup.outputs.resource-group }}" \
+            --query "[1].id" -o tsv | \
+          xargs -I {} az webapp deployment source config-zip \
+            --name "${{ needs.setup.outputs.app-name }}" \
+            --resource-group "${{ needs.setup.outputs.resource-group }}" \
+            --src {}
+
+  # Cleanup old deployments
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [setup, validate]
+    if: always() && github.event_name != 'pull_request'
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Cleanup Old Deployments
+        run: |
+          echo "Cleaning up old deployments..."
+
+          # Keep only the latest 5 deployments
+          az webapp deployment list \
+            --name "${{ needs.setup.outputs.app-name }}" \
+            --resource-group "${{ needs.setup.outputs.resource-group }}" \
+            --query "[5:].id" -o tsv | \
+          xargs -I {} az webapp deployment source delete \
+            --name "${{ needs.setup.outputs.app-name }}" \
+            --resource-group "${{ needs.setup.outputs.resource-group }}" \
+            --deployment-id {} || echo "No old deployments to clean"
+
+# Post-deployment notifications
+  notify:
+    runs-on: ubuntu-latest
+    needs: [setup, validate]
+    if: always() && github.event_name != 'pull_request'
+    steps:
+      - name: Notify Deployment Status
+        run: |
+          if [ "${{ needs.validate.result }}" == "success" ]; then
+            echo "✅ Deployment to ${{ needs.setup.outputs.environment }} completed successfully"
+            echo "🔗 Application URL: https://${{ needs.setup.outputs.app-name }}.azurewebsites.net"
+          else
+            echo "❌ Deployment to ${{ needs.setup.outputs.environment }} failed"
+          fi

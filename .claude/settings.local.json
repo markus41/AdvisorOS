@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm config set:*)",
+      "Bash(pnpm add:*)",
+      "Bash(find:*)",
+      "Bash(yarn workspace:*)",
+      "Bash(npm run dev:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

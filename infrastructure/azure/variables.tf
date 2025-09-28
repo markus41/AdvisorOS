@@ -72,3 +72,81 @@ variable "tags" {
     Project     = "cpa-platform"
   }
 }
+
+# Key Vault variables
+variable "key_vault_sku" {
+  description = "The SKU for the Key Vault"
+  type        = string
+  default     = "standard"
+}
+
+# Azure AD B2C variables
+variable "b2c_tenant_name" {
+  description = "The name for the Azure AD B2C tenant"
+  type        = string
+  default     = "cpaplatform"
+}
+
+variable "b2c_data_residency_location" {
+  description = "The data residency location for B2C tenant"
+  type        = string
+  default     = "United States"
+}
+
+# Cognitive Services variables
+variable "cognitive_services_sku" {
+  description = "The SKU for Cognitive Services"
+  type        = string
+  default     = "S0"
+}
+
+variable "openai_sku" {
+  description = "The SKU for OpenAI service"
+  type        = string
+  default     = "S0"
+}
+
+# Function App variables
+variable "function_app_sku" {
+  description = "The SKU for the Function App consumption plan"
+  type        = string
+  default     = "Y1"
+}
+
+# Stripe API variables
+variable "stripe_api_key" {
+  description = "Stripe API Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "stripe_webhook_secret" {
+  description = "Stripe Webhook Secret"
+  type        = string
+  sensitive   = true
+}
+
+# Environment specific variables
+variable "environment" {
+  description = "The deployment environment (dev, staging, prod)"
+  type        = string
+  default     = "prod"
+}
+
+variable "admin_email" {
+  description = "Administrator email for alerts and notifications"
+  type        = string
+}
+
+# Auto-scaling variables
+variable "min_instances" {
+  description = "Minimum number of instances for auto-scaling"
+  type        = number
+  default     = 1
+}
+
+variable "max_instances" {
+  description = "Maximum number of instances for auto-scaling"
+  type        = number
+  default     = 10
+}
