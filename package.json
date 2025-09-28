@@ -15,14 +15,8 @@
     "db:studio": "turbo db:studio"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "15.5.4",
     "prettier": "^3.0.0",
-    "turbo": "^2.0.0",
-    "typescript": "^5"
+    "turbo": "^2.0.0"
   },
   "engines": {
     "node": ">=18.17.0"
