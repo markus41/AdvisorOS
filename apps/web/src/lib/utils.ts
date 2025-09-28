@@ -13,10 +13,10 @@ export function formatDate(date: Date | string): string {
   }).format(new Date(date))
 }
 
-export function formatCurrency(amount: number): string {
+export function formatCurrency(amount: number, currency: string = 'USD'): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: currency.toUpperCase(),
   }).format(amount)
 }
 

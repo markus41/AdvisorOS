@@ -13,9 +13,9 @@ import {
   BulkOperationResponse,
   ImportResult
 } from '@/types/client'
-import { auditLog } from './audit-service'
-import { sendNotification } from './notification-service'
-import { syncWithQuickBooks } from './quickbooks-service'
+import { AuditService } from './audit-service'
+import { NotificationService } from './notification-service'
+import { QuickBooksService } from './quickbooks-service'
 import Papa from 'papaparse'
 
 export class ClientService {
@@ -242,7 +242,7 @@ export class ClientService {
     })
 
     // Audit log
-    await auditLog({
+    await AuditService.logAction({
       action: 'create',
       entityType: 'client',
       entityId: client.id,
@@ -253,15 +253,12 @@ export class ClientService {
     })
 
     // Send notification for new client
-    await sendNotification({
-      type: 'client_created',
+    await NotificationService.notifyClientCreated(
+      client.id,
+      client.businessName,
       organizationId,
-      data: {
-        clientId: client.id,
-        clientName: client.businessName,
-        createdBy: userId
-      }
-    })
+      userId
+    )
 
     return client as ClientWithRelations
   }
@@ -336,7 +333,7 @@ export class ClientService {
     })
 
     // Audit log
-    await auditLog({
+    await AuditService.logAction({
       action: 'update',
       entityType: 'client',
       entityId: id,
@@ -347,10 +344,27 @@ export class ClientService {
       metadata: { clientName: updatedClient.businessName }
     })
 
+    // Send notification for client update
+    const changes = Object.keys(data).filter(key => data[key] !== currentClient[key])
+    if (changes.length > 0) {
+      await NotificationService.notifyClientUpdated(
+        updatedClient.id,
+        updatedClient.businessName,
+        organizationId,
+        userId,
+        changes
+      )
+    }
+
     // Sync with QuickBooks if connected
     if (updatedClient.quickbooksId) {
       try {
-        await syncWithQuickBooks(organizationId, 'client', updatedClient.id)
+        await QuickBooksService.syncClient(
+          updatedClient.id,
+          organizationId,
+          userId,
+          { syncType: 'incremental', forceSync: false }
+        )
       } catch (error) {
         console.error('QuickBooks sync failed:', error)
         // Don't fail the update if QB sync fails
@@ -409,7 +423,7 @@ export class ClientService {
     })
 
     // Audit log
-    await auditLog({
+    await AuditService.logAction({
       action: 'delete',
       entityType: 'client',
       entityId: id,
@@ -577,7 +591,7 @@ export class ClientService {
     }
 
     // Audit log for bulk operation
-    await auditLog({
+    await AuditService.logAction({
       action: 'bulk_operation',
       entityType: 'client',
       userId,
@@ -849,20 +863,729 @@ export class ClientService {
 
     return clients as ClientWithRelations[]
   }
-}
 
-// Helper functions
-async function auditLog(data: any) {
-  // Implementation depends on your audit service
-  console.log('Audit log:', data)
-}
+  /**
+   * Import clients from CSV data string
+   */
+  static async importFromCSVData(
+    csvData: string,
+    organizationId: string,
+    userId: string,
+    options: {
+      skipDuplicates?: boolean
+      updateExisting?: boolean
+      mapping?: Record<string, string>
+    } = {}
+  ): Promise<ImportResult> {
+    const { skipDuplicates = true, updateExisting = false, mapping = {} } = options
 
-async function sendNotification(data: any) {
-  // Implementation depends on your notification service
-  console.log('Notification:', data)
-}
+    return new Promise((resolve) => {
+      const results: ImportResult = {
+        success: true,
+        totalRows: 0,
+        imported: 0,
+        updated: 0,
+        skipped: 0,
+        errors: []
+      }
 
-async function syncWithQuickBooks(organizationId: string, entityType: string, entityId: string) {
-  // Implementation depends on your QuickBooks integration
-  console.log('QuickBooks sync:', { organizationId, entityType, entityId })
+      Papa.parse(csvData, {
+        header: true,
+        skipEmptyLines: true,
+        complete: async (result) => {
+          results.totalRows = result.data.length
+
+          for (let i = 0; i < result.data.length; i++) {
+            const row = result.data[i] as any
+            const rowNumber = i + 2 // +2 for header and 0-based index
+
+            try {
+              // Apply field mapping
+              const mappedData: any = {}
+              for (const [csvField, dbField] of Object.entries(mapping)) {
+                if (row[csvField] !== undefined) {
+                  mappedData[dbField] = row[csvField]
+                }
+              }
+
+              // Use original field names if no mapping provided
+              const clientData = Object.keys(mapping).length > 0 ? mappedData : row
+
+              // Validate required fields
+              if (!clientData.businessName) {
+                results.errors.push({
+                  row: rowNumber,
+                  field: 'businessName',
+                  error: 'Business name is required'
+                })
+                continue
+              }
+
+              if (!clientData.primaryContactEmail) {
+                results.errors.push({
+                  row: rowNumber,
+                  field: 'primaryContactEmail',
+                  error: 'Primary contact email is required'
+                })
+                continue
+              }
+
+              if (!clientData.primaryContactName) {
+                results.errors.push({
+                  row: rowNumber,
+                  field: 'primaryContactName',
+                  error: 'Primary contact name is required'
+                })
+                continue
+              }
+
+              // Check for existing client
+              const existingClient = await prisma.client.findFirst({
+                where: {
+                  organizationId,
+                  OR: [
+                    { businessName: clientData.businessName },
+                    { primaryContactEmail: clientData.primaryContactEmail },
+                    ...(clientData.taxId ? [{ taxId: clientData.taxId }] : [])
+                  ],
+                  deletedAt: null
+                }
+              })
+
+              if (existingClient) {
+                if (updateExisting) {
+                  await this.updateClient(
+                    existingClient.id,
+                    clientData,
+                    organizationId,
+                    userId
+                  )
+                  results.updated++
+                } else if (skipDuplicates) {
+                  results.skipped++
+                } else {
+                  results.errors.push({
+                    row: rowNumber,
+                    field: 'businessName',
+                    error: 'Client already exists'
+                  })
+                }
+              } else {
+                // Create new client
+                await this.createClient(
+                  {
+                    ...clientData,
+                    status: clientData.status || 'prospect',
+                    riskLevel: clientData.riskLevel || 'medium'
+                  },
+                  organizationId,
+                  userId
+                )
+                results.imported++
+              }
+            } catch (error) {
+              results.errors.push({
+                row: rowNumber,
+                field: 'general',
+                error: error instanceof Error ? error.message : 'Unknown error'
+              })
+            }
+          }
+
+          results.success = results.errors.length === 0
+
+          // Audit log for import
+          await AuditService.logAction({
+            action: 'import',
+            entityType: 'client',
+            userId,
+            organizationId,
+            metadata: {
+              results,
+              options
+            }
+          })
+
+          resolve(results)
+        },
+        error: (error) => {
+          resolve({
+            success: false,
+            totalRows: 0,
+            imported: 0,
+            updated: 0,
+            skipped: 0,
+            errors: [{
+              row: 0,
+              field: 'file',
+              error: `Failed to parse CSV: ${error.message}`
+            }]
+          })
+        }
+      })
+    })
+  }
+
+  /**
+   * Get client financial metrics
+   */
+  static async getClientMetrics(
+    organizationId: string,
+    clientId?: string,
+    dateRange?: { start: Date; end: Date }
+  ) {
+    const whereClause: any = {
+      organizationId,
+      deletedAt: null,
+      ...(clientId && { id: clientId })
+    }
+
+    const dateFilter = dateRange ? {
+      createdAt: {
+        gte: dateRange.start,
+        lte: dateRange.end
+      }
+    } : {}
+
+    const [
+      clientCount,
+      totalRevenue,
+      avgRevenue,
+      invoiceStats,
+      engagementStats,
+      documentStats
+    ] = await Promise.all([
+      // Client count
+      prisma.client.count({
+        where: { ...whereClause, ...dateFilter }
+      }),
+
+      // Total revenue
+      prisma.client.aggregate({
+        where: { ...whereClause, annualRevenue: { not: null } },
+        _sum: { annualRevenue: true }
+      }),
+
+      // Average revenue
+      prisma.client.aggregate({
+        where: { ...whereClause, annualRevenue: { not: null } },
+        _avg: { annualRevenue: true }
+      }),
+
+      // Invoice statistics
+      prisma.invoice.aggregate({
+        where: {
+          organizationId,
+          deletedAt: null,
+          ...(clientId && { clientId }),
+          ...(dateRange && { createdAt: { gte: dateRange.start, lte: dateRange.end } })
+        },
+        _sum: { totalAmount: true, paidAmount: true },
+        _count: true
+      }),
+
+      // Engagement statistics
+      prisma.engagement.groupBy({
+        by: ['status'],
+        where: {
+          organizationId,
+          deletedAt: null,
+          ...(clientId && { clientId }),
+          ...(dateRange && { createdAt: { gte: dateRange.start, lte: dateRange.end } })
+        },
+        _count: true
+      }),
+
+      // Document statistics
+      prisma.document.groupBy({
+        by: ['category'],
+        where: {
+          organizationId,
+          deletedAt: null,
+          ...(clientId && { clientId }),
+          ...(dateRange && { createdAt: { gte: dateRange.start, lte: dateRange.end } })
+        },
+        _count: true
+      })
+    ])
+
+    return {
+      clients: {
+        total: clientCount,
+        totalRevenue: Number(totalRevenue._sum.annualRevenue || 0),
+        averageRevenue: Number(avgRevenue._avg.annualRevenue || 0)
+      },
+      invoices: {
+        total: invoiceStats._count,
+        totalAmount: Number(invoiceStats._sum.totalAmount || 0),
+        paidAmount: Number(invoiceStats._sum.paidAmount || 0),
+        outstandingAmount: Number(invoiceStats._sum.totalAmount || 0) - Number(invoiceStats._sum.paidAmount || 0)
+      },
+      engagements: engagementStats.reduce((acc, stat) => {
+        acc[stat.status] = stat._count
+        return acc
+      }, {} as Record<string, number>),
+      documents: documentStats.reduce((acc, stat) => {
+        acc[stat.category] = stat._count
+        return acc
+      }, {} as Record<string, number>)
+    }
+  }
+
+  /**
+   * Get client documents with pagination
+   */
+  static async getClientDocuments(
+    clientId: string,
+    organizationId: string,
+    category?: string,
+    pagination: ClientPaginationInput = { page: 1, limit: 10 }
+  ) {
+    const { page, limit } = pagination
+    const skip = (page - 1) * limit
+
+    const where = {
+      clientId,
+      organizationId,
+      deletedAt: null,
+      ...(category && { category })
+    }
+
+    const [documents, total] = await Promise.all([
+      prisma.document.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        include: {
+          uploader: {
+            select: { id: true, name: true, email: true }
+          }
+        }
+      }),
+      prisma.document.count({ where })
+    ])
+
+    return {
+      documents,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    }
+  }
+
+  /**
+   * Get client tasks with filtering
+   */
+  static async getClientTasks(
+    clientId: string,
+    organizationId: string,
+    filters: {
+      status?: string[]
+      assignedTo?: string
+    } = {},
+    pagination: ClientPaginationInput = { page: 1, limit: 10 }
+  ) {
+    const { page, limit } = pagination
+    const skip = (page - 1) * limit
+
+    const where: any = {
+      organizationId,
+      deletedAt: null,
+      engagement: {
+        clientId,
+        deletedAt: null
+      }
+    }
+
+    if (filters.status && filters.status.length > 0) {
+      where.status = { in: filters.status }
+    }
+
+    if (filters.assignedTo) {
+      where.assignedToId = filters.assignedTo
+    }
+
+    const [tasks, total] = await Promise.all([
+      prisma.task.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        include: {
+          assignedTo: {
+            select: { id: true, name: true, email: true }
+          },
+          engagement: {
+            select: { id: true, name: true, type: true }
+          }
+        }
+      }),
+      prisma.task.count({ where })
+    ])
+
+    return {
+      tasks,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    }
+  }
+
+  /**
+   * Add note to client
+   */
+  static async addClientNote(
+    noteData: {
+      clientId: string
+      title?: string
+      content: string
+      noteType: string
+      priority: string
+      isPrivate: boolean
+      tags?: string[]
+      reminderDate?: Date
+    },
+    organizationId: string,
+    userId: string
+  ) {
+    const note = await prisma.note.create({
+      data: {
+        ...noteData,
+        authorId: userId,
+        tags: noteData.tags || [],
+        createdBy: userId
+      },
+      include: {
+        author: {
+          select: { id: true, name: true, email: true }
+        }
+      }
+    })
+
+    // Audit log
+    await AuditService.logAction({
+      action: 'create',
+      entityType: 'note',
+      entityId: note.id,
+      userId,
+      organizationId,
+      newValues: note,
+      metadata: { clientId: noteData.clientId }
+    })
+
+    return note
+  }
+
+  /**
+   * Update client risk assessment
+   */
+  static async updateRiskAssessment(
+    clientId: string,
+    riskLevel: string,
+    assessment: {
+      assessmentNotes?: string
+      factors?: string[]
+      assessedBy: string
+      assessedAt: Date
+    },
+    organizationId: string,
+    userId: string
+  ) {
+    // Get current client for audit trail
+    const currentClient = await this.getClientById(clientId, organizationId, false)
+    if (!currentClient) {
+      throw new Error('Client not found')
+    }
+
+    // Update client with new risk level and assessment data
+    const updatedClient = await prisma.client.update({
+      where: { id: clientId },
+      data: {
+        riskLevel,
+        customFields: {
+          ...currentClient.customFields,
+          riskAssessment: {
+            level: riskLevel,
+            notes: assessment.assessmentNotes,
+            factors: assessment.factors || [],
+            assessedBy: assessment.assessedBy,
+            assessedAt: assessment.assessedAt.toISOString(),
+            history: [
+              ...(currentClient.customFields?.riskAssessment?.history || []),
+              {
+                previousLevel: currentClient.riskLevel,
+                newLevel: riskLevel,
+                assessedBy: assessment.assessedBy,
+                assessedAt: assessment.assessedAt.toISOString(),
+                notes: assessment.assessmentNotes
+              }
+            ]
+          }
+        },
+        updatedBy: userId
+      }
+    })
+
+    // Audit log
+    await AuditService.logAction({
+      action: 'risk_assessment',
+      entityType: 'client',
+      entityId: clientId,
+      userId,
+      organizationId,
+      oldValues: { riskLevel: currentClient.riskLevel },
+      newValues: { riskLevel },
+      metadata: {
+        clientName: currentClient.businessName,
+        assessment
+      }
+    })
+
+    return updatedClient
+  }
+
+  /**
+   * Get client engagement summary
+   */
+  static async getEngagementSummary(
+    clientId: string,
+    organizationId: string,
+    year?: number
+  ) {
+    const currentYear = year || new Date().getFullYear()
+    const startDate = new Date(currentYear, 0, 1)
+    const endDate = new Date(currentYear, 11, 31, 23, 59, 59)
+
+    const [
+      totalEngagements,
+      engagementsByStatus,
+      engagementsByType,
+      totalHours,
+      totalBilled
+    ] = await Promise.all([
+      // Total engagements
+      prisma.engagement.count({
+        where: {
+          clientId,
+          organizationId,
+          deletedAt: null,
+          createdAt: { gte: startDate, lte: endDate }
+        }
+      }),
+
+      // Engagements by status
+      prisma.engagement.groupBy({
+        by: ['status'],
+        where: {
+          clientId,
+          organizationId,
+          deletedAt: null,
+          createdAt: { gte: startDate, lte: endDate }
+        },
+        _count: true
+      }),
+
+      // Engagements by type
+      prisma.engagement.groupBy({
+        by: ['type'],
+        where: {
+          clientId,
+          organizationId,
+          deletedAt: null,
+          createdAt: { gte: startDate, lte: endDate }
+        },
+        _count: true
+      }),
+
+      // Total hours
+      prisma.engagement.aggregate({
+        where: {
+          clientId,
+          organizationId,
+          deletedAt: null,
+          createdAt: { gte: startDate, lte: endDate }
+        },
+        _sum: { actualHours: true, estimatedHours: true }
+      }),
+
+      // Total billed amount
+      prisma.invoice.aggregate({
+        where: {
+          clientId,
+          organizationId,
+          deletedAt: null,
+          createdAt: { gte: startDate, lte: endDate }
+        },
+        _sum: { totalAmount: true, paidAmount: true }
+      })
+    ])
+
+    return {
+      year: currentYear,
+      total: totalEngagements,
+      byStatus: engagementsByStatus.reduce((acc, item) => {
+        acc[item.status] = item._count
+        return acc
+      }, {} as Record<string, number>),
+      byType: engagementsByType.reduce((acc, item) => {
+        acc[item.type] = item._count
+        return acc
+      }, {} as Record<string, number>),
+      hours: {
+        estimated: Number(totalHours._sum.estimatedHours || 0),
+        actual: Number(totalHours._sum.actualHours || 0)
+      },
+      billing: {
+        totalBilled: Number(totalBilled._sum.totalAmount || 0),
+        totalPaid: Number(totalBilled._sum.paidAmount || 0),
+        outstanding: Number(totalBilled._sum.totalAmount || 0) - Number(totalBilled._sum.paidAmount || 0)
+      }
+    }
+  }
+
+  /**
+   * Get QuickBooks sync status for client
+   */
+  static async getQuickBooksStatus(
+    clientId: string,
+    organizationId: string
+  ) {
+    return await QuickBooksService.getClientSyncStatus(clientId, organizationId)
+  }
+
+  /**
+   * Get client audit trail
+   */
+  static async getAuditTrail(
+    clientId: string,
+    organizationId: string,
+    pagination: ClientPaginationInput = { page: 1, limit: 20 }
+  ) {
+    const { page, limit } = pagination
+    const offset = (page - 1) * limit
+
+    const auditTrail = await AuditService.getEntityAuditTrail(
+      'client',
+      clientId,
+      organizationId,
+      { limit, offset }
+    )
+
+    return {
+      logs: auditTrail.logs,
+      pagination: {
+        page,
+        limit,
+        total: auditTrail.total,
+        pages: Math.ceil(auditTrail.total / limit)
+      }
+    }
+  }
+
+  /**
+   * Archive multiple clients
+   */
+  static async archiveClients(
+    clientIds: string[],
+    organizationId: string,
+    userId: string,
+    reason?: string
+  ): Promise<BulkOperationResponse> {
+    const errors: Array<{ clientId: string; error: string }> = []
+    let processed = 0
+
+    for (const clientId of clientIds) {
+      try {
+        // Check for dependencies before archiving
+        const [activeEngagements, unpaidInvoices] = await Promise.all([
+          prisma.engagement.count({
+            where: {
+              clientId,
+              status: { in: ['planning', 'in_progress', 'review'] },
+              deletedAt: null
+            }
+          }),
+          prisma.invoice.count({
+            where: {
+              clientId,
+              status: { in: ['draft', 'sent', 'viewed', 'partial', 'overdue'] },
+              deletedAt: null
+            }
+          })
+        ])
+
+        if (activeEngagements > 0 || unpaidInvoices > 0) {
+          errors.push({
+            clientId,
+            error: `Cannot archive: ${activeEngagements} active engagements, ${unpaidInvoices} unpaid invoices`
+          })
+          continue
+        }
+
+        // Archive the client
+        await this.updateClient(
+          clientId,
+          {
+            status: 'inactive',
+            customFields: {
+              archivedAt: new Date().toISOString(),
+              archivedBy: userId,
+              archiveReason: reason
+            }
+          },
+          organizationId,
+          userId
+        )
+
+        processed++
+      } catch (error) {
+        errors.push({
+          clientId,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        })
+      }
+    }
+
+    // Audit log for bulk archive
+    await AuditService.logAction({
+      action: 'bulk_archive',
+      entityType: 'client',
+      userId,
+      organizationId,
+      metadata: {
+        clientIds,
+        processed,
+        errors: errors.length,
+        reason
+      }
+    })
+
+    // Send notification for bulk archive
+    if (processed > 0) {
+      await NotificationService.sendNotification({
+        type: 'clients_archived',
+        organizationId,
+        userId,
+        title: 'Clients Archived',
+        message: `Successfully archived ${processed} client(s)${reason ? `. Reason: ${reason}` : ''}`,
+        data: { processed, errors: errors.length, reason },
+        priority: 'normal',
+        channel: 'in_app'
+      })
+    }
+
+    return {
+      success: errors.length === 0,
+      processed,
+      errors,
+      summary: `Archived ${processed}/${clientIds.length} clients. ${errors.length} errors.`
+    }
+  }
 }

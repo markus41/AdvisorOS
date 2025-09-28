@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { createQuickBooksOAuthService } from '@/lib/integrations/quickbooks/oauth';
-import { prisma } from '@/packages/database';
+import { authOptions } from '../../../auth/[...nextauth]/route';
+import { db } from '@cpa-platform/database';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,41 +14,72 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create OAuth service
-    const oauthService = createQuickBooksOAuthService();
+    const existingToken = await db.quickBooksToken.findUnique({
+      where: { organizationId: session.user.organizationId, isActive: true }
+    });
 
-    // Revoke access and cleanup tokens
-    await oauthService.revokeAccess(session.user.organizationId);
+    if (!existingToken) {
+      return NextResponse.json(
+        { error: 'No QuickBooks connection found' },
+        { status: 404 }
+      );
+    }
 
-    // Additional cleanup: remove any sync-related data
+    // Revoke access tokens with QuickBooks
+    try {
+      const revokeResponse = await fetch('https://oauth.platform.intuit.com/oauth2/v1/tokens/revoke', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Basic ${Buffer.from(`${process.env.QUICKBOOKS_CLIENT_ID}:${process.env.QUICKBOOKS_CLIENT_SECRET}`).toString('base64')}`
+        },
+        body: new URLSearchParams({
+          token: existingToken.refreshToken
+        })
+      });
+
+      if (!revokeResponse.ok) {
+        console.warn('Failed to revoke QuickBooks tokens remotely, proceeding with local cleanup');
+      }
+    } catch (error) {
+      console.warn('Error revoking QuickBooks tokens:', error);
+    }
+
+    // Clean up local data
     await Promise.allSettled([
-      // Clear sync history
-      prisma.quickBooksSync.updateMany({
+      // Deactivate tokens
+      db.quickBooksToken.update({
+        where: { id: existingToken.id },
+        data: {
+          isActive: false,
+          deletedAt: new Date(),
+          updatedAt: new Date(),
+          updatedBy: session.user.id
+        }
+      }),
+
+      // Mark sync history as deleted
+      db.quickBooksSync.updateMany({
         where: { organizationId: session.user.organizationId },
         data: { deletedAt: new Date() }
       }),
 
-      // Clear webhook events
-      prisma.quickBooksWebhookEvent.updateMany({
+      // Mark webhook events as deleted
+      db.quickBooksWebhookEvent.updateMany({
         where: { organizationId: session.user.organizationId },
         data: { deletedAt: new Date() }
       }),
-
-      // Clear QuickBooks IDs from clients (optional - you might want to keep these)
-      // prisma.client.updateMany({
-      //   where: { organizationId: session.user.organizationId },
-      //   data: { quickbooksId: null }
-      // }),
 
       // Log the disconnection
-      prisma.auditLog.create({
+      db.auditLog.create({
         data: {
           action: 'disconnect',
           entityType: 'quickbooks_integration',
           entityId: session.user.organizationId,
           metadata: {
             action: 'quickbooks_disconnect',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            tokenRevoked: true
           },
           organizationId: session.user.organizationId,
           userId: session.user.id
@@ -67,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     // Even if revocation fails, we should still cleanup local data
     try {
-      await prisma.quickBooksToken.updateMany({
+      await db.quickBooksToken.updateMany({
         where: { organizationId: session?.user?.organizationId },
         data: {
           isActive: false,
@@ -96,13 +126,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get connection status for disconnect confirmation
-    const oauthService = createQuickBooksOAuthService();
-    const hasConnection = await oauthService.hasValidConnection(
-      session.user.organizationId
-    );
+    // Check if connection exists
+    const existingToken = await db.quickBooksToken.findUnique({
+      where: { organizationId: session.user.organizationId, isActive: true }
+    });
 
-    if (!hasConnection) {
+    if (!existingToken) {
       return NextResponse.json(
         { error: 'No QuickBooks connection found' },
         { status: 404 }
@@ -111,13 +140,13 @@ export async function GET(request: NextRequest) {
 
     // Get additional info about what will be affected
     const [syncCount, webhookCount] = await Promise.all([
-      prisma.quickBooksSync.count({
+      db.quickBooksSync.count({
         where: {
           organizationId: session.user.organizationId,
           deletedAt: null
         }
       }),
-      prisma.quickBooksWebhookEvent.count({
+      db.quickBooksWebhookEvent.count({
         where: {
           organizationId: session.user.organizationId,
           deletedAt: null
@@ -129,6 +158,8 @@ export async function GET(request: NextRequest) {
       canDisconnect: true,
       syncHistoryCount: syncCount,
       webhookEventCount: webhookCount,
+      realmId: existingToken.realmId,
+      lastSyncAt: existingToken.lastSyncAt?.toISOString() || null,
       warning: 'Disconnecting will stop all QuickBooks synchronization and remove stored tokens.'
     });
 

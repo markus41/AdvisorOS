@@ -10,6 +10,7 @@ import {
   clientPaginationSchema,
   bulkClientActionSchema,
   exportClientSchema,
+  importClientSchema,
 } from '@/types/client'
 
 export const clientRouter = createTRPCRouter({
@@ -442,6 +443,340 @@ export const clientRouter = createTRPCRouter({
       return {
         isAvailable: !existingClient,
         exists: !!existingClient,
+      }
+    }),
+
+  /**
+   * Import clients from CSV data
+   */
+  importFromCSV: organizationProcedure
+    .input(
+      z.object({
+        csvData: z.string().min(1, 'CSV data is required'),
+        options: z.object({
+          skipDuplicates: z.boolean().default(true),
+          updateExisting: z.boolean().default(false),
+          mapping: z.record(z.string()).optional(),
+        }).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { csvData, options = {} } = input
+        return await ClientService.importFromCSVData(
+          csvData,
+          ctx.organizationId,
+          ctx.userId,
+          options
+        )
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to import clients from CSV',
+          cause: error,
+        })
+      }
+    }),
+
+  /**
+   * Get client financial metrics
+   */
+  getMetrics: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid().optional(),
+        dateRange: z.object({
+          start: z.date(),
+          end: z.date(),
+        }).optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ClientService.getClientMetrics(
+        ctx.organizationId,
+        input.clientId,
+        input.dateRange
+      )
+    }),
+
+  /**
+   * Get client documents with pagination
+   */
+  getDocuments: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+        category: z.string().optional(),
+        pagination: clientPaginationSchema.optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      return await ClientService.getClientDocuments(
+        input.clientId,
+        ctx.organizationId,
+        input.category,
+        input.pagination
+      )
+    }),
+
+  /**
+   * Get client tasks with filtering
+   */
+  getTasks: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+        status: z.array(z.string()).optional(),
+        assignedTo: z.string().optional(),
+        pagination: clientPaginationSchema.optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      return await ClientService.getClientTasks(
+        input.clientId,
+        ctx.organizationId,
+        {
+          status: input.status,
+          assignedTo: input.assignedTo,
+        },
+        input.pagination
+      )
+    }),
+
+  /**
+   * Add note to client
+   */
+  addNote: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+        title: z.string().max(255).optional(),
+        content: z.string().min(1, 'Note content is required'),
+        noteType: z.enum(['general', 'meeting', 'reminder', 'follow_up']).default('general'),
+        priority: z.enum(['low', 'normal', 'high', 'urgent']).default('normal'),
+        isPrivate: z.boolean().default(false),
+        tags: z.array(z.string()).optional(),
+        reminderDate: z.date().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      try {
+        return await ClientService.addClientNote(
+          input,
+          ctx.organizationId,
+          ctx.userId
+        )
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to add note',
+          cause: error,
+        })
+      }
+    }),
+
+  /**
+   * Update client risk level with assessment
+   */
+  updateRiskLevel: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+        riskLevel: z.enum(['low', 'medium', 'high']),
+        assessmentNotes: z.string().optional(),
+        factors: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      try {
+        return await ClientService.updateRiskAssessment(
+          input.clientId,
+          input.riskLevel,
+          {
+            assessmentNotes: input.assessmentNotes,
+            factors: input.factors,
+            assessedBy: ctx.userId,
+            assessedAt: new Date(),
+          },
+          ctx.organizationId,
+          ctx.userId
+        )
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update risk level',
+          cause: error,
+        })
+      }
+    }),
+
+  /**
+   * Get client engagement summary
+   */
+  getEngagementSummary: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+        year: z.number().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      return await ClientService.getEngagementSummary(
+        input.clientId,
+        ctx.organizationId,
+        input.year
+      )
+    }),
+
+  /**
+   * Check QuickBooks sync status
+   */
+  getQuickBooksStatus: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      return await ClientService.getQuickBooksStatus(
+        input.clientId,
+        ctx.organizationId
+      )
+    }),
+
+  /**
+   * Get client audit trail
+   */
+  getAuditTrail: organizationProcedure
+    .input(
+      z.object({
+        clientId: z.string().cuid(),
+        pagination: clientPaginationSchema.optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const client = await ClientService.getClientById(
+        input.clientId,
+        ctx.organizationId,
+        false
+      )
+
+      if (!client) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Client not found',
+        })
+      }
+
+      return await ClientService.getAuditTrail(
+        input.clientId,
+        ctx.organizationId,
+        input.pagination
+      )
+    }),
+
+  /**
+   * Archive multiple clients
+   */
+  archiveClients: organizationProcedure
+    .input(
+      z.object({
+        clientIds: z.array(z.string().cuid()).min(1),
+        reason: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ClientService.archiveClients(
+          input.clientIds,
+          ctx.organizationId,
+          ctx.userId,
+          input.reason
+        )
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to archive clients',
+          cause: error,
+        })
       }
     }),
 })

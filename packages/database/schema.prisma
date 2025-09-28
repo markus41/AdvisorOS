@@ -692,3 +692,82 @@ model QuickBooksWebhookEvent {
   @@index([nextRetryAt])
   @@map("quickbooks_webhook_events")
 }
+
+model DocumentAnnotation {
+  id           String    @id @default(cuid())
+  documentId   String
+  document     Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  type         String    // "highlight", "note", "rectangle", "arrow", "text"
+  page         Int       @default(1) // For multi-page documents
+  coordinates  Json      // Position data {x, y, width, height}
+  content      String?   @db.Text // Annotation text content
+  color        String    @default("#ffff00") // Hex color code
+  style        Json?     // Additional styling properties
+  isPrivate    Boolean   @default(false)
+  createdBy    String
+  creator      User      @relation(fields: [createdBy], references: [id])
+  replies      DocumentAnnotation[] @relation("AnnotationReplies")
+  parentId     String?
+  parent       DocumentAnnotation? @relation("AnnotationReplies", fields: [parentId], references: [id])
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([documentId])
+  @@index([createdBy])
+  @@index([page])
+  @@index([type])
+  @@map("document_annotations")
+}
+
+model DocumentComment {
+  id           String    @id @default(cuid())
+  documentId   String
+  document     Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  content      String    @db.Text
+  isPrivate    Boolean   @default(false)
+  mentions     String[]  // User IDs mentioned in comment
+  attachments  Json?     // File attachments
+  taskAssigned String?   // If comment creates a task
+  status       String    @default("open") // "open", "resolved", "archived"
+  createdBy    String
+  creator      User      @relation(fields: [createdBy], references: [id])
+  replies      DocumentComment[] @relation("CommentReplies")
+  parentId     String?
+  parent       DocumentComment? @relation("CommentReplies", fields: [parentId], references: [id])
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([documentId])
+  @@index([createdBy])
+  @@index([status])
+  @@map("document_comments")
+}
+
+model DocumentShare {
+  id           String    @id @default(cuid())
+  documentId   String
+  document     Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  shareType    String    // "link", "email", "user", "client"
+  sharedWith   String?   // Email or user ID
+  accessLevel  String    // "view", "comment", "edit"
+  expiresAt    DateTime?
+  downloadAllowed Boolean @default(false)
+  passwordProtected Boolean @default(false)
+  password     String?   // Hashed password for link shares
+  viewCount    Int       @default(0)
+  lastViewedAt DateTime?
+  isActive     Boolean   @default(true)
+  createdBy    String
+  creator      User      @relation(fields: [createdBy], references: [id])
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([documentId])
+  @@index([createdBy])
+  @@index([shareType])
+  @@index([expiresAt])
+  @@map("document_shares")
+}

@@ -1,72 +1,99 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { createQuickBooksOAuthService } from '@/lib/integrations/quickbooks/oauth';
+import { authOptions } from '../../../auth/[...nextauth]/route';
+import { db } from '@cpa-platform/database';
 
-export async function POST(request: NextRequest) {
+const QUICKBOOKS_SCOPE = 'com.intuit.quickbooks.accounting';
+
+export async function GET(request: NextRequest) {
   try {
-    // Verify user session
     const session = await getServerSession(authOptions);
     if (!session?.user?.organizationId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json().catch(() => ({}));
-    const { redirectUrl } = body;
+    const { searchParams } = new URL(request.url);
+    const state = searchParams.get('state') || session.user.organizationId;
 
-    // Create OAuth service
-    const oauthService = createQuickBooksOAuthService();
+    // Verify state parameter matches organization
+    if (state !== session.user.organizationId) {
+      return NextResponse.json({ error: 'Invalid state parameter' }, { status: 400 });
+    }
 
-    // Generate authorization URL
-    const { url, state } = oauthService.generateAuthUrl(
-      session.user.organizationId,
-      redirectUrl
-    );
+    // Check if already connected
+    const existingToken = await db.quickBooksToken.findUnique({
+      where: { organizationId: session.user.organizationId }
+    });
+
+    if (existingToken && existingToken.isActive) {
+      return NextResponse.json({
+        error: 'QuickBooks already connected',
+        redirectTo: '/dashboard/integrations'
+      }, { status: 400 });
+    }
+
+    const clientId = process.env.QUICKBOOKS_CLIENT_ID;
+    const redirectUri = `${process.env.NEXTAUTH_URL}/api/quickbooks/auth/callback`;
+
+    if (!clientId) {
+      return NextResponse.json({ error: 'QuickBooks configuration missing' }, { status: 500 });
+    }
+
+    // Build OAuth URL
+    const authUrl = new URL('https://appcenter.intuit.com/connect/oauth2');
+    authUrl.searchParams.append('client_id', clientId);
+    authUrl.searchParams.append('scope', QUICKBOOKS_SCOPE);
+    authUrl.searchParams.append('redirect_uri', redirectUri);
+    authUrl.searchParams.append('response_type', 'code');
+    authUrl.searchParams.append('access_type', 'offline');
+    authUrl.searchParams.append('state', state);
 
     return NextResponse.json({
-      authUrl: url,
-      state,
-      message: 'Authorization URL generated successfully'
+      authUrl: authUrl.toString(),
+      state
     });
 
   } catch (error) {
-    console.error('QuickBooks connect error:', error);
+    console.error('QuickBooks OAuth initiation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate QuickBooks authorization URL' },
+      { error: 'Failed to initiate QuickBooks connection' },
       { status: 500 }
     );
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    // Verify user session
     const session = await getServerSession(authOptions);
     if (!session?.user?.organizationId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check current connection status
-    const oauthService = createQuickBooksOAuthService();
-    const hasConnection = await oauthService.hasValidConnection(
-      session.user.organizationId
-    );
+    // This endpoint can be used to check connection status
+    const token = await db.quickBooksToken.findUnique({
+      where: { organizationId: session.user.organizationId },
+      select: {
+        id: true,
+        isActive: true,
+        lastSyncAt: true,
+        expiresAt: true,
+        realmId: true
+      }
+    });
 
     return NextResponse.json({
-      connected: hasConnection,
-      organizationId: session.user.organizationId
+      connected: !!token?.isActive,
+      token: token ? {
+        lastSyncAt: token.lastSyncAt,
+        expiresAt: token.expiresAt,
+        realmId: token.realmId
+      } : null
     });
 
   } catch (error) {
     console.error('QuickBooks connection status error:', error);
     return NextResponse.json(
-      { error: 'Failed to check QuickBooks connection status' },
+      { error: 'Failed to check connection status' },
       { status: 500 }
     );
   }

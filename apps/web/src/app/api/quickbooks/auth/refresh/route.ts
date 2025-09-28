@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { createQuickBooksOAuthService } from '@/lib/integrations/quickbooks/oauth';
+import { authOptions } from '../../../auth/[...nextauth]/route';
+import { quickbooksService } from '../../../../server/services/quickbooks.service';
+import { db } from '@cpa-platform/database';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,15 +15,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create OAuth service
-    const oauthService = createQuickBooksOAuthService();
-
     // Check if organization has existing connection
-    const hasConnection = await oauthService.hasValidConnection(
-      session.user.organizationId
-    );
+    const existingToken = await db.quickBooksToken.findUnique({
+      where: { organizationId: session.user.organizationId, isActive: true }
+    });
 
-    if (!hasConnection) {
+    if (!existingToken) {
       return NextResponse.json(
         { error: 'No QuickBooks connection found' },
         { status: 404 }
@@ -30,7 +28,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Refresh tokens
-    const tokens = await oauthService.refreshTokens(session.user.organizationId);
+    const tokens = await quickbooksService.refreshTokens(session.user.organizationId);
+
+    // Create audit log
+    await db.auditLog.create({
+      data: {
+        action: 'update',
+        entityType: 'quickbooks_token',
+        entityId: existingToken.id,
+        newValues: { tokenRefreshed: true },
+        organizationId: session.user.organizationId,
+        userId: session.user.id,
+        metadata: { source: 'manual_refresh' }
+      }
+    });
 
     return NextResponse.json({
       success: true,
@@ -42,7 +53,7 @@ export async function POST(request: NextRequest) {
     console.error('QuickBooks token refresh error:', error);
 
     // Check if the error is due to invalid refresh token
-    if (error instanceof Error && error.message.includes('invalid_grant')) {
+    if (error instanceof Error && error.message.includes('refresh')) {
       return NextResponse.json(
         {
           error: 'Invalid refresh token',
@@ -71,11 +82,19 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Create OAuth service
-    const oauthService = createQuickBooksOAuthService();
-
     // Get token info without refreshing
-    const tokenInfo = await oauthService.getTokenInfo(session.user.organizationId);
+    const tokenInfo = await db.quickBooksToken.findUnique({
+      where: {
+        organizationId: session.user.organizationId,
+        isActive: true
+      },
+      select: {
+        realmId: true,
+        expiresAt: true,
+        isActive: true,
+        lastSyncAt: true
+      }
+    });
 
     if (!tokenInfo) {
       return NextResponse.json(

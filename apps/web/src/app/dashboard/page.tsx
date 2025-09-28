@@ -163,7 +163,7 @@ const quickActions = [
   {
     title: 'Generate Report',
     description: 'Create financial or client reports',
-    icon: BarChart3,
+    icon: TrendingUp,
     color: 'bg-orange-500 hover:bg-orange-600',
     href: '/dashboard/reports/new',
   },
