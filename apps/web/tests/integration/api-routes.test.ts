@@ -3,11 +3,11 @@ import { POST as registerPost } from '@/app/api/auth/register/route'
 import { POST as loginPost } from '@/app/api/auth/signin/route'
 import { GET as documentsGet, POST as documentsPost } from '@/app/api/documents/route'
 import { POST as uploadPost } from '@/app/api/upload/route'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from '../../src/server/db'
 import { authService } from '@/lib/auth-service'
 
 // Mock dependencies
-jest.mock('@cpa-platform/database', () => ({
+jest.mock('../../src/server/db', () => ({
   prisma: {
     organization: {
       findUnique: jest.fn(),

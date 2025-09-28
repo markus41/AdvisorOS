@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../../../server/db"
 import { authService } from '@/lib/auth-service'
 import { z } from 'zod'
 

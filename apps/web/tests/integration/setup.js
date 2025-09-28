@@ -1,5 +1,5 @@
 const { execSync } = require('child_process')
-const { PrismaClient } = require('@cpa-platform/database')
+const { PrismaClient } = require('@prisma/client')
 
 // Set test environment variables
 process.env.NODE_ENV = 'test'

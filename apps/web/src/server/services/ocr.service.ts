@@ -1,7 +1,7 @@
 import { DocumentAnalysisClient, AzureKeyCredential } from '@azure/ai-form-recognizer';
 import { BlobServiceClient } from '@azure/storage-blob';
 import { openaiClient } from '@/lib/ai/openai-client';
-import { db } from '@cpa-platform/database';
+import { db } from "../db";
 import { W2Extractor } from './forms/W2Extractor';
 import { Form1099Extractor } from './forms/Form1099Extractor';
 import { InvoiceExtractor } from './forms/InvoiceExtractor';

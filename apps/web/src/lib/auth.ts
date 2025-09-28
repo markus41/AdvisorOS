@@ -5,7 +5,7 @@ import MicrosoftProvider from "next-auth/providers/microsoft"
 import AzureADProvider from "next-auth/providers/azure-ad"
 import EmailProvider from "next-auth/providers/email"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { prisma } from "@cpa-platform/database"
+import { prisma } from "../server/db"
 import bcrypt from "bcryptjs"
 import { JWT } from "next-auth/jwt"
 

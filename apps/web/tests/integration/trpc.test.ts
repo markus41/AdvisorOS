@@ -30,7 +30,7 @@ jest.mock('next-auth/next', () => ({
 const mockGetServerSession = getServerSession as jest.MockedFunction<typeof getServerSession>
 
 // Mock Prisma
-jest.mock('@cpa-platform/database', () => ({
+jest.mock('../../src/server/db', () => ({
   prisma: {
     client: {
       findMany: jest.fn(),
@@ -75,7 +75,7 @@ jest.mock('@cpa-platform/database', () => ({
   },
 }))
 
-import { prisma } from '@cpa-platform/database'
+import { prisma } from '../../src/server/db'
 const mockPrisma = prisma as jest.Mocked<typeof prisma>
 
 describe('tRPC Integration Tests', () => {

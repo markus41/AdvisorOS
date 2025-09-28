@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../../../server/db"
 import { z } from 'zod'
 
 const validateResetTokenSchema = z.object({

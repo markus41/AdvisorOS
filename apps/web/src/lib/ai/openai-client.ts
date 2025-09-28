@@ -296,7 +296,7 @@ class OpenAIClient {
     // Implementation would check database for current month usage
     // This is a placeholder - implement based on your database schema
     try {
-      const { db } = await import('@cpa-platform/database');
+      const { prisma: db } = await import('../../server/db');
 
       const currentMonth = new Date();
       currentMonth.setDate(1);
@@ -331,7 +331,7 @@ class OpenAIClient {
     requestId: string
   ): Promise<void> {
     try {
-      const { db } = await import('@cpa-platform/database');
+      const { prisma: db } = await import('../../server/db');
 
       // This would be implemented based on your database schema
       // await db.aiUsage.create({
@@ -363,7 +363,7 @@ class OpenAIClient {
     topModels: Array<{ model: string; usage: number; cost: number }>;
   }> {
     try {
-      const { db } = await import('@cpa-platform/database');
+      const { prisma: db } = await import('../../server/db');
 
       const startDate = new Date();
       switch (period) {

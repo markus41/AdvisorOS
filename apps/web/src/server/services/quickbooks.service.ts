@@ -1,4 +1,4 @@
-import { db } from '@cpa-platform/database';
+import { db } from "../db";
 
 interface QuickBooksApiResponse {
   QueryResponse?: {

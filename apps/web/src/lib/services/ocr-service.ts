@@ -1,4 +1,4 @@
-import { prisma } from '@cpa-platform/database';
+import { prisma } from "../../server/db";
 import { formRecognizer, type OCRResult, DOCUMENT_MODELS } from '../azure/form-recognizer';
 import { azureStorage } from '../azure/storage';
 

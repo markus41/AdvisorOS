@@ -4,7 +4,7 @@ import { authService } from '@/lib/auth-service'
 import bcrypt from 'bcryptjs'
 
 // Mock dependencies
-jest.mock('@cpa-platform/database', () => ({
+jest.mock('../../src/server/db', () => ({
   prisma: {
     organization: {
       findUnique: jest.fn(),

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
-import { db } from '@cpa-platform/database';
+import { db } from "../../../../server/db";
 import { stripeService } from '../../../server/services/stripe.service';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

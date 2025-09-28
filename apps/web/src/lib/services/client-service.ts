@@ -1,4 +1,4 @@
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../server/db"
 import { Prisma } from '@prisma/client'
 import {
   CreateClientInput,

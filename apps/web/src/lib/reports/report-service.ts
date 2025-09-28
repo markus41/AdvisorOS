@@ -1,4 +1,4 @@
-import { PrismaClient } from '@cpa-platform/database';
+import { PrismaClient } from "../../server/db";
 import { ReportTemplate, templateRegistry } from './templates';
 import * as ExcelJS from 'exceljs';
 import pptxgen from 'pptxgenjs';

@@ -1,4 +1,4 @@
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../server/db"
 
 export interface QuickBooksConnectionStatus {
   isConnected: boolean

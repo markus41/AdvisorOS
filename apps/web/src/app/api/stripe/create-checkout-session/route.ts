@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { stripeService, SUBSCRIPTION_TIERS } from '../../../server/services/stripe.service';
-import { db } from '@cpa-platform/database';
+import { db } from "../../../../server/db";
 
 export async function POST(request: NextRequest) {
   try {

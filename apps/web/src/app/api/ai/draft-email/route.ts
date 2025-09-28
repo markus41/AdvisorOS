@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { communicationAssistantService } from '@/lib/ai/communication-assistant';
-import { db } from '@cpa-platform/database';
+import { db } from "../../../../server/db";
 import { z } from 'zod';
 
 const draftEmailSchema = z.object({

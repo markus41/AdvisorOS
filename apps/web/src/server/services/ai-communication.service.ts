@@ -1,5 +1,5 @@
 import { openaiClient } from '@/lib/ai/openai-client';
-import { db } from '@cpa-platform/database';
+import { db } from "../db";
 
 export interface EmailDraft {
   subject: string;

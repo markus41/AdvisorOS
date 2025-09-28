@@ -20,10 +20,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@cpa-platform/database": ["../../packages/database"],
-      "@cpa-platform/types": ["../../packages/types"],
-      "@cpa-platform/ui": ["../../packages/ui"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@cpa-platform/database';
+import { db } from "../../../../server/db";
 import crypto from 'crypto';
 
 // Webhook verification signature

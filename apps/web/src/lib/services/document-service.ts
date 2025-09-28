@@ -1,4 +1,4 @@
-import { prisma } from '@cpa-platform/database';
+import { prisma } from "../../server/db";
 import { azureStorage, type UploadOptions } from '../azure/storage';
 import { formRecognizer } from '../azure/form-recognizer';
 import { randomBytes } from 'crypto';

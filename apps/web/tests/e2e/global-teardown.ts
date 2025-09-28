@@ -1,5 +1,5 @@
 import { FullConfig } from '@playwright/test'
-import { PrismaClient } from '@cpa-platform/database'
+import { PrismaClient } from '@prisma/client'
 
 async function globalTeardown(config: FullConfig) {
   const prisma = new PrismaClient()

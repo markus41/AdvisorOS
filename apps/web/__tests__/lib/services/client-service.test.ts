@@ -1,5 +1,5 @@
 import { ClientService } from '@/lib/services/client-service'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from '../../../src/server/db'
 import { AuditService } from '@/lib/services/audit-service'
 import { NotificationService } from '@/lib/services/notification-service'
 import { QuickBooksService } from '@/lib/services/quickbooks-service'

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../server/db"
 import { authOptions } from '@/lib/auth'
 import crypto from 'crypto'
 

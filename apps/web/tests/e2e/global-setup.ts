@@ -1,5 +1,5 @@
 import { chromium, FullConfig } from '@playwright/test'
-import { PrismaClient } from '@cpa-platform/database'
+import { PrismaClient } from '@prisma/client'
 
 async function globalSetup(config: FullConfig) {
   const { baseURL } = config.projects[0].use

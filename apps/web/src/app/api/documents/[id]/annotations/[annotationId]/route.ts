@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../auth/authOptions';
-import { prisma } from '@cpa-platform/database';
+import { prisma } from "../../../../../../server/db";
 import { z } from 'zod';
 
 const updateAnnotationSchema = z.object({

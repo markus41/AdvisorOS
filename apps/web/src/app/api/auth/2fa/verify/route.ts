@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../../../../server/db"
 import speakeasy from 'speakeasy'
 import crypto from 'crypto'
 import { authOptions } from '@/lib/auth'

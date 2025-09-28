@@ -11,7 +11,11 @@
       "Bash(yarn workspace:*)",
       "Bash(npm run dev:*)",
       "Bash(cat:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(node fix-imports.js)",
+      "Bash(openssl rand:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

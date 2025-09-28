@@ -1,4 +1,4 @@
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../server/db"
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import nodemailer from 'nodemailer'

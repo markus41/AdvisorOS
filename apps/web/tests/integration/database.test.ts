@@ -1,4 +1,4 @@
-import { PrismaClient } from '@cpa-platform/database'
+import { PrismaClient } from '@prisma/client'
 import { mockOrganization, mockAdminUser, mockClient, mockDocument } from '../fixtures/test-data'
 
 // Use the global prisma instance from setup

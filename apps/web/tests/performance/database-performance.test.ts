@@ -1,8 +1,8 @@
-import { prisma } from '@cpa-platform/database'
+import { prisma } from '../../src/server/db'
 import { ClientService } from '@/lib/services/client-service'
 
 // Mock the dependencies
-jest.mock('@cpa-platform/database', () => ({
+jest.mock('../../src/server/db', () => ({
   prisma: {
     client: {
       findMany: jest.fn(),

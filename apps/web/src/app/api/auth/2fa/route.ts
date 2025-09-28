@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../../../../server/db"
 import { z } from 'zod'
 import speakeasy from 'speakeasy'
 import QRCode from 'qrcode'

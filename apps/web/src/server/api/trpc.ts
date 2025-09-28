@@ -3,7 +3,7 @@ import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
 import { type Session } from 'next-auth'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@cpa-platform/database'
+import { prisma } from "../db"
 import { z } from 'zod'
 
 /**

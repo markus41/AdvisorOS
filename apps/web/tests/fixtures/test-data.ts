@@ -1,4 +1,4 @@
-import { Organization, User, Client, Document } from '@cpa-platform/database'
+import { Organization, User, Client, Document } from '@prisma/client'
 
 export const mockOrganization: Partial<Organization> = {
   name: 'Test CPA Firm',
