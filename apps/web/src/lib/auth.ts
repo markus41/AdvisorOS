@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import MicrosoftProvider from "next-auth/providers/microsoft"
 import AzureADProvider from "next-auth/providers/azure-ad"
 import EmailProvider from "next-auth/providers/email"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
@@ -149,7 +148,8 @@ async function validateCredentials(credentials: Record<string, string>) {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // Comment out PrismaAdapter for frontend-only testing
+  // adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -161,70 +161,43 @@ export const authOptions: NextAuthOptions = {
         twoFactorCode: { label: "2FA Code", type: "text" }
       },
       async authorize(credentials, req) {
-        try {
-          const user = await validateCredentials({
-            ...credentials!,
-            ipAddress: req.headers?.['x-forwarded-for'] as string || req.ip,
-            userAgent: req.headers?.['user-agent'] as string
-          })
-
-          // Handle 2FA if enabled
-          if (user.twoFactorEnabled && credentials?.twoFactorCode) {
-            const userWithSecret = await prisma.user.findUnique({
-              where: { id: user.id },
-              select: { twoFactorSecret: true }
-            })
-
-            if (!userWithSecret?.twoFactorSecret) {
-              throw new Error("2FA configuration error")
-            }
-
-            const speakeasy = require('speakeasy')
-            const verified = speakeasy.totp.verify({
-              secret: userWithSecret.twoFactorSecret,
-              encoding: 'base32',
-              token: credentials.twoFactorCode,
-              window: 2
-            })
-
-            if (!verified) {
-              throw new Error("Invalid 2FA code")
-            }
-          } else if (user.twoFactorEnabled) {
-            throw new Error("2FA code required")
+        // For frontend testing, return mock user if basic validation passes
+        if (credentials?.email && credentials?.password) {
+          return {
+            id: "mock-user-id",
+            email: credentials.email,
+            name: "Test User",
+            role: "cpa",
+            organizationId: "mock-org-id",
+            organization: { name: "Test Org", subdomain: "test" },
+            emailVerified: new Date(),
+            twoFactorEnabled: false
           }
-
-          return user
-        } catch (error) {
-          console.error("Authentication error:", error)
-          return null
         }
+        return null
       }
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    MicrosoftProvider({
-      clientId: process.env.MICROSOFT_CLIENT_ID!,
-      clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
-    }),
-    AzureADProvider({
-      clientId: process.env.AZURE_AD_CLIENT_ID!,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-      tenantId: process.env.AZURE_AD_TENANT_ID!,
-    }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: Number(process.env.EMAIL_SERVER_PORT),
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_FROM,
-    }),
+    // Comment out OAuth providers for frontend-only testing
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID!,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    // }),
+    // AzureADProvider({
+    //   clientId: process.env.AZURE_AD_CLIENT_ID!,
+    //   clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+    //   tenantId: process.env.AZURE_AD_TENANT_ID!,
+    // }),
+    // EmailProvider({
+    //   server: {
+    //     host: process.env.EMAIL_SERVER_HOST,
+    //     port: Number(process.env.EMAIL_SERVER_PORT),
+    //     auth: {
+    //       user: process.env.EMAIL_SERVER_USER,
+    //       pass: process.env.EMAIL_SERVER_PASSWORD,
+    //     },
+    //   },
+    //   from: process.env.EMAIL_FROM,
+    // }),
   ],
   session: {
     strategy: "jwt",
@@ -235,41 +208,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // Handle OAuth provider sign-ins
-      if (account?.provider !== "credentials" && account?.provider !== "email") {
-        // For OAuth providers, we need to associate with an organization
-        // This would typically be handled by a custom sign-in page that captures subdomain
-        const subdomain = credentials?.subdomain || profile?.subdomain
-
-        if (!subdomain) {
-          return '/auth/select-organization'
-        }
-
-        const organization = await prisma.organization.findUnique({
-          where: { subdomain }
-        })
-
-        if (!organization) {
-          return false
-        }
-
-        // Check if user exists in this organization
-        const existingUser = await prisma.user.findFirst({
-          where: {
-            email: user.email!,
-            organizationId: organization.id
-          }
-        })
-
-        if (!existingUser) {
-          return '/auth/error?error=UserNotInOrganization'
-        }
-
-        // Update user with OAuth account info if needed
-        user.organizationId = organization.id
-        user.organization = organization
-      }
-
+      // For frontend testing, allow all sign-ins
       return true
     },
     async jwt({ token, user, account }): Promise<JWT> {
@@ -283,19 +222,6 @@ export const authOptions: NextAuthOptions = {
         // Set role-based expiration
         const roleTimeout = SESSION_TIMEOUTS[user.role as keyof typeof SESSION_TIMEOUTS] || SESSION_TIMEOUTS.client
         token.exp = Math.floor(Date.now() / 1000) + roleTimeout
-      }
-
-      // Refresh session if close to expiry (within 10 minutes)
-      if (token.exp && token.exp < Math.floor(Date.now() / 1000) + 600) {
-        const user = await prisma.user.findUnique({
-          where: { id: token.sub },
-          include: { organization: true }
-        })
-
-        if (user) {
-          const roleTimeout = SESSION_TIMEOUTS[user.role as keyof typeof SESSION_TIMEOUTS] || SESSION_TIMEOUTS.client
-          token.exp = Math.floor(Date.now() / 1000) + roleTimeout
-        }
       }
 
       return token
@@ -313,46 +239,47 @@ export const authOptions: NextAuthOptions = {
       return session
     }
   },
-  events: {
-    async signIn({ user, account, profile, isNewUser }) {
-      // Log sign-in event
-      await prisma.authEvent.create({
-        data: {
-          userId: user.id,
-          type: 'SIGN_IN',
-          provider: account?.provider || 'unknown',
-          metadata: {
-            isNewUser,
-            provider: account?.provider,
-            ip: 'unknown' // This would be set by middleware
-          }
-        }
-      })
-    },
-    async signOut({ token }) {
-      // Log sign-out event
-      if (token?.sub) {
-        await prisma.authEvent.create({
-          data: {
-            userId: token.sub,
-            type: 'SIGN_OUT',
-            metadata: {
-              reason: 'user_initiated'
-            }
-          }
-        })
-      }
-    },
-    async session({ session, token }) {
-      // Update last activity
-      if (token?.sub) {
-        await prisma.user.update({
-          where: { id: token.sub },
-          data: { lastActiveAt: new Date() }
-        })
-      }
-    }
-  },
+  // Comment out events for frontend-only testing
+  // events: {
+  //   async signIn({ user, account, profile, isNewUser }) {
+  //     // Log sign-in event
+  //     await prisma.authEvent.create({
+  //       data: {
+  //         userId: user.id,
+  //         type: 'SIGN_IN',
+  //         provider: account?.provider || 'unknown',
+  //         metadata: {
+  //           isNewUser,
+  //           provider: account?.provider,
+  //           ip: 'unknown' // This would be set by middleware
+  //         }
+  //       }
+  //     })
+  //   },
+  //   async signOut({ token }) {
+  //     // Log sign-out event
+  //     if (token?.sub) {
+  //       await prisma.authEvent.create({
+  //         data: {
+  //           userId: token.sub,
+  //           type: 'SIGN_OUT',
+  //           metadata: {
+  //             reason: 'user_initiated'
+  //           }
+  //         }
+  //       })
+  //     }
+  //   },
+  //   async session({ session, token }) {
+  //     // Update last activity
+  //     if (token?.sub) {
+  //       await prisma.user.update({
+  //         where: { id: token.sub },
+  //         data: { lastActiveAt: new Date() }
+  //       })
+  //     }
+  //   }
+  // },
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',

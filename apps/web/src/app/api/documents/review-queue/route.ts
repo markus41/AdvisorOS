@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/authOptions';
+import { authOptions } from '@/lib/auth';
 import { ocrService } from '@/lib/services/ocr-service';
 import { z } from 'zod';
 

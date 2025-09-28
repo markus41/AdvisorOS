@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 

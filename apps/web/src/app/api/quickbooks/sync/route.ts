@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
-import { quickbooksService } from '../../../server/services/quickbooks.service';
+import { authOptions } from '@/lib/auth';
+import { quickbooksService } from '@/server/services/quickbooks.service';
 import { db } from "../../../../server/db";
 
 export async function POST(request: NextRequest) {

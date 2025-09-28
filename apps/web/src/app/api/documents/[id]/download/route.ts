@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../../auth/authOptions';
+import { authOptions } from '@/lib/auth';
 import { documentService } from '@/lib/services/document-service';
 
 interface RouteParams {

@@ -334,8 +334,9 @@ model Workflow {
   updatedBy      String?
 
   // Relations
-  engagements Engagement[]
-  tasks       Task[]
+  engagements        Engagement[]
+  tasks              Task[]
+  workflowExecutions WorkflowExecution[]
 
   @@index([organizationId])
   @@index([type])

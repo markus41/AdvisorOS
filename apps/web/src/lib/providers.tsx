@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { api } from '@/lib/trpc'
+// import { api } from '@/lib/trpc'
 import { Toaster } from 'react-hot-toast'
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -15,10 +15,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     },
   }))
 
-  const [trpcClient] = useState(() => api.createClient())
+  // const [trpcClient] = useState(() => api.createClient())
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient}>
+    // <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         {children}
         <Toaster
@@ -44,6 +44,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           }}
         />
       </QueryClientProvider>
-    </api.Provider>
+    // </api.Provider>
   )
 }

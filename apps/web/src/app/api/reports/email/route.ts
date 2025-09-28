@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
+import { PrismaClient } from "@prisma/client";
 import { ReportService } from "@/server/services/report.service";
 import { z } from "zod";
 

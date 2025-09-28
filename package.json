@@ -12,11 +12,25 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:push": "turbo db:push",
-    "db:studio": "turbo db:studio"
+    "db:studio": "turbo db:studio",
+    "db:generate": "turbo db:generate",
+    "db:migrate": "turbo db:migrate",
+    "db:seed": "turbo db:seed",
+    "dev:start": "node scripts/dev-start-cross-platform.js",
+    "dev:stop": "docker-compose down",
+    "dev:reset": "node scripts/dev-reset-cross-platform.js",
+    "dev:test": "node scripts/test-connection-cross-platform.js",
+    "dev:test-local": "node scripts/test-local-db.js",
+    "dev:studio": "node scripts/studio-cross-platform.js",
+    "dev:backup": "node scripts/db-backup-cross-platform.js",
+    "dev:restore": "node scripts/db-restore-cross-platform.js",
+    "dev:connect": "docker-compose exec postgres psql -U cpa_user -d cpa_platform"
   },
   "devDependencies": {
     "prettier": "^3.0.0",
-    "turbo": "^2.0.0"
+    "turbo": "^2.0.0",
+    "pg": "^8.11.3",
+    "dotenv": "^16.3.1"
   },
   "engines": {
     "node": ">=18.17.0"

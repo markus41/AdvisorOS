@@ -39,26 +39,18 @@ export async function getCurrentSession(): Promise<SessionInfo | null> {
     return null
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: { organization: true }
-  })
-
-  if (!user) {
-    return null
-  }
-
+  // For frontend testing, return mock session data
   return {
     id: session.user.id,
-    userId: user.id,
-    organizationId: user.organizationId,
-    role: user.role,
-    email: user.email,
-    name: user.name,
-    emailVerified: user.emailVerified,
-    twoFactorEnabled: user.twoFactorEnabled,
-    lastActiveAt: user.lastActiveAt || user.updatedAt,
-    ipAddress: 'unknown', // This would be set by middleware
+    userId: session.user.id,
+    organizationId: session.user.organizationId || 'mock-org-id',
+    role: session.user.role || 'cpa',
+    email: session.user.email || 'test@example.com',
+    name: session.user.name || 'Test User',
+    emailVerified: session.user.emailVerified || new Date(),
+    twoFactorEnabled: session.user.twoFactorEnabled || false,
+    lastActiveAt: new Date(),
+    ipAddress: 'unknown',
     userAgent: 'unknown'
   }
 }
@@ -102,17 +94,8 @@ export async function validateSession(sessionToken: string): Promise<{
  * Updates user's last activity timestamp
  */
 export async function updateLastActivity(userId: string, ipAddress?: string): Promise<void> {
-  try {
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        lastActiveAt: new Date(),
-        lastActiveIpAddress: ipAddress
-      }
-    })
-  } catch (error) {
-    console.error('Failed to update last activity:', error)
-  }
+  // For frontend testing, just log the action
+  console.log('Would update last activity for user:', userId, 'from IP:', ipAddress)
 }
 
 /**
@@ -123,17 +106,8 @@ export async function logSecurityEvent(
   eventType: string,
   metadata: Record<string, any> = {}
 ): Promise<void> {
-  try {
-    await prisma.authEvent.create({
-      data: {
-        userId,
-        type: eventType,
-        metadata
-      }
-    })
-  } catch (error) {
-    console.error('Failed to log security event:', error)
-  }
+  // For frontend testing, just log the event
+  console.log('Would log security event:', { userId, eventType, metadata })
 }
 
 /**

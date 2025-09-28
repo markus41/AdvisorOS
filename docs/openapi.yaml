@@ -1,0 +1,1334 @@
+openapi: 3.0.3
+info:
+  title: AdvisorOS CPA Platform API
+  description: |
+    Comprehensive REST API for the AdvisorOS CPA Platform, providing client management,
+    document processing, QuickBooks integration, and financial advisory services.
+
+    ## Features
+    - Multi-tenant architecture with organization-based data isolation
+    - JWT-based authentication with role-based access control
+    - Real-time document processing with OCR capabilities
+    - QuickBooks Online integration for financial data synchronization
+    - AI-powered document analysis and advisory insights
+    - Comprehensive workflow management and task automation
+    - Advanced reporting and analytics capabilities
+
+    ## Authentication
+    All API endpoints require authentication using JWT tokens passed in the Authorization header:
+    ```
+    Authorization: Bearer <your-jwt-token>
+    ```
+
+    ## Rate Limiting
+    API requests are rate-limited based on your subscription plan. Rate limit headers are included in all responses.
+
+    ## Error Handling
+    All errors follow a consistent JSON format with appropriate HTTP status codes and detailed error messages.
+  version: 1.0.0
+  contact:
+    name: AdvisorOS API Support
+    email: api-support@advisoros.com
+    url: https://docs.advisoros.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://advisoros.com/terms
+
+servers:
+  - url: https://api.advisoros.com/api/v1
+    description: Production server
+  - url: https://staging-api.advisoros.com/api/v1
+    description: Staging server
+  - url: http://localhost:3000/api
+    description: Development server
+
+security:
+  - BearerAuth: []
+
+paths:
+  # Authentication Endpoints
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      description: Authenticate user with email and password to obtain JWT tokens
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, organizationId]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "SecurePassword123!"
+                organizationId:
+                  type: string
+                  example: "org-123456"
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      description: Obtain a new access token using a valid refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /auth/2fa/verify:
+    post:
+      tags: [Authentication]
+      summary: Verify two-factor authentication
+      description: Complete 2FA verification with TOTP code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  example: "123456"
+      responses:
+        '200':
+          description: 2FA verification successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # Client Management Endpoints
+  /clients:
+    get:
+      tags: [Client Management]
+      summary: List clients
+      description: Retrieve a paginated list of clients with optional filtering
+      parameters:
+        - name: page
+          in: query
+          description: Page number (default: 1)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Items per page (default: 25, max: 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: status
+          in: query
+          description: Filter by client status
+          schema:
+            type: string
+            enum: [active, inactive, prospect]
+        - name: businessType
+          in: query
+          description: Filter by business type
+          schema:
+            type: string
+            enum: [LLC, Corporation, Partnership, Sole_Proprietorship, S_Corp, Non_Profit]
+        - name: search
+          in: query
+          description: Search in business name or email
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          description: Sort field
+          schema:
+            type: string
+            enum: [businessName, createdAt, lastActivity, annualRevenue]
+            default: businessName
+        - name: sortOrder
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      responses:
+        '200':
+          description: List of clients retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Client'
+                      meta:
+                        $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+    post:
+      tags: [Client Management]
+      summary: Create new client
+      description: Create a new client record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientRequest'
+      responses:
+        '201':
+          description: Client created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /clients/{clientId}:
+    get:
+      tags: [Client Management]
+      summary: Get client by ID
+      description: Retrieve detailed information for a specific client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            type: string
+            example: "client-123456"
+      responses:
+        '200':
+          description: Client retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/ClientDetailed'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    put:
+      tags: [Client Management]
+      summary: Update client
+      description: Update an existing client record
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientRequest'
+      responses:
+        '200':
+          description: Client updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Client'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      tags: [Client Management]
+      summary: Delete client
+      description: Soft delete a client record
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Client deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  # Document Management Endpoints
+  /documents/upload:
+    post:
+      tags: [Document Management]
+      summary: Upload document
+      description: Upload a document file with metadata
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, clientId, category]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Document file (PDF, DOC, DOCX, TXT, JPG, PNG)
+                clientId:
+                  type: string
+                  example: "client-123456"
+                category:
+                  type: string
+                  enum: [tax_return, financial_statement, receipt, invoice, bank_statement, other]
+                  example: "tax_return"
+                subcategory:
+                  type: string
+                  example: "form_1040"
+                year:
+                  type: integer
+                  example: 2023
+                description:
+                  type: string
+                  example: "2023 Individual Tax Return"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  example: ["tax", "2023", "individual"]
+      responses:
+        '201':
+          description: Document uploaded successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Document'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '413':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /documents:
+    get:
+      tags: [Document Management]
+      summary: List documents
+      description: Retrieve a paginated list of documents with optional filtering
+      parameters:
+        - name: clientId
+          in: query
+          description: Filter by client ID
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Filter by document category
+          schema:
+            type: string
+            enum: [tax_return, financial_statement, receipt, invoice, bank_statement, other]
+        - name: year
+          in: query
+          description: Filter by year
+          schema:
+            type: integer
+        - name: ocrStatus
+          in: query
+          description: Filter by OCR processing status
+          schema:
+            type: string
+            enum: [pending, processing, completed, failed]
+        - name: search
+          in: query
+          description: Search in filename or description
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+      responses:
+        '200':
+          description: List of documents retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Document'
+                      meta:
+                        $ref: '#/components/schemas/PaginationMeta'
+
+  /documents/{documentId}:
+    get:
+      tags: [Document Management]
+      summary: Get document
+      description: Retrieve detailed information for a specific document
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DocumentDetailed'
+
+  /documents/{documentId}/ocr:
+    post:
+      tags: [Document Management]
+      summary: Process document with OCR
+      description: Trigger OCR processing for a document
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OCR processing started
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          ocrJobId:
+                            type: string
+                          status:
+                            type: string
+                            enum: [processing]
+                          estimatedCompletion:
+                            type: string
+                            format: date-time
+
+  # QuickBooks Integration Endpoints
+  /quickbooks/connect:
+    post:
+      tags: [QuickBooks Integration]
+      summary: Connect QuickBooks
+      description: Connect QuickBooks Online account using OAuth authorization code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [authCode, realmId]
+              properties:
+                authCode:
+                  type: string
+                  description: OAuth authorization code from QuickBooks
+                realmId:
+                  type: string
+                  description: QuickBooks company realm ID
+      responses:
+        '200':
+          description: QuickBooks connected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /quickbooks/status:
+    get:
+      tags: [QuickBooks Integration]
+      summary: Get connection status
+      description: Retrieve QuickBooks connection status and company information
+      responses:
+        '200':
+          description: Connection status retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/QuickBooksStatus'
+
+  /quickbooks/sync:
+    post:
+      tags: [QuickBooks Integration]
+      summary: Trigger manual sync
+      description: Start a manual synchronization with QuickBooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                syncType:
+                  type: string
+                  enum: [full, incremental]
+                  default: incremental
+                entities:
+                  type: array
+                  items:
+                    type: string
+                    enum: [customers, accounts, transactions, items, vendors]
+                  default: [customers, accounts, transactions]
+                dateRange:
+                  type: object
+                  properties:
+                    startDate:
+                      type: string
+                      format: date
+                    endDate:
+                      type: string
+                      format: date
+      responses:
+        '200':
+          description: Sync started successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SyncJob'
+
+  # AI Services Endpoints
+  /ai/analyze-document:
+    post:
+      tags: [AI Services]
+      summary: Analyze document with AI
+      description: Perform AI-powered analysis on a document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [documentId, analysisType]
+              properties:
+                documentId:
+                  type: string
+                analysisType:
+                  type: string
+                  enum: [tax_form, financial_statement, receipt, invoice, general]
+                options:
+                  type: object
+                  properties:
+                    extractTables:
+                      type: boolean
+                      default: true
+                    validateData:
+                      type: boolean
+                      default: true
+                    generateSummary:
+                      type: boolean
+                      default: true
+      responses:
+        '200':
+          description: Document analysis completed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DocumentAnalysis'
+
+  /ai/advisory-report:
+    post:
+      tags: [AI Services]
+      summary: Generate advisory report
+      description: Generate AI-powered advisory report for a client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [clientId, reportType]
+              properties:
+                clientId:
+                  type: string
+                reportType:
+                  type: string
+                  enum: [financial_health, tax_optimization, cash_flow, risk_assessment]
+                dateRange:
+                  type: object
+                  properties:
+                    startDate:
+                      type: string
+                      format: date
+                    endDate:
+                      type: string
+                      format: date
+                includeRecommendations:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Advisory report generated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AdvisoryReport'
+
+  # Billing Endpoints
+  /billing/subscriptions:
+    post:
+      tags: [Billing]
+      summary: Create subscription
+      description: Create a new Stripe subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [priceId, paymentMethodId]
+              properties:
+                priceId:
+                  type: string
+                  example: "price_professional_monthly"
+                paymentMethodId:
+                  type: string
+                  example: "pm_1234567890"
+                quantity:
+                  type: integer
+                  minimum: 1
+                  default: 1
+      responses:
+        '201':
+          description: Subscription created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Subscription'
+
+  /billing/subscriptions/current:
+    get:
+      tags: [Billing]
+      summary: Get current subscription
+      description: Retrieve current subscription details
+      responses:
+        '200':
+          description: Current subscription retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SubscriptionDetailed'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              example: "Invalid request data"
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+
+    ResponseMeta:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+        requestId:
+          type: string
+          example: "req-123456"
+
+    PaginationMeta:
+      allOf:
+        - $ref: '#/components/schemas/ResponseMeta'
+        - type: object
+          properties:
+            pagination:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  example: 1
+                limit:
+                  type: integer
+                  example: 25
+                total:
+                  type: integer
+                  example: 100
+                hasNext:
+                  type: boolean
+                  example: true
+                hasPrevious:
+                  type: boolean
+                  example: false
+
+    AuthResponse:
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                expiresIn:
+                  type: integer
+                  example: 3600
+                user:
+                  $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "user-123456"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        name:
+          type: string
+          example: "John Doe"
+        role:
+          type: string
+          enum: [owner, admin, cpa, staff]
+          example: "cpa"
+        isActive:
+          type: boolean
+          example: true
+        lastLoginAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "client-123456"
+        businessName:
+          type: string
+          example: "Acme Corporation"
+        legalName:
+          type: string
+          example: "Acme Corp LLC"
+        taxId:
+          type: string
+          example: "12-3456789"
+        primaryContactEmail:
+          type: string
+          format: email
+          example: "john@acme.com"
+        primaryContactName:
+          type: string
+          example: "John Smith"
+        businessType:
+          type: string
+          enum: [LLC, Corporation, Partnership, Sole_Proprietorship, S_Corp, Non_Profit]
+          example: "LLC"
+        industry:
+          type: string
+          example: "Technology"
+        status:
+          type: string
+          enum: [active, inactive, prospect]
+          example: "active"
+        riskLevel:
+          type: string
+          enum: [low, medium, high]
+          example: "low"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ClientDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Client'
+        - type: object
+          properties:
+            primaryContactPhone:
+              type: string
+              example: "+1-555-0123"
+            businessAddress:
+              type: string
+              example: "123 Main St, City, State 12345"
+            mailingAddress:
+              type: string
+              example: "PO Box 123, City, State 12345"
+            website:
+              type: string
+              format: uri
+              example: "https://acme.com"
+            annualRevenue:
+              type: string
+              example: "1000000.00"
+            quickbooksId:
+              type: string
+              example: "qb-12345"
+            customFields:
+              type: object
+              additionalProperties: true
+
+    CreateClientRequest:
+      type: object
+      required: [businessName, primaryContactEmail, primaryContactName, businessType]
+      properties:
+        businessName:
+          type: string
+          example: "New Business LLC"
+        legalName:
+          type: string
+          example: "New Business Limited Liability Company"
+        taxId:
+          type: string
+          example: "98-7654321"
+        primaryContactEmail:
+          type: string
+          format: email
+          example: "contact@newbusiness.com"
+        primaryContactName:
+          type: string
+          example: "Jane Doe"
+        primaryContactPhone:
+          type: string
+          example: "+1-555-0987"
+        businessAddress:
+          type: string
+          example: "456 Business Ave, City, State 54321"
+        businessType:
+          type: string
+          enum: [LLC, Corporation, Partnership, Sole_Proprietorship, S_Corp, Non_Profit]
+        industry:
+          type: string
+          example: "Consulting"
+        website:
+          type: string
+          format: uri
+        status:
+          type: string
+          enum: [active, inactive, prospect]
+          default: prospect
+        customFields:
+          type: object
+          additionalProperties: true
+
+    UpdateClientRequest:
+      type: object
+      properties:
+        businessName:
+          type: string
+        legalName:
+          type: string
+        primaryContactPhone:
+          type: string
+        businessAddress:
+          type: string
+        mailingAddress:
+          type: string
+        website:
+          type: string
+          format: uri
+        status:
+          type: string
+          enum: [active, inactive, prospect]
+        industry:
+          type: string
+        annualRevenue:
+          type: string
+        customFields:
+          type: object
+          additionalProperties: true
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "doc-789012"
+        fileName:
+          type: string
+          example: "2023_tax_return.pdf"
+        fileUrl:
+          type: string
+          format: uri
+          example: "https://storage.advisoros.com/documents/doc-789012.pdf"
+        thumbnailUrl:
+          type: string
+          format: uri
+          example: "https://storage.advisoros.com/thumbnails/doc-789012.jpg"
+        fileType:
+          type: string
+          example: "pdf"
+        mimeType:
+          type: string
+          example: "application/pdf"
+        fileSize:
+          type: integer
+          example: 2048576
+        category:
+          type: string
+          enum: [tax_return, financial_statement, receipt, invoice, bank_statement, other]
+        subcategory:
+          type: string
+          example: "form_1040"
+        year:
+          type: integer
+          example: 2023
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["tax", "2023", "individual"]
+        ocrStatus:
+          type: string
+          enum: [pending, processing, completed, failed]
+          example: "completed"
+        clientId:
+          type: string
+          example: "client-123456"
+        uploadedBy:
+          type: string
+          example: "user-123456"
+        createdAt:
+          type: string
+          format: date-time
+
+    DocumentDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Document'
+        - type: object
+          properties:
+            ocrConfidence:
+              type: number
+              format: float
+              example: 0.95
+            extractedData:
+              type: object
+              additionalProperties: true
+            description:
+              type: string
+
+    DocumentAnalysis:
+      type: object
+      properties:
+        analysisId:
+          type: string
+          example: "analysis-456789"
+        documentType:
+          type: string
+          example: "Form 1040"
+        confidence:
+          type: number
+          format: float
+          example: 0.95
+        extractedData:
+          type: object
+          additionalProperties: true
+        summary:
+          type: string
+          example: "Individual tax return for John Smith with total income of $75,750"
+        recommendations:
+          type: array
+          items:
+            type: string
+          example: ["Consider itemizing deductions for potential savings"]
+
+    AdvisoryReport:
+      type: object
+      properties:
+        reportId:
+          type: string
+          example: "report-789012"
+        reportType:
+          type: string
+          enum: [financial_health, tax_optimization, cash_flow, risk_assessment]
+        status:
+          type: string
+          enum: [generating, completed, failed]
+        downloadUrl:
+          type: string
+          format: uri
+        summary:
+          type: string
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              priority:
+                type: string
+                enum: [high, medium, low]
+              description:
+                type: string
+              impact:
+                type: string
+
+    QuickBooksStatus:
+      type: object
+      properties:
+        isConnected:
+          type: boolean
+          example: true
+        realmId:
+          type: string
+          example: "123456789"
+        companyName:
+          type: string
+          example: "Acme Corporation"
+        lastSyncAt:
+          type: string
+          format: date-time
+        nextSyncAt:
+          type: string
+          format: date-time
+        syncStatus:
+          type: string
+          enum: [active, paused, error]
+        tokenExpiresAt:
+          type: string
+          format: date-time
+
+    SyncJob:
+      type: object
+      properties:
+        syncId:
+          type: string
+          example: "sync-789012"
+        status:
+          type: string
+          enum: [queued, in_progress, completed, failed]
+        startedAt:
+          type: string
+          format: date-time
+        estimatedCompletion:
+          type: string
+          format: date-time
+        entities:
+          type: array
+          items:
+            type: string
+        recordsProcessed:
+          type: integer
+        recordsTotal:
+          type: integer
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "sub_1234567890"
+        status:
+          type: string
+          enum: [active, canceled, past_due, unpaid]
+        planName:
+          type: string
+          example: "Professional"
+        planType:
+          type: string
+          enum: [monthly, yearly]
+        currentPeriodStart:
+          type: string
+          format: date-time
+        currentPeriodEnd:
+          type: string
+          format: date-time
+        unitAmount:
+          type: integer
+          example: 9900
+        currency:
+          type: string
+          example: "usd"
+
+    SubscriptionDetailed:
+      allOf:
+        - $ref: '#/components/schemas/Subscription'
+        - type: object
+          properties:
+            features:
+              type: object
+              properties:
+                maxUsers:
+                  type: integer
+                maxStorage:
+                  type: string
+                apiAccess:
+                  type: boolean
+                advancedReporting:
+                  type: boolean
+            usage:
+              type: object
+              properties:
+                currentUsers:
+                  type: integer
+                currentStorage:
+                  type: string
+                apiCalls:
+                  type: integer
+
+  responses:
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "BAD_REQUEST"
+              message: "Invalid request format"
+            meta:
+              timestamp: "2024-01-01T00:00:00Z"
+              requestId: "req-123456"
+
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "AUTHENTICATION_REQUIRED"
+              message: "Valid authentication token required"
+            meta:
+              timestamp: "2024-01-01T00:00:00Z"
+              requestId: "req-123456"
+
+    ForbiddenError:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "INSUFFICIENT_PERMISSIONS"
+              message: "User lacks required permissions"
+            meta:
+              timestamp: "2024-01-01T00:00:00Z"
+              requestId: "req-123456"
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "RESOURCE_NOT_FOUND"
+              message: "Requested resource does not exist"
+            meta:
+              timestamp: "2024-01-01T00:00:00Z"
+              requestId: "req-123456"
+
+    ValidationError:
+      description: Validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "VALIDATION_ERROR"
+              message: "Request data validation failed"
+              details:
+                - field: "email"
+                  message: "Invalid email format"
+                - field: "password"
+                  message: "Password must be at least 8 characters"
+            meta:
+              timestamp: "2024-01-01T00:00:00Z"
+              requestId: "req-123456"
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Client Management
+    description: Client CRUD operations and data management
+  - name: Document Management
+    description: Document upload, processing, and retrieval
+  - name: QuickBooks Integration
+    description: QuickBooks Online synchronization and data access
+  - name: AI Services
+    description: AI-powered document analysis and advisory services
+  - name: Billing
+    description: Subscription and payment management via Stripe

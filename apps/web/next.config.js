@@ -1,9 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@cpa-platform/ui", "@cpa-platform/types"],
-  experimental: {
-    appDir: true,
-  },
   images: {
     domains: ['localhost'],
   },

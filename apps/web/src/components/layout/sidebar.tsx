@@ -10,7 +10,6 @@ import {
   FileText,
   BarChart3,
   Workflow,
-  Team,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -33,7 +32,7 @@ const navigation: NavigationItem[] = [
   { name: 'Documents', href: '/dashboard/documents', icon: FileText, badge: '23' },
   { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
   { name: 'Workflows', href: '/dashboard/workflows', icon: Workflow, badge: '5' },
-  { name: 'Team', href: '/dashboard/team', icon: Team },
+  { name: 'Team', href: '/dashboard/team', icon: Users },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
