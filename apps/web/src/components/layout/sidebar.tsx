@@ -28,10 +28,11 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Clients', href: '/dashboard/clients', icon: Users, badge: '12' },
-  { name: 'Documents', href: '/dashboard/documents', icon: FileText, badge: '3' },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+  { name: 'Clients', href: '/dashboard/clients', icon: Users, badge: '124' },
+  { name: 'Documents', href: '/dashboard/documents', icon: FileText, badge: '23' },
   { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
-  { name: 'Workflows', href: '/dashboard/workflows', icon: Workflow, badge: '2' },
+  { name: 'Workflows', href: '/dashboard/workflows', icon: Workflow, badge: '5' },
   { name: 'Team', href: '/dashboard/team', icon: Team },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
