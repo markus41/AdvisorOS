@@ -24,14 +24,14 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 | Platform operations | [Operations Command Center](operations/index.md) | Incident response, deployment motions, and production guardrails. |
 
 > [!NOTE]
-> Running an executive review? Pair the [Production Launch Executive Summary](../PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md) with the [Success Metrics Framework](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
+> Running an executive review? Pair the [Production Launch Executive Summary]({{ site.github.repository_url }}/blob/main/PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md) with the [Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
 
 ## Release Radar
 
-- **Launch blueprint** ? Follow the staged plan in [ADVISOROS_PRODUCTION_LAUNCH_PLAN.md](../ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) with the rollback checklist on standby.
-- **Client success signals** ? Track adoption KPIs in [CLIENT_SUCCESS_SYSTEM.md](../CLIENT_SUCCESS_SYSTEM.md) and surface wins in stakeholder decks.
-- **Security commitments** ? Reconfirm hardening measures outlined in [COMPREHENSIVE_SECURITY_AUDIT_REPORT.md](../COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) before every major release.
-- **Go-live validation** ? Use [PRODUCTION_READINESS_CHECKLIST.md](PRODUCTION_READINESS_CHECKLIST.md) as the final gate before flipping any production switch.
+- **Launch blueprint** -> Follow the staged plan in [ADVISOROS_PRODUCTION_LAUNCH_PLAN.md]({{ site.github.repository_url }}/blob/main/ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) with the rollback checklist on standby.
+- **Client success signals** -> Track adoption KPIs in [CLIENT_SUCCESS_SYSTEM.md]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) and surface wins in stakeholder decks.
+- **Security commitments** -> Reconfirm hardening measures outlined in [COMPREHENSIVE_SECURITY_AUDIT_REPORT.md]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) before every major release.
+- **Go-live validation** -> Use [PRODUCTION_READINESS_CHECKLIST.md](PRODUCTION_READINESS_CHECKLIST.md) as the final gate before flipping any production switch.
 
 ## Architecture Systems Map
 
@@ -75,7 +75,7 @@ graph TD
   Fabric --> DB
 ```
 
-Dive deeper with the full [architecture deep-dive](ARCHITECTURE.md) and deployment automation in the [Azure blueprint](../infrastructure/main.bicep).
+Dive deeper with the full [architecture deep-dive](ARCHITECTURE.md) and deployment automation in the [Azure blueprint]({{ site.github.repository_url }}/blob/main/infrastructure/main.bicep).
 
 ## Automation Scorecard
 
@@ -87,7 +87,7 @@ pie title AdvisorOS Automation Coverage
   "Manual interventions" : 12
 ```
 
-Ground these numbers with the measurement model in the [Production Success Metrics Framework](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md). Replace the placeholder values with your latest telemetry export before external reviews.
+Ground these numbers with the measurement model in the [Production Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md). Replace the placeholder values with your latest telemetry export before external reviews.
 
 ## Product Walkthrough
 
@@ -95,7 +95,7 @@ Ground these numbers with the measurement model in the [Production Success Metri
 
 ![Client workspace showing secure document exchange and collaboration timeline](https://dummyimage.com/1200x720/1e293b/f8fafc&text=Client+Workspace+Screenshot)
 
-Swap in real screenshots from `docs/assets/screenshots/` so prospects see the actual experience. Include caption callouts referencing client outcomes from [CLIENT_SUCCESS_SYSTEM.md](../CLIENT_SUCCESS_SYSTEM.md).
+Swap in real screenshots from `docs/assets/screenshots/` so prospects see the actual experience. Include caption callouts referencing client outcomes from [CLIENT_SUCCESS_SYSTEM.md]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md).
 
 ## Operating Rhythm
 
@@ -114,7 +114,7 @@ gantt
     Automation Expansion          :         c2, 2025-03-28, 2025-04-30
 ```
 
-Use this as the backbone for stakeholder updates. The granular workstream detail lives in [PRODUCTION_ROLLBACK_PROCEDURES.md](../PRODUCTION_ROLLBACK_PROCEDURES.md) and [POST_LAUNCH_SUPPORT_OPTIMIZATION.md](../POST_LAUNCH_SUPPORT_OPTIMIZATION.md).
+Use this as the backbone for stakeholder updates. The granular workstream detail lives in [PRODUCTION_ROLLBACK_PROCEDURES.md]({{ site.github.repository_url }}/blob/main/PRODUCTION_ROLLBACK_PROCEDURES.md) and [POST_LAUNCH_SUPPORT_OPTIMIZATION.md]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md).
 
 ## Operations Command Center
 
@@ -130,9 +130,9 @@ Use this as the backbone for stakeholder updates. The granular workstream detail
 
 ## Proof Points & Talking Tracks
 
-- Pull win stories and quotes from the [Client Success System](../CLIENT_SUCCESS_SYSTEM.md) for every sales cycle.
-- Reference the [Market Intelligence Analysis](../COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) when product marketing asks for competitive positioning.
-- Highlight the [Revenue Intelligence System](../REVENUE_INTELLIGENCE_SYSTEM.md) when CFOs push for financial insights beyond compliance work.
+- Pull win stories and quotes from the [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) for every sales cycle.
+- Reference the [Market Intelligence Analysis]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) when product marketing asks for competitive positioning.
+- Highlight the [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md) when CFOs push for financial insights beyond compliance work.
 
 ## Contribute & Keep It Fresh
 
@@ -143,4 +143,6 @@ Use this as the backbone for stakeholder updates. The granular workstream detail
 2. Store images in `docs/assets/screenshots/` (PNG preferred) and media in `docs/assets/media/`.
 3. Cross-link to existing playbooks instead of duplicating content. If something is missing, add a new section and call it out in your PR.
 4. Record what changed in release notes or the appropriate plan documents so downstream teams stay aligned.
+
+
 

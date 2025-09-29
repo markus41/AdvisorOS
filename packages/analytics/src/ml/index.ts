@@ -18,7 +18,7 @@ import {
 
 export class MLEngine {
   private models: Map<string, MLModel> = new Map();
-  private trainedModels: Map<string, tf.LayersModel> = new Map();
+  private trainedModels: Map<string, LayersModel> = new Map();
   private modelRegistry: ModelRegistry;
   private featureEngineering: FeatureEngineering;
   private modelTrainer: ModelTrainer;
@@ -625,6 +625,286 @@ export class MLEngine {
     }
 
     console.log('ML Engine shut down');
+  }
+
+  // Missing methods implementation
+  async trainChurnModel(organizationId: string): Promise<LayersModel> {
+    // Mock implementation - create a simple model
+    const model = tf.sequential();
+    return model;
+  }
+
+  calculateChurnRiskFactors(features: any): string[] {
+    // Simple mock implementation
+    return ['low_engagement', 'payment_delays', 'reduced_communication'];
+  }
+
+  generateChurnRecommendations(probability: number, riskFactors: string[]): string[] {
+    const recommendations: string[] = [];
+
+    if (probability > 0.7) {
+      recommendations.push('Immediate intervention required');
+      recommendations.push('Schedule client meeting within 48 hours');
+    } else if (probability > 0.5) {
+      recommendations.push('Proactive engagement recommended');
+      recommendations.push('Review service satisfaction');
+    }
+
+    return recommendations;
+  }
+
+  categorizeChurnRisk(probability: number): 'low' | 'medium' | 'high' | 'critical' {
+    if (probability >= 0.8) return 'critical';
+    if (probability >= 0.6) return 'high';
+    if (probability >= 0.4) return 'medium';
+    return 'low';
+  }
+
+  calculateCommunicationScore(features: any): number {
+    // Mock implementation
+    return Math.random() * 100;
+  }
+
+  calculateServiceUtilizationScore(features: any): number {
+    // Mock implementation
+    return Math.random() * 100;
+  }
+
+  calculatePaymentBehaviorScore(features: any): number {
+    // Mock implementation
+    return Math.random() * 100;
+  }
+
+  calculatePortfolioGrowthScore(features: any): number {
+    // Mock implementation
+    return Math.random() * 100;
+  }
+
+  categorizeEngagement(score: number): 'low' | 'medium' | 'high' {
+    if (score >= 70) return 'high';
+    if (score >= 40) return 'medium';
+    return 'low';
+  }
+
+  generateEngagementInsights(score: number): string[] {
+    const insights: string[] = [];
+
+    if (score < 40) {
+      insights.push('Client engagement is below expected levels');
+      insights.push('Consider increasing communication frequency');
+    } else if (score > 70) {
+      insights.push('Client shows high engagement levels');
+      insights.push('Good opportunity for service expansion');
+    }
+
+    return insights;
+  }
+
+  generateEngagementRecommendations(score: number): string[] {
+    const recommendations: string[] = [];
+
+    if (score < 40) {
+      recommendations.push('Schedule regular check-ins');
+      recommendations.push('Review service delivery quality');
+    } else if (score > 70) {
+      recommendations.push('Explore upselling opportunities');
+      recommendations.push('Request client testimonials');
+    }
+
+    return recommendations;
+  }
+
+  calculateEngagementTrend(history: any[]): 'increasing' | 'decreasing' | 'stable' {
+    if (history.length < 2) return 'stable';
+
+    const recent = history.slice(-3).map(h => h.score || 0);
+    const trend = recent[recent.length - 1] - recent[0];
+
+    if (Math.abs(trend) < 5) return 'stable';
+    return trend > 0 ? 'increasing' : 'decreasing';
+  }
+
+  getTaxRules(): any[] {
+    // Mock tax rules
+    return [
+      { type: 'deduction', category: 'business_expense', maxAmount: 50000 },
+      { type: 'credit', category: 'tax_credit', rate: 0.1 }
+    ];
+  }
+
+  identifyTaxOptimizations(features: any): any[] {
+    // Mock optimization suggestions
+    return [
+      { type: 'deduction_opportunity', amount: 5000, description: 'Additional business deductions available' },
+      { type: 'timing_optimization', amount: 2000, description: 'Consider deferring income to next year' }
+    ];
+  }
+
+  calculateTaxSavings(optimization: any): number {
+    // Mock calculation
+    return optimization.amount * 0.25; // Assuming 25% tax rate
+  }
+
+  calculateOptimizationConfidence(optimization: any): number {
+    // Mock confidence score
+    return Math.random() * 0.4 + 0.6; // 60-100% confidence
+  }
+
+  fetchWorkflowData(organizationId: string): Promise<any> {
+    // Mock workflow data
+    return Promise.resolve({
+      workflows: [
+        { type: 'tax_preparation', avgTime: 240, errorRate: 0.05 },
+        { type: 'bookkeeping', avgTime: 120, errorRate: 0.02 }
+      ]
+    });
+  }
+
+  identifyWorkflowBottlenecks(data: any): string[] {
+    // Mock bottleneck identification
+    return ['manual_data_entry', 'document_review', 'client_communication'];
+  }
+
+  predictWorkflowImprovements(data: any): any[] {
+    // Mock improvement predictions
+    return [
+      { area: 'automation', improvement: 30, confidence: 0.8 },
+      { area: 'training', improvement: 15, confidence: 0.7 }
+    ];
+  }
+
+  calculateCapacityPlanning(data: any): any {
+    // Mock capacity planning
+    return {
+      currentCapacity: 80,
+      recommendedCapacity: 100,
+      additionalResourcesNeeded: 2
+    };
+  }
+
+  calculateCurrentEfficiency(data: any): number {
+    // Mock efficiency calculation
+    return Math.random() * 30 + 60; // 60-90% efficiency
+  }
+
+  calculatePotentialGain(improvements: any[]): number {
+    // Mock potential gain calculation
+    return improvements.reduce((sum, imp) => sum + imp.improvement, 0);
+  }
+
+  prioritizeImprovements(improvements: any[]): any[] {
+    // Mock prioritization
+    return improvements.sort((a, b) => (b.improvement * b.confidence) - (a.improvement * a.confidence));
+  }
+
+  calculateWorkflowROI(improvements: any[]): number {
+    // Mock ROI calculation
+    const totalGain = this.calculatePotentialGain(improvements);
+    const estimatedCost = totalGain * 0.3; // Assume 30% cost ratio
+    return totalGain / estimatedCost;
+  }
+
+  fetchTransactionData(organizationId: string): Promise<any[]> {
+    // Mock transaction data
+    return Promise.resolve([
+      { id: '1', amount: 1000, timestamp: new Date(), type: 'payment' },
+      { id: '2', amount: 500, timestamp: new Date(), type: 'refund' }
+    ]);
+  }
+
+  detectTransactionAnomalies(data: any[]): any[] {
+    // Mock anomaly detection
+    return data.filter(() => Math.random() > 0.9).map(transaction => ({
+      transactionId: transaction.id,
+      anomalyType: 'unusual_amount',
+      severity: 'medium'
+    }));
+  }
+
+  calculateFraudScore(anomaly: any): number {
+    // Mock fraud score
+    return Math.random() * 100;
+  }
+
+  identifyFraudRiskFactors(anomaly: any): string[] {
+    // Mock risk factors
+    return ['unusual_time', 'amount_pattern', 'location_mismatch'];
+  }
+
+  categorizeFraudRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
+    if (score >= 80) return 'critical';
+    if (score >= 60) return 'high';
+    if (score >= 40) return 'medium';
+    return 'low';
+  }
+
+  recommendFraudAction(riskLevel: string): string {
+    switch (riskLevel) {
+      case 'critical':
+        return 'Immediately freeze transaction and investigate';
+      case 'high':
+        return 'Manual review required before processing';
+      case 'medium':
+        return 'Flag for additional verification';
+      default:
+        return 'Monitor transaction pattern';
+    }
+  }
+
+  fetchRevenueData(organizationId: string): Promise<any[]> {
+    // Mock revenue data
+    const data = [];
+    for (let i = 0; i < 12; i++) {
+      data.push({
+        month: i + 1,
+        revenue: 50000 + Math.random() * 20000,
+        clients: 100 + Math.random() * 50
+      });
+    }
+    return Promise.resolve(data);
+  }
+
+  trainRevenueEnsemble(data: any[]): Promise<any> {
+    // Mock ensemble training
+    return Promise.resolve({
+      models: ['linear', 'seasonal', 'trend'],
+      performance: { accuracy: 0.85, rmse: 5000 }
+    });
+  }
+
+  generateRevenueForecasts(model: any, horizon: number): any[] {
+    // Mock forecast generation
+    const forecasts = [];
+    for (let i = 1; i <= horizon; i++) {
+      forecasts.push({
+        period: i,
+        value: 50000 + Math.random() * 10000,
+        confidence: 0.8 - (i * 0.05)
+      });
+    }
+    return forecasts;
+  }
+
+  calculatePredictionIntervals(forecasts: any[]): any {
+    // Mock prediction intervals
+    return forecasts.map(f => ({
+      period: f.period,
+      lower: f.value * 0.9,
+      upper: f.value * 1.1
+    }));
+  }
+
+  identifySeasonalFactors(data: any[]): any {
+    // Mock seasonal factors
+    return {
+      quarterly: [1.1, 0.9, 1.0, 1.2],
+      monthly: Array(12).fill(0).map(() => 0.8 + Math.random() * 0.4)
+    };
+  }
+
+  validateForecastAccuracy(forecasts: any[], actual: any[]): number {
+    // Mock validation
+    return 0.85; // 85% accuracy
   }
 }
 

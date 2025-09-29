@@ -15,15 +15,15 @@ mermaid: true
 | Pillar | What to Spotlight | Proof Points |
 | --- | --- | --- |
 | Client Experience | Unified client workspace, secure messaging, branded portal | [Client Portal Guide](CLIENT_PORTAL_GUIDE.md), [User Guide](USER_GUIDE_COMPREHENSIVE.md) |
-| Operational Automation | Workflow templates, task routing, SLA monitoring | [CPA Workflow Optimization](../CPA_WORKFLOW_OPTIMIZATION_SUMMARY.md), [Testing Automation Framework](../TESTING_AUTOMATION_FRAMEWORK.md) |
-| Financial Intelligence | Real-time dashboards, anomaly detection, scenario planning | [Financial Analytics Implementation](../FINANCIAL_ANALYTICS_IMPLEMENTATION.md), [Revenue Intelligence System](../REVENUE_INTELLIGENCE_SYSTEM.md) |
-| Compliance & Trust | Role-based access, audit trails, encryption posture | [Comprehensive Security Audit](../COMPREHENSIVE_SECURITY_AUDIT_REPORT.md), [Security Compliance Report](../SECURITY_COMPLIANCE_REPORT.md) |
+| Operational Automation | Workflow templates, task routing, SLA monitoring | [CPA Workflow Optimization]({{ site.github.repository_url }}/blob/main/CPA_WORKFLOW_OPTIMIZATION_SUMMARY.md), [Testing Automation Framework]({{ site.github.repository_url }}/blob/main/TESTING_AUTOMATION_FRAMEWORK.md) |
+| Financial Intelligence | Real-time dashboards, anomaly detection, scenario planning | [Financial Analytics Implementation]({{ site.github.repository_url }}/blob/main/FINANCIAL_ANALYTICS_IMPLEMENTATION.md), [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md) |
+| Compliance & Trust | Role-based access, audit trails, encryption posture | [Comprehensive Security Audit]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md), [Security Compliance Report]({{ site.github.repository_url }}/blob/main/SECURITY_COMPLIANCE_REPORT.md) |
 | Integration & Extensibility | QuickBooks sync, API toolkit, data export | [Integration Guides](INTEGRATION_GUIDES.md), [API Reference](API_REFERENCE.md) |
 
 ## Adoption Lens
 
-- **Who benefits first?** Start with firms drowning in email + spreadsheets. The [Market Intelligence Analysis](../COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) surfaces the trigger events.
-- **What metrics move?** Track automation coverage, cycle time, and client NPS using the [Success Metrics Framework](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
+- **Who benefits first?** Start with firms drowning in email + spreadsheets. The [Market Intelligence Analysis]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) surfaces the trigger events.
+- **What metrics move?** Track automation coverage, cycle time, and client NPS using the [Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
 - **Where to focus enablement?** Pull enablement checkpoints from the [Implementation Runbook](README_USER.md) and align them with each capability pillar above.
 
 ## Automation Flow
@@ -54,7 +54,7 @@ Use this map during demos to narrate how AdvisorOS eliminates swivel-chair work.
 
 ## Demo Storyline
 
-1. Open on the **Executive Dashboard** (see [Financial Analytics Dashboard](../REVENUE_INTELLIGENCE_SYSTEM.md)) and highlight automation coverage.
+1. Open on the **Executive Dashboard** (see [Financial Analytics Dashboard]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md)) and highlight automation coverage.
 2. Jump into a **Client Workspace** to demonstrate collaborative document review using the [Document Management](#document-management) features.
 3. Showcase **Workflow Automation** with SLA tracking from the [Task Management](#task-management) section.
 4. Close with the **Compliance cockpit**, referencing audit trails and encryption from [Security and Compliance](#security-and-compliance).
@@ -510,3 +510,4 @@ Use this map during demos to narrate how AdvisorOS eliminates swivel-chair work.
 ---
 
 *This comprehensive feature overview demonstrates the platform's capabilities. For detailed implementation guidance, refer to the technical documentation and setup guides.*
+

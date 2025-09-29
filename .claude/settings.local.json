@@ -52,7 +52,9 @@
       "Bash(cloc:*)",
       "SlashCommand(/cpa-workflow-chain:*)",
       "Bash(git add:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

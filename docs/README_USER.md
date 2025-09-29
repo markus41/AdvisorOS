@@ -16,7 +16,7 @@ mermaid: true
 - [Architecture Cheat Sheet](ARCHITECTURE.md)
 - [Admin Checklist](ADMINISTRATOR_GUIDE.md)
 - [Jump to Troubleshooting](#troubleshooting)
-- [Client Success Playbook](../CLIENT_SUCCESS_SYSTEM.md)
+- [Client Success Playbook]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md)
 
 ---
 ## Table of Contents
@@ -51,14 +51,14 @@ mermaid: true
 | Train frontline teams | Enablement Lead | [User Guide (Comprehensive)](USER_GUIDE_COMPREHENSIVE.md) |
 
 > [!IMPORTANT]
-> Mirror every milestone in your backlog tool. Use the [Production Launch Plan](../ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) as the master schedule and link tasks back to these checklist items.
+> Mirror every milestone in your backlog tool. Use the [Production Launch Plan]({{ site.github.repository_url }}/blob/main/ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) as the master schedule and link tasks back to these checklist items.
 
 ## Weekly Operating Rhythm
 
 - **Monday stand-up (15 min)** -> Confirm weekend automation status using [Operations Runbook](operations/RUNBOOK.md#monitoring-checklist) and review open incidents.
-- **Mid-week adoption review (30 min)** -> Pull usage insights from [Feature Adoption dashboards](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md) and adjust enablement focus.
+- **Mid-week adoption review (30 min)** -> Pull usage insights from [Feature Adoption dashboards]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md) and adjust enablement focus.
 - **Thursday release readiness (45 min)** -> Walk through the [Production Readiness Checklist](PRODUCTION_READINESS_CHECKLIST.md) before shipping any changes.
-- **Friday retro (30 min)** -> Log wins, blockers, and client insights in the [Client Success System](../CLIENT_SUCCESS_SYSTEM.md) so the next sprint starts with context.
+- **Friday retro (30 min)** -> Log wins, blockers, and client insights in the [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) so the next sprint starts with context.
 
 ## Implementation Timeline
 
@@ -77,16 +77,16 @@ gantt
     Automation Tuning                :         launch2, 2025-03-05, 2025-03-31
 ```
 
-Align this view with the more detailed [Production Launch Plan](../ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) so every workstream leads with the same timeline.
+Align this view with the more detailed [Production Launch Plan]({{ site.github.repository_url }}/blob/main/ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) so every workstream leads with the same timeline.
 
 ## Feedback Loop
 
 > [!NOTE]
 > The fastest way to keep the platform sharp is to close the loop between support, product, and engineering.
 
-1. Capture field learnings in the [Client Success System](../CLIENT_SUCCESS_SYSTEM.md) immediately after each onboarding session.
-2. Translate systemic issues into product backlog items using the [Technical Debt Assessment](../TECHNICAL_DEBT_ASSESSMENT.md).
-3. Run quarterly reviews against the [Post-Launch Support Optimization](../POST_LAUNCH_SUPPORT_OPTIMIZATION.md) checklist to ensure playbooks stay relevant.
+1. Capture field learnings in the [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) immediately after each onboarding session.
+2. Translate systemic issues into product backlog items using the [Technical Debt Assessment]({{ site.github.repository_url }}/blob/main/TECHNICAL_DEBT_ASSESSMENT.md).
+3. Run quarterly reviews against the [Post-Launch Support Optimization]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md) checklist to ensure playbooks stay relevant.
 4. Feed resolved issues back into this runbook so new team members inherit the latest guidance.
 ## Getting Started
 
@@ -427,6 +427,7 @@ Powered by Tremor UI for:
 ---
 
 *For additional support, please contact your system administrator or our support team*
+
 
 
 
