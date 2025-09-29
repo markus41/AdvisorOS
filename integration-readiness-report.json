@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-09-29T00:17:25.175Z",
+  "environment": "development",
+  "scores": {
+    "environment": 1,
+    "database": 1,
+    "quickbooks": 1,
+    "stripe": 1,
+    "auth": 1,
+    "email": 1,
+    "storage": 1,
+    "ai": 1,
+    "general": 1
+  },
+  "overallScore": 1,
+  "results": {
+    "environment": {
+      "fileExists": true
+    },
+    "database": {
+      "configured": true,
+      "isSupabase": true,
+      "schemaComplete": true,
+      "modelsFound": 9,
+      "totalModels": 9
+    },
+    "quickbooks": {
+      "clientIdConfigured": false,
+      "clientSecretConfigured": false,
+      "webhookSecretConfigured": false,
+      "sandboxMode": true,
+      "schemaReady": true
+    },
+    "stripe": {
+      "secretKeyConfigured": false,
+      "publishableKeyConfigured": false,
+      "webhookSecretConfigured": false,
+      "testMode": true
+    },
+    "auth": {
+      "secretConfigured": true,
+      "urlConfigured": true
+    },
+    "email": {
+      "hostConfigured": null,
+      "userConfigured": null,
+      "passConfigured": null
+    },
+    "storage": {
+      "accountConfigured": null,
+      "keyConfigured": null
+    },
+    "ai": {
+      "openaiConfigured": null,
+      "formRecognizerConfigured": null
+    },
+    "general": {
+      "codeStructureScore": 1,
+      "apiEndpointsScore": 1,
+      "dependenciesScore": 1
+    }
+  },
+  "recommendations": [
+    "Configure QuickBooks OAuth credentials for live integration testing",
+    "Configure Stripe API keys for payment processing",
+    "Configure SMTP settings for email functionality",
+    "Configure Azure Storage for file upload functionality",
+    "Configure Azure OpenAI for AI-powered features",
+    "Configure Azure Form Recognizer for document OCR"
+  ],
+  "summary": {
+    "totalIntegrations": 8,
+    "readyIntegrations": 2,
+    "overallReadiness": "100%"
+  }
+}

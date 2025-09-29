@@ -1,0 +1,62 @@
+{
+  "timestamp": "2025-09-29T00:22:36.101Z",
+  "scores": {
+    "configuration": 0.25,
+    "codeStructure": 1,
+    "apiEndpoints": 1,
+    "oauth": 0.8571428571428571,
+    "webhook": 0.5,
+    "sync": 0.5,
+    "schema": 1
+  },
+  "overallScore": 0.729591836734694,
+  "status": "READY_FOR_DEVELOPMENT",
+  "results": {
+    "configuration": {
+      "QUICKBOOKS_CLIENT_ID": false,
+      "QUICKBOOKS_CLIENT_SECRET": false,
+      "QUICKBOOKS_WEBHOOK_SECRET": false,
+      "QUICKBOOKS_SANDBOX": true,
+      "sandboxMode": true,
+      "score": 0.25
+    },
+    "codeStructure": {
+      "apiClient": true,
+      "oauthService": true,
+      "syncService": true,
+      "score": 1
+    },
+    "apiClient": {
+      "connectEndpoint": true,
+      "callbackEndpoint": true,
+      "disconnectEndpoint": true,
+      "webhookEndpoint": true,
+      "syncEndpoint": true,
+      "score": 1
+    },
+    "oauth": {
+      "implementationScore": 0.8571428571428571,
+      "implemented": true
+    },
+    "webhook": {
+      "implementationScore": 0.5,
+      "implemented": true
+    },
+    "sync": {
+      "score": 0.5
+    },
+    "schema": {
+      "score": 1
+    }
+  },
+  "recommendations": [
+    "Configure QuickBooks OAuth credentials for live testing",
+    "Configure QuickBooks OAuth credentials for live testing",
+    "Complete QuickBooks sync functionality implementation"
+  ],
+  "summary": {
+    "overallReadiness": "73%",
+    "configurationStatus": "NEEDS_CONFIG",
+    "implementationStatus": "COMPLETE"
+  }
+}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 import crypto from 'crypto';
 
 // Webhook verification signature

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../auth/[...nextauth]/route';
-import { db } from "../../../../../server/db";
+import { prisma as db } from "@/server/db"
 
 const QUICKBOOKS_SCOPE = 'com.intuit.quickbooks.accounting';
 

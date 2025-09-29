@@ -57,7 +57,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { StatusBadge } from '@/components/ui/status-badge'
-import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
+import { DashboardSkeleton } from '@/components/ui/loading-skeleton'
 import { cn } from '@/lib/utils'
 
 // Mock data - replace with actual API calls
@@ -368,10 +368,7 @@ export default function ReportsPage() {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="space-y-6">
-          <LoadingSkeleton className="h-8 w-64" />
-          <LoadingSkeleton className="h-96" />
-        </div>
+        <DashboardSkeleton />
       </DashboardLayout>
     )
   }

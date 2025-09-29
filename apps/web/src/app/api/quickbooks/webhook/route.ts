@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHmac } from 'crypto';
-import { prisma } from '@/packages/database';
+import { prisma } from '@/server/db';
 import { QuickBooksWebhookProcessor } from '@/lib/integrations/quickbooks/webhook-processor';
 
 export async function POST(request: NextRequest) {

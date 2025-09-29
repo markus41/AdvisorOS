@@ -21,6 +21,7 @@
     "dev:reset": "node scripts/dev-reset-cross-platform.js",
     "dev:test": "node scripts/test-connection-cross-platform.js",
     "dev:test-local": "node scripts/test-local-db.js",
+    "dev:setup-db": "node scripts/complete-database-setup.js",
     "dev:studio": "node scripts/studio-cross-platform.js",
     "dev:backup": "node scripts/db-backup-cross-platform.js",
     "dev:restore": "node scripts/db-restore-cross-platform.js",

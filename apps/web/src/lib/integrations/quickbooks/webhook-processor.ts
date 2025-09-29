@@ -1,4 +1,4 @@
-import { prisma } from '@/packages/database';
+import { prisma } from '@/server/db';
 import { syncManager } from './sync-manager';
 import { CustomerSyncService } from './sync/customer-sync';
 import { InvoiceSyncService } from './sync/invoice-sync';

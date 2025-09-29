@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { ocrService } from '@/server/services/ocr.service';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 
 export async function POST(request: NextRequest) {
   try {

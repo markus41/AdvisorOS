@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { advisoryCopilotService } from '@/lib/ai/advisory-copilot';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 import { z } from 'zod';
 
 const businessProfileSchema = z.object({

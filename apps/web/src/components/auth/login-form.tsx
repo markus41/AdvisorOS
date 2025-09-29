@@ -125,6 +125,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
             {...register('subdomain')}
             type="text"
             id="subdomain"
+            data-testid="subdomain-input"
             placeholder="your-organization"
             className={cn(
               'w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -150,6 +151,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
             {...register('email')}
             type="email"
             id="email"
+            data-testid="email-input"
             placeholder="your.email@example.com"
             className={cn(
               'w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -175,6 +177,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
             {...register('password')}
             type={showPassword ? 'text' : 'password'}
             id="password"
+            data-testid="password-input"
             placeholder="••••••••"
             className={cn(
               'w-full pl-10 pr-12 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -185,6 +188,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
           />
           <button
             type="button"
+            data-testid="password-toggle"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
             disabled={isLoading}
@@ -207,6 +211,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
             {...register('twoFactorCode')}
             type="text"
             id="twoFactorCode"
+            data-testid="2fa-input"
             placeholder="123456"
             maxLength={6}
             className={cn(
@@ -231,6 +236,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
           {...register('rememberMe')}
           type="checkbox"
           id="rememberMe"
+          data-testid="remember-me-checkbox"
           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
           disabled={isLoading}
         />
@@ -242,6 +248,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
       {/* Submit Button */}
       <button
         type="submit"
+        data-testid="signin-button"
         disabled={isLoading}
         className={cn(
           'w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white',
@@ -256,7 +263,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
             Signing in...
           </div>
         ) : needsTwoFactor ? (
-          'Verify & Sign In'
+          <span data-testid="verify-button">Verify & Sign In</span>
         ) : (
           'Sign In'
         )}
@@ -266,6 +273,7 @@ export function LoginForm({ className, onNeedTwoFactor }: LoginFormProps) {
       {needsTwoFactor && (
         <button
           type="button"
+          data-testid="back-to-password-button"
           onClick={() => {
             setNeedsTwoFactor(false)
             setValue('twoFactorCode', '')

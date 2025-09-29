@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { financialInsightsService } from '@/lib/ai/financial-insights';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 import { z } from 'zod';
 
 const generateInsightsSchema = z.object({

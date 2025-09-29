@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { documentIntelligenceService } from '@/lib/ai/document-intelligence';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 
 export async function POST(request: NextRequest) {
   try {

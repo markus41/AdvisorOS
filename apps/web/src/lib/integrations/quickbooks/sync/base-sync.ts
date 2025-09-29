@@ -1,4 +1,4 @@
-import { prisma } from '@/packages/database';
+import { prisma } from '@/server/db';
 import { createQuickBooksApiClient } from '../client';
 
 export interface SyncResult {

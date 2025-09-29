@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 import { openaiClient } from '@/lib/ai/openai-client';
 
 export async function POST(request: NextRequest) {

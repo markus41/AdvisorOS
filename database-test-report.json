@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-09-29T00:22:36.027Z",
+  "results": {
+    "connection": false,
+    "schema": false,
+    "basicOperations": false,
+    "models": {},
+    "performance": {}
+  },
+  "summary": {
+    "passedTests": 0,
+    "totalTests": 4,
+    "successRate": "0%",
+    "status": "NEEDS_WORK"
+  },
+  "recommendations": [
+    "Fix database connection - check DATABASE_URL and network connectivity",
+    "Run database migrations: npx prisma migrate deploy",
+    "Check database permissions and schema integrity"
+  ],
+  "performance": {}
+}

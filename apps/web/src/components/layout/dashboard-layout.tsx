@@ -80,11 +80,11 @@ function Breadcrumbs({ items }: BreadcrumbsProps) {
   )
 }
 
-interface LoadingSkeletonProps {
+interface DashboardSkeletonProps {
   className?: string
 }
 
-function LoadingSkeleton({ className }: LoadingSkeletonProps) {
+function DashboardSkeleton({ className }: DashboardSkeletonProps) {
   return (
     <div className={cn('animate-pulse', className)}>
       <div className="space-y-6">
@@ -201,7 +201,7 @@ export function DashboardLayout({ children, className }: DashboardLayoutProps) {
           <div className="flex-1">
             <div className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"></div>
             <div className="p-6">
-              <LoadingSkeleton />
+              <DashboardSkeleton />
             </div>
           </div>
         </div>

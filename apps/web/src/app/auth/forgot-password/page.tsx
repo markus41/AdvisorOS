@@ -177,6 +177,7 @@ export default function ForgotPasswordPage() {
                   {...register('subdomain')}
                   type="text"
                   id="subdomain"
+                  data-testid="subdomain-input"
                   placeholder="your-organization"
                   className={cn(
                     'w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -202,6 +203,7 @@ export default function ForgotPasswordPage() {
                   {...register('email')}
                   type="email"
                   id="email"
+                  data-testid="email-input"
                   placeholder="your.email@example.com"
                   className={cn(
                     'w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -219,6 +221,7 @@ export default function ForgotPasswordPage() {
             {/* Submit Button */}
             <button
               type="submit"
+              data-testid="reset-button"
               disabled={isLoading}
               className="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:focus:ring-offset-gray-800"
             >

@@ -1,4 +1,4 @@
-import { prisma } from '@/packages/database';
+import { prisma } from '@/server/db';
 import { createQuickBooksOAuthService } from './oauth';
 import { CompanySyncService } from './sync/company-sync';
 import { AccountsSyncService } from './sync/accounts-sync';

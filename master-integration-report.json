@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-09-29T00:22:36.119Z",
+  "overallScore": 0.72725,
+  "overallPercentage": 73,
+  "status": "GOOD",
+  "results": {
+    "database": {
+      "connectionTest": false,
+      "score": 0.5,
+      "details": "Database may need configuration"
+    },
+    "auth": {
+      "configured": true,
+      "score": 1,
+      "details": "5/5 auth features configured"
+    },
+    "quickbooks": {
+      "tested": true,
+      "score": 0.73,
+      "details": "QuickBooks integration is ready for development"
+    },
+    "stripe": {
+      "filesImplemented": 3,
+      "webhookQuality": 0.75,
+      "score": 0.875,
+      "details": "3/3 files implemented, webhook quality: 75%"
+    },
+    "email": {
+      "serviceImplemented": true,
+      "configurationComplete": false,
+      "score": 0.5,
+      "details": "Service: Yes, Config: 0/3"
+    },
+    "storage": {
+      "serviceImplemented": true,
+      "uploadEndpoint": true,
+      "configurationComplete": false,
+      "score": 0.7,
+      "details": "Service: Yes, Upload: Yes, Config: 0/2"
+    },
+    "ai": {
+      "formRecognizer": true,
+      "openaiIntegration": true,
+      "endpoints": 2,
+      "configurationComplete": false,
+      "score": 0.8,
+      "details": "Form Recognizer: Yes, OpenAI: Yes, Endpoints: 2/2"
+    },
+    "general": {}
+  },
+  "criticalIssues": [],
+  "warnings": [
+    "Database connection test failed - verify Supabase configuration"
+  ],
+  "recommendations": [
+    "Configure Supabase database connection and run migrations",
+    "Configure SMTP settings for email functionality",
+    "Review and complete integration configurations before production deployment"
+  ],
+  "productionReady": false,
+  "summary": {
+    "totalIntegrations": 8,
+    "readyIntegrations": 3,
+    "needsWork": 2
+  }
+}

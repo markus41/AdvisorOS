@@ -49,7 +49,7 @@ import {
 import { StatusBadge } from '@/components/ui/status-badge'
 import { KPICard } from '@/components/ui/kpi-card'
 import { ActivityFeed } from '@/components/ui/activity-feed'
-import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
+import { DashboardSkeleton } from '@/components/ui/loading-skeleton'
 import Link from 'next/link'
 
 // Mock data - replace with actual API calls
@@ -222,10 +222,7 @@ export default function ClientDetailPage() {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="space-y-6">
-          <LoadingSkeleton className="h-20" />
-          <LoadingSkeleton className="h-96" />
-        </div>
+        <DashboardSkeleton />
       </DashboardLayout>
     )
   }

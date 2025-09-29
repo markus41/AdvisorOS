@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { openaiClient } from '@/lib/ai/openai-client';
-import { db } from "../../../../server/db";
+import { prisma as db } from "@/server/db"
 
 export async function GET(request: NextRequest) {
   try {
