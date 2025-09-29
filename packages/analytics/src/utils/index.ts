@@ -760,7 +760,7 @@ interface FinancialRatios {
   assetTurnover: Decimal;
 }
 
-export {
+export type {
   PerformanceMetric,
   OperationStats,
   CacheEntry,

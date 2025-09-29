@@ -10,14 +10,16 @@ import {
   InsightRequest,
   GeneratedInsight,
   InsightMetric,
-  DetectedAnomaly,
-  AnomalyDetectionConfig,
   FinancialData,
   RiskScore,
   RiskScoringInput,
   BenchmarkComparison,
   VisualizationSpec
 } from '../types';
+import {
+  DetectedAnomaly,
+  AnomalyDetectionConfig
+} from './anomaly-detector';
 
 export class InsightEngine {
   private anomalyDetectors: Map<string, AnomalyDetector> = new Map();

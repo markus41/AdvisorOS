@@ -20,13 +20,13 @@ nav_order: 1
 | SEV-4 | Question or anomaly | Alert with no user impact, proactive investigation | Support triage |
 
 > [!TIP]
-> Log every incident in the ticketing system with links to monitoring screenshots and timeline notes. Use the [Testing Automation Framework](../TESTING_AUTOMATION_FRAMEWORK.md) to reproduce issues rapidly.
+> Log every incident in the ticketing system with links to monitoring screenshots and timeline notes. Use the [Testing Automation Framework]({{ site.github.repository_url }}/blob/main/TESTING_AUTOMATION_FRAMEWORK.md) to reproduce issues rapidly.
 
 ## Five-Minute Rulebook
 
-1. **Declare the incident** ? Post in `#advisoros-incident` with severity, impact, and on-call owner.
-2. **Freeze risky changes** ? Halt deployments via the [Production Deployment Guide](DEPLOYMENT_GUIDE.md).
-3. **Establish a bridge** ? Launch a Teams/Zoom bridge, capture notes in the incident record.
+1. **Declare the incident** -> Post in `#advisoros-incident` with severity, impact, and on-call owner.
+2. **Freeze risky changes** -> Halt deployments via the [Production Deployment Guide](DEPLOYMENT_GUIDE.md).
+3. **Establish a bridge** -> Launch a Teams/Zoom bridge, capture notes in the incident record.
 4. **Assign roles**:
    - Incident Commander: coordinates and communicates
    - Communications Lead: posts updates to leadership & clients
@@ -38,8 +38,8 @@ nav_order: 1
 
 - Validate monitoring alerts in Application Insights / Grafana.
 - Capture query plans, logs, and error IDs before restarting services.
-- Toggle feature flags when a temporary mitigation is available (see [Feature Flags section](../ADMINISTRATOR_GUIDE.md#feature-flags)).
-- If data integrity is at risk, follow the [Database Recovery Checklist](../DATABASE.md#recovery-procedures) immediately.
+- Toggle feature flags when a temporary mitigation is available (see [Feature Flags section]({{ site.github.repository_url }}/blob/main/ADMINISTRATOR_GUIDE.md#feature-flags)).
+- If data integrity is at risk, follow the [Database Recovery Checklist]({{ site.github.repository_url }}/blob/main/DATABASE.md#recovery-procedures) immediately.
 
 ## Communication Templates
 
@@ -66,7 +66,7 @@ AdvisorOS Operations Team
 ## Post-Incident Review
 
 1. Schedule a review within two business days. Invite engineering, product, support, and customer success.
-2. Populate the [Post-Incident Template](../POST_LAUNCH_SUPPORT_OPTIMIZATION.md#post-incident-template) with:
+2. Populate the [Post-Incident Template]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md#post-incident-template) with:
    - Timeline
    - Root cause and contributing factors
    - Resolution steps
@@ -77,5 +77,8 @@ AdvisorOS Operations Team
 
 - [Operations Runbook](RUNBOOK.md) for monitoring and alert routing
 - [Production Readiness Checklist](../PRODUCTION_READINESS_CHECKLIST.md) to prevent repeat issues
-- [Security Compliance Report](../SECURITY_COMPLIANCE_REPORT.md) when handling security-related incidents
-- [Rollback Procedures](../PRODUCTION_ROLLBACK_PROCEDURES.md) if mitigation requires failover
+- [Security Compliance Report]({{ site.github.repository_url }}/blob/main/SECURITY_COMPLIANCE_REPORT.md) when handling security-related incidents
+- [Rollback Procedures]({{ site.github.repository_url }}/blob/main/PRODUCTION_ROLLBACK_PROCEDURES.md) if mitigation requires failover
+
+
+

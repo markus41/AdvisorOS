@@ -119,7 +119,7 @@ Use this as the backbone for stakeholder updates. The granular workstream detail
 ## Operations Command Center
 
 > [!IMPORTANT]
-> When production gets noisy, jump straight into these documents—no rummaging through PDFs required.
+> When production gets noisy, jump straight into these documents-no rummaging through PDFs required.
 
 - [Incident Response Playbook](operations/incident-response.md)
 - [Operations Runbook](operations/RUNBOOK.md)
@@ -143,6 +143,8 @@ Use this as the backbone for stakeholder updates. The granular workstream detail
 2. Store images in `docs/assets/screenshots/` (PNG preferred) and media in `docs/assets/media/`.
 3. Cross-link to existing playbooks instead of duplicating content. If something is missing, add a new section and call it out in your PR.
 4. Record what changed in release notes or the appropriate plan documents so downstream teams stay aligned.
+
+
 
 
 

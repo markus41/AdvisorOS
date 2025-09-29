@@ -118,25 +118,7 @@ export interface InsightMetric {
   unit: string;
 }
 
-// Anomaly Detection Types
-export interface AnomalyDetectionConfig {
-  sensitivity: number; // 0-1
-  methods: ('statistical' | 'ml' | 'rule_based')[];
-  thresholds: Record<string, number>;
-  exclusions: string[];
-}
-
-export interface DetectedAnomaly {
-  id: string;
-  type: 'transaction' | 'pattern' | 'benchmark_deviation';
-  severity: 'low' | 'medium' | 'high';
-  description: string;
-  affectedData: FinancialData[];
-  detectionMethod: string;
-  confidence: number;
-  suggestedActions: string[];
-  timestamp: Date;
-}
+// Anomaly Detection Types are now in insights/anomaly-detector.ts
 
 // Risk Scoring Types
 export interface RiskScoringInput {

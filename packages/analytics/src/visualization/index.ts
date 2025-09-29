@@ -959,7 +959,10 @@ export {
   AnimationEngine,
   Dashboard,
   RealtimeChart,
-  DataExplorer,
+  DataExplorer
+};
+
+export type {
   DashboardConfig,
   DashboardSection,
   ExplorerConfig

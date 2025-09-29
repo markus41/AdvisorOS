@@ -777,7 +777,10 @@ export {
   AlertEngine,
   StreamProcessor,
   RealtimeDashboard,
-  TransactionPatternMonitor,
+  TransactionPatternMonitor
+};
+
+export type {
   RealtimeConfig,
   NotificationConfig
 };

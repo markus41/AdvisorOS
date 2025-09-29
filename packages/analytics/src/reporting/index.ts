@@ -4,7 +4,7 @@
  */
 
 import { Decimal } from 'decimal.js';
-import { format, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, subDays } from 'date-fns';
 import {
   ReportTemplate,
   ReportSection,
@@ -1026,6 +1026,9 @@ interface ScheduledReport {
 
 export {
   ReportRenderEngine,
-  ReportDataEngine,
+  ReportDataEngine
+};
+
+export type {
   ScheduledReport
 };

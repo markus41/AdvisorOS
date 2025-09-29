@@ -43,8 +43,8 @@ Each stage maps directly to the procedures inside the [Incident Response Playboo
 | Change Type | Cadence | Owner | Reference |
 | --- | --- | --- | --- |
 | Feature deployments | Weekly | Release Captain | [Production Deployment Guide](DEPLOYMENT_GUIDE.md) |
-| Infrastructure patches | Bi-weekly | Platform Engineering | [Administrator Guide](../ADMINISTRATOR_GUIDE.md#maintenance--updates) |
-| Security drills | Quarterly | Security Officer | [Security Compliance Report](../SECURITY_COMPLIANCE_REPORT.md) |
+| Infrastructure patches | Bi-weekly | Platform Engineering | [Administrator Guide]({{ site.github.repository_url }}/blob/main/ADMINISTRATOR_GUIDE.md#maintenance--updates) |
+| Security drills | Quarterly | Security Officer | [Security Compliance Report]({{ site.github.repository_url }}/blob/main/SECURITY_COMPLIANCE_REPORT.md) |
 | Backup validation | Monthly | Database Lead | [Database Reference](../DATABASE.md) |
 
 ## Playbooks
@@ -54,10 +54,11 @@ Each stage maps directly to the procedures inside the [Incident Response Playboo
 - [Production Deployment Guide](DEPLOYMENT_GUIDE.md)
 - [Compliance Oversight](../compliance/README.md)
 - [Database Recovery Checklist](../DATABASE.md)
-- [Post-Launch Support Optimization](../POST_LAUNCH_SUPPORT_OPTIMIZATION.md)
+- [Post-Launch Support Optimization]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md)
 
 ## Reporting Rhythm
 
-1. Publish weekly health summaries in Slack using data from [Feature Success dashboards](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
-2. Run monthly compliance reviews referencing [COMPREHENSIVE_SECURITY_AUDIT_REPORT.md](../COMPREHENSIVE_SECURITY_AUDIT_REPORT.md).
-3. Share quarterly automation gains and client impact from [CLIENT_SUCCESS_SYSTEM.md](../CLIENT_SUCCESS_SYSTEM.md).
+1. Publish weekly health summaries in Slack using data from [Feature Success dashboards]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
+2. Run monthly compliance reviews referencing [COMPREHENSIVE_SECURITY_AUDIT_REPORT.md]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md).
+3. Share quarterly automation gains and client impact from [CLIENT_SUCCESS_SYSTEM.md]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md).
+
