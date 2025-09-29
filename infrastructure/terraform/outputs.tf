@@ -1,4 +1,4 @@
-# Outputs for CPA Platform Infrastructure
+# Outputs for AdvisorOS Infrastructure
 
 output "resource_group_name" {
   description = "Name of the resource group"
@@ -59,25 +59,35 @@ output "database_url" {
   sensitive   = true
 }
 
-output "static_web_app_url" {
-  description = "URL of the Static Web App"
-  value       = azurerm_static_site.web.default_host_name
+# App Service outputs
+output "app_service_name" {
+  description = "Name of the App Service"
+  value       = azurerm_linux_web_app.app.name
 }
 
-output "static_web_app_api_key" {
-  description = "API key for Static Web App deployment"
-  value       = azurerm_static_site.web.api_key
-  sensitive   = true
+output "app_service_url" {
+  description = "URL of the App Service"
+  value       = azurerm_linux_web_app.app.default_hostname
 }
 
-output "function_app_name" {
-  description = "Name of the Function App"
-  value       = azurerm_linux_function_app.api.name
+output "application_gateway_public_ip" {
+  description = "Public IP address of the Application Gateway"
+  value       = azurerm_public_ip.app_gateway.ip_address
 }
 
-output "function_app_url" {
-  description = "URL of the Function App"
-  value       = azurerm_linux_function_app.api.default_hostname
+output "redis_hostname" {
+  description = "Redis cache hostname"
+  value       = azurerm_redis_cache.main.hostname
+}
+
+output "openai_endpoint" {
+  description = "Azure OpenAI service endpoint"
+  value       = azurerm_cognitive_account.openai.endpoint
+}
+
+output "search_service_endpoint" {
+  description = "Azure Cognitive Search service endpoint"
+  value       = "https://${azurerm_search_service.main.name}.search.windows.net"
 }
 
 output "cdn_endpoint_url" {
@@ -111,30 +121,40 @@ output "environment" {
   value       = var.environment
 }
 
+output "health_check_url" {
+  description = "Health check endpoint URL"
+  value       = "https://${azurerm_linux_web_app.app.default_hostname}/api/health"
+}
+
 output "deployment_instructions" {
   description = "Next steps for deployment"
   value = <<EOT
-Deployment Complete! Next steps:
+AdvisorOS Deployment Complete! Next steps:
 
 1. Store sensitive outputs in secure location
 2. Configure DNS for custom domain (if applicable)
-3. Set up CI/CD pipeline with the static_web_app_api_key
+3. Set up GitHub Actions secrets for CI/CD
 4. Configure Azure AD B2C user flows:
    - Sign up and sign in flow
    - Password reset flow
    - Profile edit flow
-5. Add secrets to Key Vault:
+5. Add production secrets to Key Vault:
    - QuickBooks OAuth credentials
+   - Stripe API keys
    - SendGrid API key
    - Other third-party API keys
 6. Configure backup policies
 7. Set up monitoring alerts
 8. Test all connections
+9. Run database migrations
+10. Configure SSL certificates
 
 Important URLs:
-- Web App: https://${azurerm_static_site.web.default_host_name}
-- API: https://${azurerm_linux_function_app.api.default_hostname}
+- Application: https://${azurerm_linux_web_app.app.default_hostname}
+- Health Check: https://${azurerm_linux_web_app.app.default_hostname}/api/health
+- Application Gateway: http://${azurerm_public_ip.app_gateway.ip_address}
 - Key Vault: ${azurerm_key_vault.main.vault_uri}
 - Application Insights: https://portal.azure.com/#resource${azurerm_application_insights.main.id}
+- Log Analytics: https://portal.azure.com/#resource${azurerm_log_analytics_workspace.main.id}
 EOT
 }

@@ -1,3 +1,9 @@
+---
+layout: default
+title: Architecture Deep Dive
+nav_order: 3
+---
+
 # Architecture Overview
 
 ## Table of Contents

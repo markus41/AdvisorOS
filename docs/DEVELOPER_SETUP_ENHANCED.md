@@ -1,3 +1,9 @@
+---
+layout: default
+title: Developer Environment Setup
+nav_order: 30
+---
+
 # AdvisorOS Developer Setup & Architecture Guide
 
 ## Table of Contents

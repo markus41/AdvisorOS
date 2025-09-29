@@ -47,7 +47,12 @@
       "Bash(npx playwright test:*)",
       "Bash(timeout 90 npm run build)",
       "Bash(npm audit:*)",
-      "Bash(npx storybook@latest init:*)"
+      "Bash(npx storybook@latest init:*)",
+      "Bash(grep:*)",
+      "Bash(cloc:*)",
+      "SlashCommand(/cpa-workflow-chain:*)",
+      "Bash(git add:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

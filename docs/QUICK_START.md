@@ -1,3 +1,9 @@
+---
+layout: default
+title: Executive Quick Start
+nav_order: 4
+---
+
 # Quick Start Guide
 
 ## Table of Contents

@@ -1,0 +1,361 @@
+{
+  "project": {
+    "name": "AdvisorOS",
+    "description": "AI-Powered Multi-Tenant CPA Platform with Zen MCP Integration",
+    "version": "2.0.0",
+    "architecture": "Next.js 15 + tRPC v10 + Prisma v5 + PostgreSQL + Azure AI + Zen MCP Server",
+    "pattern": "Multi-tenant SaaS with organization-scoped data isolation and professional AI development tools"
+  },
+  "integrations": {
+    "zen_mcp_server": {
+      "enabled": true,
+      "path": "./zen-mcp-server",
+      "custom_tools_path": "./advisoros-zen-tools",
+      "azure_ai_integration": true,
+      "cpa_workflows_enabled": true,
+      "multi_tenant_validation": true,
+      "models": {
+        "primary": "azure-openai-gpt-4",
+        "secondary": "google-gemini-pro",
+        "specialist": "anthropic-claude-3-sonnet"
+      }
+    },
+    "comprehensive_mcp_ecosystem": {
+      "enabled": true,
+      "description": "Complete MCP server ecosystem for professional CPA development",
+      "servers": {
+        "postgresql_mcp": {
+          "enabled": true,
+          "purpose": "Multi-tenant database operations with organization isolation",
+          "cpa_focus": "Financial data queries, audit trails, tenant validation"
+        },
+        "github_mcp": {
+          "enabled": true,
+          "purpose": "Repository management and CI/CD for CPA platform",
+          "cpa_focus": "Code reviews, release management, compliance tracking"
+        },
+        "azure_mcp": {
+          "enabled": true,
+          "purpose": "Azure AI services integration for CPA workflows",
+          "cpa_focus": "Form Recognizer, Text Analytics, OpenAI, Cognitive Search"
+        },
+        "browser_mcp": {
+          "enabled": true,
+          "purpose": "Web automation and testing for CPA applications",
+          "cpa_focus": "End-to-end testing, tax portal automation, compliance verification"
+        },
+        "notion_mcp": {
+          "enabled": true,
+          "purpose": "CPA knowledge base and documentation management",
+          "cpa_focus": "Tax regulations, client documentation, compliance checklists"
+        },
+        "memory_bank_mcp": {
+          "enabled": true,
+          "purpose": "Persistent context storage for complex CPA projects",
+          "cpa_focus": "Tax season context, client history, regulation updates"
+        },
+        "amem_mcp": {
+          "enabled": true,
+          "purpose": "Advanced memory management for CPA workflows",
+          "cpa_focus": "Cross-session context, complex calculation history"
+        },
+        "gateway_mcp": {
+          "enabled": true,
+          "purpose": "API gateway management for multi-tenant CPA platform",
+          "cpa_focus": "Rate limiting, tenant routing, API security"
+        },
+        "ref_mcp": {
+          "enabled": true,
+          "purpose": "Technical documentation and reference lookup",
+          "cpa_focus": "Tax code references, API documentation, compliance guides"
+        }
+      }
+    }
+  },
+  "critical_patterns": {
+    "tenant_isolation": {
+      "description": "EVERY database query MUST include organizationId filtering",
+      "requirement": "All Prisma operations must be organization-scoped",
+      "examples": [
+        "ctx.prisma.client.findMany({ where: { organizationId: ctx.organizationId } })",
+        "organizationProcedure.query(async ({ ctx }) => { ... })"
+      ],
+      "violations": [
+        "ctx.prisma.client.findMany({}) // Missing organizationId",
+        "publicProcedure.query() // No tenant validation"
+      ]
+    },
+    "rbac_hierarchy": {
+      "description": "Role-based access control with strict hierarchy",
+      "levels": ["owner", "admin", "cpa", "staff", "client"],
+      "service": "apps/web/src/server/services/permission.service.ts",
+      "pattern": "PermissionService.checkUserPermission(userId, organizationId, permission)"
+    }
+  },
+  "commands": {
+    "/sc:tenant-audit": {
+      "description": "Comprehensive multi-tenant security audit with Zen MCP security tools",
+      "zen_tools": ["multi-tenant-security-check", "secaudit", "codereview"],
+      "focus": [
+        "Validate all Prisma queries include organizationId",
+        "Check tRPC procedures use organizationProcedure", 
+        "Verify RBAC implementation in all endpoints",
+        "Test cross-organization access prevention"
+      ],
+      "files": [
+        "apps/web/src/server/api/routers/",
+        "packages/database/schema.prisma",
+        "apps/web/src/server/api/trpc.ts"
+      ]
+    },
+    "/sc:cpa-workflow": {
+      "description": "Analyze and optimize CPA-specific workflows using Zen AI tools",
+      "zen_tools": ["tax-calculation-review", "financial-compliance-audit", "analyze", "chat"],
+      "domains": ["tax-preparation", "financial-reporting", "client-management", "document-processing"],
+      "automation": [
+        "Azure Form Recognizer for tax documents",
+        "Text Analytics for client communications", 
+        "OpenAI for financial analysis and advice",
+        "Cognitive Search for regulatory lookup"
+      ]
+    },
+    "/sc:code-review": {
+      "description": "Professional code review with CPA platform expertise",
+      "zen_tools": ["codereview", "multi-tenant-security-check", "testgen"],
+      "focus": ["Multi-tenant isolation", "Financial data security", "CPA workflow compliance"]
+    },
+    "/sc:debug-tax": {
+      "description": "Advanced debugging for tax calculation errors",
+      "zen_tools": ["debug", "tax-calculation-review", "tracer"],
+      "specialization": "Tax calculation logic, regulatory compliance, edge cases"
+    },
+    "/sc:azure-optimize": {
+      "description": "Optimize Azure AI services for multi-tenant CPA platform",
+      "services": {
+        "form_recognizer": "Financial document OCR and data extraction",
+        "text_analytics": "Client sentiment analysis and insights",
+        "cognitive_search": "Tax code and regulation search",
+        "openai": "Financial analysis and report generation"
+      },
+      "optimization": ["Cost efficiency", "Performance scaling", "Multi-tenant isolation"]
+    },
+    "/sc:prisma-validate": {
+      "description": "Validate Prisma schema and queries for tenant isolation",
+      "checks": [
+        "All models include organizationId foreign key",
+        "Composite indexes on (organizationId, ...)",
+        "CASCADE delete for organization relationships",
+        "No direct queries without organization filter"
+      ]
+    }
+  },
+  "agents": {
+    "cpa-expert": {
+      "role": "CPA and financial domain specialist with AI-powered analysis",
+      "expertise": [
+        "US tax regulations and compliance",
+        "GAAP/IFRS financial reporting standards",
+        "CPA firm client management workflows",
+        "Financial document processing automation",
+        "Tax preparation and filing procedures"
+      ],
+      "zen_tools": ["tax-calculation-review", "financial-compliance-audit", "chat", "analyze", "docgen"],
+      "context": "Multi-tenant SaaS serving accounting firms",
+      "config": ".superclaude/agents/cpa-expert.yaml"
+    },
+    "security-auditor": {
+      "role": "Multi-tenant security validation specialist with automated auditing",
+      "focus": [
+        "Organization-scoped database query validation",
+        "Cross-tenant access prevention testing",
+        "RBAC implementation verification",
+        "Session security and tenant resolution"
+      ],
+      "zen_tools": ["multi-tenant-security-check", "secaudit", "codereview", "debug"],
+      "config": ".superclaude/agents/security-auditor.yaml"
+    },
+    "azure-architect": {
+      "role": "Azure AI services integration specialist with optimization tools",
+      "services": ["Form Recognizer", "Text Analytics", "Cognitive Search", "OpenAI"],
+      "zen_tools": ["analyze", "refactor", "testgen", "docgen", "thinkdeep"],
+      "optimization": "Multi-tenant cost efficiency and performance",
+      "config": ".superclaude/agents/azure-architect.yaml"
+    }
+  },
+  "workflows": {
+    "security-audit": {
+      "description": "Complete multi-tenant security validation with Zen MCP tools",
+      "zen_workflow": true,
+      "tools": ["multi-tenant-security-check", "secaudit", "codereview"],
+      "steps": [
+        "/sc:tenant-audit apps/web/src/server/api/routers/",
+        "/sc:prisma-validate packages/database/schema.prisma", 
+        "/sc:rbac-check apps/web/src/server/services/permission.service.ts"
+      ],
+      "agents": ["security-auditor"]
+    },
+    "cpa-feature-dev": {
+      "description": "CPA feature development with AI-powered domain expertise",
+      "zen_workflow": true,
+      "tools": ["tax-calculation-review", "financial-compliance-audit", "analyze", "testgen"],
+      "steps": [
+        "/sc:cpa-workflow analyze [feature]",
+        "/sc:azure-optimize [ai-requirements]",
+        "/sc:tenant-audit [implementation]"
+      ],
+      "agents": ["cpa-expert", "azure-architect", "security-auditor"]
+    },
+    "tax-debugging": {
+      "description": "Advanced tax calculation debugging and optimization",
+      "zen_workflow": true,
+      "tools": ["debug", "tax-calculation-review", "tracer", "testgen"],
+      "focus": ["Tax logic validation", "Regulatory compliance", "Edge case handling"],
+      "agents": ["cpa-expert"]
+    },
+    "financial-compliance": {
+      "description": "Comprehensive financial compliance audit and documentation",
+      "zen_workflow": true,
+      "tools": ["financial-compliance-audit", "secaudit", "docgen"],
+      "standards": ["SOX", "GAAP", "IRS regulations"],
+      "agents": ["cpa-expert", "security-auditor"]
+    },
+    "performance-optimize": {
+      "description": "Multi-tenant performance optimization with AI analysis",
+      "zen_workflow": true,
+      "tools": ["analyze", "refactor", "thinkdeep"],
+      "steps": [
+        "/sc:analyze --database-performance",
+        "/sc:azure-optimize --cost-efficiency", 
+        "/sc:prisma-validate --indexing"
+      ],
+      "agents": ["azure-architect"]
+    }
+  },
+  "development": {
+    "key_files": {
+      "tenant_middleware": "apps/web/src/server/api/trpc.ts",
+      "database_schema": "packages/database/schema.prisma", 
+      "permission_service": "apps/web/src/server/services/permission.service.ts",
+      "rate_limiting": "apps/web/src/server/middleware/rate-limiting.middleware.ts"
+    },
+    "commands": {
+      "setup": "npm run dev:setup-db",
+      "dev": "npm run dev",
+      "test_tenant_isolation": "npm run test:unit -- --testNamePattern='tenant.*isolation'",
+      "db_studio": "npm run db:studio"
+    }
+  },
+  "mcp_servers": {
+    "advisoros-context": {
+      "command": "node",
+      "args": [".superclaude/mcp-servers/advisoros-context.js"],
+      "description": "AdvisorOS tenant patterns and CPA workflow lookup with Zen integration"
+    },
+    "tenant-validator": {
+      "command": "node", 
+      "args": [".superclaude/mcp-servers/tenant-validator.js"],
+      "description": "Multi-tenant query validation and security checks with Zen MCP tools"
+    },
+    "zen-mcp-server": {
+      "command": "python",
+      "args": ["./zen-mcp-server/server.py"],
+      "description": "Professional AI development tools for CPA platform development",
+      "tools": [
+        "tax-calculation-review",
+        "financial-compliance-audit", 
+        "multi-tenant-security-check",
+        "chat", "thinkdeep", "analyze", "codereview", "debug",
+        "refactor", "testgen", "secaudit", "docgen", "tracer"
+      ]
+    },
+    "postgresql-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://user:pass@localhost:5432/advisoros_dev?schema=public"
+      },
+      "description": "Multi-tenant PostgreSQL operations with organization isolation",
+      "cpa_features": ["Financial data queries", "Audit trail validation", "Tenant isolation testing"]
+    },
+    "github-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "your_github_token_here"
+      },
+      "description": "GitHub repository management for AdvisorOS development",
+      "cpa_features": ["Code review workflows", "Release management", "Compliance tracking"]
+    },
+    "azure-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/azure-mcp-bridge.py"],
+      "env": {
+        "AZURE_SUBSCRIPTION_ID": "your_subscription_id",
+        "AZURE_CLIENT_ID": "your_client_id",
+        "AZURE_CLIENT_SECRET": "your_client_secret",
+        "AZURE_TENANT_ID": "your_tenant_id"
+      },
+      "description": "Azure AI services integration for CPA workflows",
+      "cpa_features": ["Form Recognizer", "Text Analytics", "OpenAI", "Cognitive Search"]
+    },
+    "browser-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "description": "Web automation and testing for CPA applications",
+      "cpa_features": ["End-to-end testing", "Tax portal automation", "Compliance verification"]
+    },
+    "notion-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-notion"],
+      "env": {
+        "NOTION_API_KEY": "your_notion_api_key_here"
+      },
+      "description": "CPA knowledge base and documentation management",
+      "cpa_features": ["Tax regulations", "Client documentation", "Compliance checklists"]
+    },
+    "memory-bank-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent context storage for complex CPA projects",
+      "cpa_features": ["Tax season context", "Client history", "Regulation updates"]
+    },
+    "amem-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/amem-server.py"],
+      "description": "Advanced memory management for CPA workflows",
+      "cpa_features": ["Cross-session context", "Complex calculation history"]
+    },
+    "gateway-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/gateway-server.py"],
+      "description": "API gateway management for multi-tenant CPA platform",
+      "cpa_features": ["Rate limiting", "Tenant routing", "API security"]
+    },
+    "ref-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-reference"],
+      "description": "Technical documentation and reference lookup",
+      "cpa_features": ["Tax code references", "API documentation", "Compliance guides"]
+    }
+  },
+  "zen_custom_tools": {
+    "tax-calculation-review": {
+      "type": "WorkflowTool",
+      "description": "Multi-step tax calculation validation and optimization for CPA workflows",
+      "specialization": "US tax code compliance, IRS regulations, edge case handling",
+      "models": ["azure-openai-gpt-4", "anthropic-claude-3-sonnet"]
+    },
+    "financial-compliance-audit": {
+      "type": "WorkflowTool", 
+      "description": "SOX compliance and financial regulation validation for CPA platforms",
+      "specialization": "Audit trails, financial controls, compliance documentation",
+      "models": ["azure-openai-gpt-4", "google-gemini-pro"]
+    },
+    "multi-tenant-security-check": {
+      "type": "WorkflowTool",
+      "description": "Comprehensive security audit for multi-tenant CPA platform architecture",
+      "specialization": "Organization isolation, RBAC validation, data security",
+      "models": ["anthropic-claude-3-sonnet", "azure-openai-gpt-4"]
+    }
+  }
+}

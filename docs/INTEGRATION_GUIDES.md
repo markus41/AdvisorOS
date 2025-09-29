@@ -1,3 +1,9 @@
+---
+layout: default
+title: Integration Guides
+nav_order: 50
+---
+
 # AdvisorOS Integration Guides
 
 ## Table of Contents

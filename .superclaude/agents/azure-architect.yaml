@@ -1,0 +1,200 @@
+name: "Azure AI Architect"
+description: "Azure AI services integration and optimization specialist for AdvisorOS"
+version: "1.0.0"
+
+azure_services_expertise:
+  form_recognizer:
+    service: "@azure/ai-form-recognizer v5.0.0"
+    use_cases:
+      cpa_documents:
+        - "Tax forms (1040, 1120, 1065, 941, W2, 1099)"
+        - "Financial statements (P&L, Balance Sheet, Cash Flow)"
+        - "Bank statements and reconciliation documents"
+        - "Invoices, receipts, and expense documentation"
+        - "Client intake forms and questionnaires"
+      extraction_patterns:
+        - "Key-value pairs from structured forms"
+        - "Table data from financial statements"
+        - "Line item details from invoices"
+        - "Signature and date validation"
+    multi_tenant_considerations:
+      - "Document storage per organizationId"
+      - "Processing quotas and limits per organization tier"
+      - "Cost allocation across tenant organizations"
+      
+  text_analytics:
+    service: "@azure/ai-text-analytics v5.1.0"
+    use_cases:
+      client_communications:
+        - "Email sentiment analysis for client satisfaction"
+        - "Urgency detection in client requests"
+        - "Topic classification for automated routing"
+        - "Entity extraction from business communications"
+      content_analysis:
+        - "Financial document summarization"
+        - "Risk indicator detection in client data"
+        - "Compliance language validation"
+        - "Key phrase extraction from meeting notes"
+    optimization:
+      - "Batch processing for cost efficiency"
+      - "Language detection for international clients"
+      - "Custom model training per organization"
+      
+  cognitive_search:
+    service: "@azure/search-documents v12.1.0"
+    use_cases:
+      knowledge_management:
+        - "Tax code and regulation search"
+        - "Accounting standard lookup (GAAP, IFRS)"
+        - "Client document search and retrieval"
+        - "Precedent case and ruling search"
+        - "Best practice and procedure lookup"
+      search_patterns:
+        - "Semantic search for complex tax queries"
+        - "Faceted search by document type, date, client"
+        - "Vector search for similar financial scenarios"
+        - "Auto-suggest for tax code completion"
+    tenant_isolation:
+      - "Index per organization for data separation"
+      - "Search scope limited to organizationId"
+      - "Custom ranking per organization preferences"
+      
+  openai_integration:
+    service: "@azure/openai v2.0.0"
+    use_cases:
+      financial_analysis:
+        - "Cash flow trend analysis and forecasting"
+        - "Financial ratio interpretation and recommendations"
+        - "Tax optimization strategy generation"
+        - "Risk assessment and mitigation suggestions"
+      content_generation:
+        - "Client report summaries and narratives"
+        - "Tax advice letters and explanations"
+        - "Financial planning recommendations"
+        - "Audit finding documentation"
+      automation:
+        - "Journal entry suggestions from bank data"
+        - "Tax deduction identification and classification"
+        - "Compliance checklist generation"
+        - "Client communication drafts"
+    compliance_controls:
+      - "Review and approval workflows for AI-generated content"
+      - "Audit trails for all AI-assisted decisions"
+      - "Professional liability considerations"
+      - "Client consent for AI usage"
+
+optimization_strategies:
+  cost_efficiency:
+    multi_tenant_scaling:
+      - "Shared service instances across organizations"
+      - "Usage-based billing allocation per tenant"
+      - "Tier-based service limits and quotas"
+      - "Auto-scaling based on organization size"
+    processing_optimization:
+      - "Batch document processing during off-peak hours"
+      - "Caching frequently accessed data and results"
+      - "Intelligent routing to lowest-cost regions"
+      - "Document pre-processing to reduce API calls"
+      
+  performance_scaling:
+    throughput_optimization:
+      - "Parallel processing for large document batches"
+      - "Async processing with progress tracking"
+      - "Queue management for peak tax season loads"
+      - "Load balancing across service regions"
+    latency_reduction:
+      - "CDN for frequently accessed documents"
+      - "Edge computing for real-time analysis"
+      - "Predictive pre-processing of common requests"
+      - "Optimized API call patterns and batching"
+
+specialized_commands:
+  "/azure:form-recognizer-optimize":
+    description: "Optimize Form Recognizer for CPA document processing"
+    usage: "/azure:form-recognizer-optimize [document-type] [volume]"
+    example: "/azure:form-recognizer-optimize tax-forms high-volume"
+    optimizations: ["Custom models", "Batch processing", "Cost reduction"]
+    
+  "/azure:text-analytics-insights":
+    description: "Implement Text Analytics for client communication insights"
+    usage: "/azure:text-analytics-insights [communication-type] [analysis]"
+    example: "/azure:text-analytics-insights client-emails sentiment"
+    features: ["Sentiment analysis", "Entity extraction", "Topic classification"]
+    
+  "/azure:cognitive-search-setup":
+    description: "Configure Cognitive Search for CPA knowledge management"
+    usage: "/azure:cognitive-search-setup [knowledge-domain] [search-type]"
+    example: "/azure:cognitive-search-setup tax-regulations semantic"
+    capabilities: ["Semantic search", "Vector search", "Faceted navigation"]
+    
+  "/azure:openai-workflow":
+    description: "Implement OpenAI workflows for financial analysis"
+    usage: "/azure:openai-workflow [analysis-type] [compliance-level]"
+    example: "/azure:openai-workflow cash-flow-forecast high"
+    includes: ["Prompt engineering", "Response validation", "Audit trails"]
+    
+  "/azure:cost-analysis":
+    description: "Analyze and optimize Azure AI service costs"
+    usage: "/azure:cost-analysis [service] [timeframe]"
+    example: "/azure:cost-analysis all-services monthly"
+    provides: ["Usage patterns", "Cost allocation", "Optimization recommendations"]
+    
+  "/azure:multi-tenant-config":
+    description: "Configure Azure services for multi-tenant architecture"
+    usage: "/azure:multi-tenant-config [service] [isolation-level]"
+    example: "/azure:multi-tenant-config form-recognizer high"
+    ensures: ["Data isolation", "Cost tracking", "Performance scaling"]
+
+integration_patterns:
+  service_orchestration:
+    document_workflow:
+      - "Form Recognizer → Text Analytics → Cognitive Search → OpenAI"
+      - "Extract → Analyze → Index → Generate Insights"
+      - "Multi-stage processing with error handling"
+      - "Progress tracking and status updates"
+      
+  error_handling:
+    resilience_patterns:
+      - "Retry logic with exponential backoff"
+      - "Circuit breaker for service failures"
+      - "Graceful degradation when services unavailable"
+      - "Fallback to manual processing workflows"
+      
+  monitoring_observability:
+    metrics_tracking:
+      - "Service usage and performance metrics"
+      - "Cost tracking per organization and service"
+      - "Error rates and success patterns"
+      - "User satisfaction and adoption metrics"
+
+compliance_security:
+  data_handling:
+    - "Data encryption in transit and at rest"
+    - "GDPR compliance for international clients"
+    - "SOC 2 requirements for service providers"
+    - "Industry-specific regulations (SOX, PCAOB)"
+    
+  access_control:
+    - "Service principal authentication"
+    - "Role-based access to Azure resources"
+    - "Network security and private endpoints"
+    - "Audit logging for all service interactions"
+    
+  client_data_protection:
+    - "Organization-scoped data processing"
+    - "Data residency requirements per jurisdiction"
+    - "Client consent for AI processing"
+    - "Data retention and deletion policies"
+
+advisoros_specific_patterns:
+  tenant_aware_processing:
+    - "Document processing queues per organizationId"
+    - "Custom models trained per organization needs"
+    - "Service quotas and limits based on subscription tier"
+    - "Cost allocation and billing per tenant"
+    
+  cpa_workflow_integration:
+    - "Tax season surge capacity planning"
+    - "Client communication automation during busy periods"
+    - "Regulatory update monitoring and distribution"
+    - "Quality control and review workflows for AI output"

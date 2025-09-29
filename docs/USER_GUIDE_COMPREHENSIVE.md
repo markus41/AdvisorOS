@@ -1,3 +1,9 @@
+---
+layout: default
+title: User Guide (Comprehensive)
+nav_order: 15
+---
+
 # AdvisorOS User Guide
 
 ## Table of Contents

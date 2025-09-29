@@ -1,0 +1,656 @@
+name: Comprehensive Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run full test suite daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  NODE_VERSION: '18.x'
+  PNPM_VERSION: '8'
+  DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/advisoros_test'
+  REDIS_URL: 'redis://localhost:6379'
+  NEXTAUTH_SECRET: 'test-secret-for-ci'
+  NEXTAUTH_URL: 'http://localhost:3000'
+  E2E_BASE_URL: 'http://localhost:3000'
+  CI: 'true'
+
+jobs:
+  # Pre-flight checks
+  code-quality:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type checking
+        run: pnpm run type-check
+
+      - name: Lint code
+        run: pnpm run lint
+
+      - name: Format check
+        run: pnpm run format:check
+
+      - name: Check for security vulnerabilities
+        run: pnpm audit --audit-level high
+
+  # Unit Tests
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
+    strategy:
+      matrix:
+        test-group: [auth, api, utils, ai, integrations]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        run: |
+          case "${{ matrix.test-group }}" in
+            "auth")
+              pnpm test:unit --testPathPattern="auth|password"
+              ;;
+            "api")
+              pnpm test:unit --testPathPattern="api|trpc|routers"
+              ;;
+            "utils")
+              pnpm test:unit --testPathPattern="utils|helpers"
+              ;;
+            "ai")
+              pnpm test:unit --testPathPattern="ai|openai|document-intelligence"
+              ;;
+            "integrations")
+              pnpm test:unit --testPathPattern="integrations|quickbooks|stripe"
+              ;;
+          esac
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unit-tests-${{ matrix.test-group }}
+          name: unit-coverage-${{ matrix.test-group }}
+
+  # Integration Tests
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: advisoros_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup database schema
+        run: |
+          pnpm prisma migrate reset --force --skip-seed
+          pnpm prisma db push
+          pnpm prisma generate
+
+      - name: Run integration tests
+        run: pnpm test:integration
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_URL: ${{ env.REDIS_URL }}
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: integration-tests
+          name: integration-coverage
+
+  # Security Tests
+  security-tests:
+    name: Security Tests
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: advisoros_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup database schema
+        run: |
+          pnpm prisma migrate reset --force --skip-seed
+          pnpm prisma db push
+
+      - name: Run security tests
+        run: pnpm test:security
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: OWASP ZAP Baseline Scan
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'http://localhost:3000'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+
+      - name: Upload security test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-test-results
+          path: |
+            coverage/
+            zap-report/
+
+  # Performance Tests
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: advisoros_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup database with test data
+        run: |
+          pnpm prisma migrate reset --force
+          pnpm prisma db push
+          pnpm run db:seed:performance
+
+      - name: Start application
+        run: |
+          pnpm build
+          pnpm start &
+          sleep 30  # Wait for app to start
+
+      - name: Run performance tests
+        run: pnpm test:performance
+
+      - name: Install Artillery
+        run: npm install -g artillery@latest
+
+      - name: Run load tests
+        run: |
+          artillery run tests/performance/load-testing.js \
+            --target http://localhost:3000 \
+            --output performance-results.json
+
+      - name: Generate performance report
+        run: |
+          artillery report performance-results.json \
+            --output performance-report.html
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: |
+            performance-results.json
+            performance-report.html
+
+  # End-to-End Tests
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+        shard: [1/4, 2/4, 3/4, 4/4]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: advisoros_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Setup database with test data
+        run: |
+          pnpm prisma migrate reset --force
+          pnpm prisma db push
+          pnpm run db:seed:e2e
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Run E2E tests
+        run: |
+          pnpm exec playwright test \
+            --project=${{ matrix.browser }} \
+            --shard=${{ matrix.shard }}
+        env:
+          E2E_BASE_URL: ${{ env.E2E_BASE_URL }}
+
+      - name: Upload E2E test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-results-${{ matrix.browser }}-${{ strategy.job-index }}
+          path: |
+            test-results/
+            playwright-report/
+
+  # Accessibility Tests
+  accessibility-tests:
+    name: Accessibility Tests
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Start application
+        run: |
+          pnpm start &
+          sleep 30
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@latest
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Run axe accessibility tests
+        run: pnpm test:a11y
+
+  # Visual Regression Tests
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: Run visual regression tests
+        run: pnpm test:visual
+
+      - name: Upload visual diff results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: visual-diff-results
+          path: test-results/
+
+  # Deployment smoke tests
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [security-tests, performance-tests, accessibility-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run smoke tests against staging
+        run: pnpm test:smoke
+        env:
+          SMOKE_TEST_URL: ${{ secrets.STAGING_URL }}
+          SMOKE_TEST_API_KEY: ${{ secrets.STAGING_API_KEY }}
+
+  # Test result aggregation and reporting
+  test-results:
+    name: Test Results & Coverage
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, security-tests, e2e-tests]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Merge coverage reports
+        run: |
+          npm install -g lcov-result-merger
+          lcov-result-merger 'coverage/**/lcov.info' merged-coverage.info
+
+      - name: Upload merged coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./merged-coverage.info
+          flags: merged-coverage
+          name: merged-coverage
+
+      - name: Generate test summary
+        run: |
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Type | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Tests | ${{ needs.security-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment test results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const testResults = {
+              unit: '${{ needs.unit-tests.result }}',
+              integration: '${{ needs.integration-tests.result }}',
+              security: '${{ needs.security-tests.result }}',
+              e2e: '${{ needs.e2e-tests.result }}'
+            }
+
+            const comment = `## 🧪 Test Results
+
+            | Test Type | Status |
+            |-----------|--------|
+            | Unit Tests | ${testResults.unit === 'success' ? '✅' : '❌'} ${testResults.unit} |
+            | Integration Tests | ${testResults.integration === 'success' ? '✅' : '❌'} ${testResults.integration} |
+            | Security Tests | ${testResults.security === 'success' ? '✅' : '❌'} ${testResults.security} |
+            | E2E Tests | ${testResults.e2e === 'success' ? '✅' : '❌'} ${testResults.e2e} |
+
+            ${Object.values(testResults).every(result => result === 'success') ?
+              '🎉 All tests passed! Ready for review.' :
+              '⚠️ Some tests failed. Please check the logs and fix the issues.'}
+            `
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            })
+
+  # Notification on failure
+  notify-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, security-tests, e2e-tests]
+    if: failure() && github.ref == 'refs/heads/main'
+    steps:
+      - name: Send Slack notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#dev-alerts'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "🚨 AdvisorOS Test Failure on Main Branch"
+          to: ${{ secrets.ALERT_EMAIL }}
+          from: AdvisorOS CI/CD
+          body: |
+            The comprehensive testing pipeline has failed on the main branch.
+
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+
+            Please check the GitHub Actions logs for details:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+# Cleanup old test artifacts
+cleanup:
+  name: Cleanup
+  runs-on: ubuntu-latest
+  needs: test-results
+  if: always()
+  steps:
+    - name: Delete old artifacts
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.runId,
+          })
+
+          // Keep artifacts for 7 days
+          const cutoffDate = new Date()
+          cutoffDate.setDate(cutoffDate.getDate() - 7)
+
+          for (const artifact of artifacts.data.artifacts) {
+            const createdAt = new Date(artifact.created_at)
+            if (createdAt < cutoffDate) {
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              })
+            }
+          }

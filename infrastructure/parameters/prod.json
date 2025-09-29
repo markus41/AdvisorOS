@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "value": "prod"
+    },
+    "appName": {
+      "value": "advisoros"
+    },
+    "primaryRegion": {
+      "value": "East US 2"
+    },
+    "secondaryRegion": {
+      "value": "West US 2"
+    },
+    "enableMultiRegion": {
+      "value": true
+    },
+    "productionTier": {
+      "value": "Premium"
+    },
+    "adminEmail": {
+      "value": "admin@advisoros.com"
+    },
+    "domainName": {
+      "value": "app.advisoros.com"
+    },
+    "enableFrontDoor": {
+      "value": true
+    },
+    "enableDdosProtection": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "Environment": "prod",
+        "Application": "advisoros",
+        "Owner": "DevOps",
+        "CostCenter": "Production",
+        "BackupPolicy": "Daily",
+        "Compliance": "SOC2-GDPR"
+      }
+    }
+  }
+}
