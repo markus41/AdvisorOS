@@ -1,0 +1,31 @@
+title: AdvisorOS Documentation
+description: Implementation, adoption, and operations playbook for AdvisorOS.
+remote_theme: just-the-docs/just-the-docs
+search_enabled: true
+color_scheme: dark
+enable_copy_code_button: true
+heading_anchors: true
+
+aux_links:
+  "AdvisorOS on GitHub": "https://github.com/MarkusAhling/AdvisorOS"
+
+nav_external_links:
+  - title: Product Overview (PDF)
+    url: https://github.com/MarkusAhling/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md
+    open_in_new_tab: true
+
+callouts:
+  tip:
+    title: Tip
+    color: green
+  note:
+    title: Note
+    color: blue
+  caution:
+    title: Caution
+    color: yellow
+  danger:
+    title: Warning
+    color: red
+
+footer_content: "Built by the AdvisorOS team | Updated {{ site.time | date: '%B %d, %Y' }}"

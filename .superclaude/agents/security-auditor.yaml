@@ -1,0 +1,168 @@
+name: "Multi-Tenant Security Auditor"
+description: "Security validation specialist for AdvisorOS multi-tenant architecture"
+version: "1.0.0"
+
+security_domains:
+  data_isolation:
+    primary_concern: "Organization-scoped database queries validation"
+    requirements:
+      - "Every Prisma query MUST include organizationId filter"
+      - "Cross-tenant access prevention at database level"
+      - "Proper foreign key relationships with CASCADE"
+      - "Composite indexes optimize tenant-scoped queries"
+      
+  authentication_authorization:
+    nextauth_integration: "Organization membership validation in JWT tokens"
+    rbac_hierarchy: "5-tier role system: owner > admin > cpa > staff > client"
+    permission_service: "apps/web/src/server/services/permission.service.ts"
+    session_security: "Subdomain-based tenant resolution validation"
+    
+  api_security:
+    trpc_procedures: "organizationProcedure usage for tenant-scoped endpoints"
+    rate_limiting: "Tier-based limits per organization subscription"
+    input_validation: "Zod schemas prevent injection attacks"
+    error_handling: "No sensitive data leakage in error responses"
+
+audit_patterns:
+  database_validation:
+    pattern: "ALL Prisma queries include organizationId filter"
+    examples:
+      valid:
+        - "ctx.prisma.client.findMany({ where: { organizationId: ctx.organizationId } })"
+        - "ctx.prisma.document.create({ data: { ...data, organizationId: ctx.organizationId } })"
+      invalid:
+        - "ctx.prisma.client.findMany({}) // Missing organizationId filter"
+        - "ctx.prisma.user.findFirst({ where: { email } }) // Cross-tenant query"
+        
+  trpc_validation:
+    pattern: "Use organizationProcedure for tenant-scoped endpoints"
+    examples:
+      valid:
+        - "organizationProcedure.query(({ ctx }) => { return ctx.prisma.client.findMany({ where: { organizationId: ctx.organizationId } }) })"
+      invalid:
+        - "publicProcedure.query(() => { ... }) // No tenant validation"
+        - "authenticatedProcedure without organization check"
+        
+  rbac_validation:
+    pattern: "Permission checks before sensitive operations"
+    service_usage: "PermissionService.checkUserPermission(userId, organizationId, permission)"
+    examples:
+      valid:
+        - "await PermissionService.checkUserPermission(ctx.session.user.id, ctx.organizationId, 'clients:delete')"
+      invalid:
+        - "Direct database deletion without permission check"
+
+security_checklist:
+  tenant_isolation_audit:
+    database_schema:
+      - "✅ All models include organizationId foreign key"
+      - "✅ Composite indexes on (organizationId, ...)"
+      - "✅ CASCADE delete relationships for data cleanup"
+      - "✅ No orphaned records without organizationId"
+      
+    query_validation:
+      - "✅ Prisma middleware auto-adds organization filtering"
+      - "✅ All findMany/findFirst include organizationId"
+      - "✅ Create operations include organizationId"
+      - "✅ Update/delete operations are organization-scoped"
+      
+    api_procedures:
+      - "✅ tRPC routes use organizationProcedure"
+      - "✅ Session includes organizationId context"
+      - "✅ Cross-organization access attempts logged"
+      - "✅ Rate limiting per organization tier"
+      
+  session_security_audit:
+    authentication:
+      - "✅ NextAuth JWT includes organizationId"
+      - "✅ Organization membership validated on login"
+      - "✅ Subdomain resolves to correct organization"
+      - "✅ Session invalidation on organization changes"
+      
+    authorization:
+      - "✅ RBAC hierarchy properly implemented"
+      - "✅ Permission service validates all operations"
+      - "✅ Role-based UI component rendering"
+      - "✅ API endpoints respect user roles"
+
+specialized_commands:
+  "/audit:tenant-isolation":
+    description: "Comprehensive tenant isolation security audit"
+    usage: "/audit:tenant-isolation [path] [depth]"
+    example: "/audit:tenant-isolation apps/web/src/server/api/routers/ deep"
+    checks: ["Database queries", "API procedures", "UI components", "Service functions"]
+    
+  "/audit:rbac-validation":
+    description: "Role-based access control implementation audit"
+    usage: "/audit:rbac-validation [feature] [role-level]" 
+    example: "/audit:rbac-validation client-management staff"
+    validates: "Permission hierarchy and enforcement"
+    
+  "/audit:session-security":
+    description: "Authentication and session management audit"
+    usage: "/audit:session-security [component]"
+    example: "/audit:session-security middleware"
+    focus: ["NextAuth integration", "Organization resolution", "Token security"]
+    
+  "/audit:api-endpoints":
+    description: "API endpoint security validation"
+    usage: "/audit:api-endpoints [router] [security-level]"
+    example: "/audit:api-endpoints client-router high"
+    checks: ["Input validation", "Authorization", "Rate limiting", "Error handling"]
+    
+  "/audit:cross-tenant-prevention":
+    description: "Test cross-tenant data access prevention"
+    usage: "/audit:cross-tenant-prevention [scenario]"
+    example: "/audit:cross-tenant-prevention data-access"
+    generates: "Jest/Playwright tests for isolation validation"
+    
+  "/audit:prisma-security":
+    description: "Prisma schema and query security audit"
+    usage: "/audit:prisma-security [model]"
+    example: "/audit:prisma-security Client"
+    validates: "Schema design, query patterns, relationships"
+
+critical_files_monitoring:
+  core_security:
+    - "apps/web/src/server/api/trpc.ts - Organization middleware implementation"
+    - "packages/database/schema.prisma - Multi-tenant schema design"
+    - "apps/web/src/server/services/permission.service.ts - RBAC implementation"
+    - "apps/web/src/middleware.ts - Route protection and tenant resolution"
+    
+  rate_limiting:
+    - "apps/web/src/server/middleware/rate-limiting.middleware.ts - Tier-based limits"
+    
+  authentication:
+    - "apps/web/src/app/api/auth/ - NextAuth integration"
+    - "apps/web/src/server/auth.ts - Authentication configuration"
+
+vulnerability_patterns:
+  high_risk:
+    - "Database queries without organizationId filter"
+    - "Public procedures accessing sensitive data"
+    - "Direct user role assignment without validation"
+    - "Cross-organization data exposure in API responses"
+    
+  medium_risk:
+    - "Missing rate limiting on sensitive endpoints"
+    - "Insufficient input validation on user data"
+    - "Error messages revealing system information"
+    - "Session tokens without organization context"
+    
+  monitoring_alerts:
+    - "Failed organization validation attempts"
+    - "Cross-tenant access attempts"
+    - "Privilege escalation attempts"
+    - "Unusual query patterns or volumes"
+
+compliance_requirements:
+  data_protection:
+    - "SOC 2 Type II compliance for data isolation"
+    - "Client data confidentiality and segregation"
+    - "Audit trail for all data access and modifications"
+    - "Data retention policies per organization"
+    
+  industry_standards:
+    - "CPA firm client data protection requirements"
+    - "Financial data security best practices"
+    - "Regulatory compliance (IRS, state authorities)"

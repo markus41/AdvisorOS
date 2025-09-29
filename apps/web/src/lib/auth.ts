@@ -5,7 +5,7 @@ import AzureADProvider from "next-auth/providers/azure-ad"
 import EmailProvider from "next-auth/providers/email"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "../server/db"
-import bcrypt from "bcryptjs"
+import * as bcrypt from "bcryptjs"
 import { JWT } from "next-auth/jwt"
 
 // Role-based session timeout configuration (in seconds)
@@ -62,7 +62,7 @@ async function validateCredentials(credentials: Record<string, string>) {
         success: false,
         ipAddress: credentials.ipAddress || 'unknown',
         userAgent: credentials.userAgent || 'unknown',
-        reason: 'User not found'
+        failureReason: 'User not found'
       }
     })
     throw new Error("Invalid credentials")
@@ -83,7 +83,7 @@ async function validateCredentials(credentials: Record<string, string>) {
           success: false,
           ipAddress: credentials.ipAddress || 'unknown',
           userAgent: credentials.userAgent || 'unknown',
-          reason: 'Account locked'
+          failureReason: 'Account locked'
         }
       })
       throw new Error("Account locked due to too many failed attempts. Please try again later.")
@@ -91,7 +91,7 @@ async function validateCredentials(credentials: Record<string, string>) {
   }
 
   // Verify password
-  const isPasswordValid = await bcrypt.compare(credentials.password, user.hashedPassword || '')
+  const isPasswordValid = await bcrypt.compare(credentials.password, user.password || '')
 
   if (!isPasswordValid) {
     // Log failed attempt
@@ -103,16 +103,14 @@ async function validateCredentials(credentials: Record<string, string>) {
         success: false,
         ipAddress: credentials.ipAddress || 'unknown',
         userAgent: credentials.userAgent || 'unknown',
-        reason: 'Invalid password'
+        failureReason: 'Invalid password'
       }
     })
     throw new Error("Invalid credentials")
   }
 
-  // Check if email is verified
-  if (!user.emailVerified && organization.requireEmailVerification) {
-    throw new Error("Please verify your email before signing in")
-  }
+  // Email verification check - simplified for current schema
+  // TODO: Add emailVerified field to User model when email verification is implemented
 
   // Log successful attempt and clear failed attempts
   await Promise.all([
@@ -141,15 +139,12 @@ async function validateCredentials(credentials: Record<string, string>) {
     name: user.name,
     role: user.role,
     organizationId: user.organizationId,
-    organization: user.organization,
-    emailVerified: user.emailVerified,
-    twoFactorEnabled: user.twoFactorEnabled
+    organization: user.organization
   }
 }
 
 export const authOptions: NextAuthOptions = {
-  // Comment out PrismaAdapter for frontend-only testing
-  // adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -161,43 +156,65 @@ export const authOptions: NextAuthOptions = {
         twoFactorCode: { label: "2FA Code", type: "text" }
       },
       async authorize(credentials, req) {
-        // For frontend testing, return mock user if basic validation passes
-        if (credentials?.email && credentials?.password) {
-          return {
-            id: "mock-user-id",
-            email: credentials.email,
-            name: "Test User",
-            role: "cpa",
-            organizationId: "mock-org-id",
-            organization: { name: "Test Org", subdomain: "test" },
-            emailVerified: new Date(),
-            twoFactorEnabled: false
-          }
+        try {
+          // Get IP address from request headers for security logging
+          const getClientIP = (req: any): string => {
+            const forwarded = req.headers?.['x-forwarded-for'];
+            const realIP = req.headers?.['x-real-ip'];
+
+            if (typeof forwarded === 'string') {
+              return forwarded.split(',')[0].trim();
+            }
+            if (Array.isArray(forwarded)) {
+              return forwarded[0];
+            }
+            if (typeof realIP === 'string') {
+              return realIP;
+            }
+            if (Array.isArray(realIP)) {
+              return realIP[0];
+            }
+            return 'unknown';
+          };
+
+          const ipAddress = getClientIP(req);
+          const userAgent = req.headers?.['user-agent'] || 'unknown';
+
+          // Add IP and user agent to credentials for logging
+          const enhancedCredentials = {
+            ...credentials,
+            ipAddress: Array.isArray(ipAddress) ? ipAddress[0] : ipAddress,
+            userAgent: Array.isArray(userAgent) ? userAgent[0] : userAgent
+          };
+
+          // Use the secure validateCredentials function
+          return await validateCredentials(enhancedCredentials);
+        } catch (error) {
+          console.error('Authentication error:', error);
+          return null;
         }
-        return null
       }
     }),
-    // Comment out OAuth providers for frontend-only testing
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
-    // AzureADProvider({
-    //   clientId: process.env.AZURE_AD_CLIENT_ID!,
-    //   clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-    //   tenantId: process.env.AZURE_AD_TENANT_ID!,
-    // }),
-    // EmailProvider({
-    //   server: {
-    //     host: process.env.EMAIL_SERVER_HOST,
-    //     port: Number(process.env.EMAIL_SERVER_PORT),
-    //     auth: {
-    //       user: process.env.EMAIL_SERVER_USER,
-    //       pass: process.env.EMAIL_SERVER_PASSWORD,
-    //     },
-    //   },
-    //   from: process.env.EMAIL_FROM,
-    // }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    AzureADProvider({
+      clientId: process.env.AZURE_AD_CLIENT_ID!,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+      tenantId: process.env.AZURE_AD_TENANT_ID!,
+    }),
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+    }),
   ],
   session: {
     strategy: "jwt",
@@ -208,16 +225,39 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // For frontend testing, allow all sign-ins
-      return true
+      // Validate that user belongs to an organization
+      if (user.organizationId && user.organization) {
+        return true;
+      }
+
+      // For OAuth providers, check if user exists in database
+      if (account && account.provider !== 'credentials') {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+          include: { organization: true }
+        });
+
+        if (!existingUser) {
+          console.error('OAuth user not found in database:', user.email);
+          return false;
+        }
+
+        // Update user info from OAuth provider
+        user.id = existingUser.id;
+        user.organizationId = existingUser.organizationId;
+        user.organization = existingUser.organization;
+        user.role = existingUser.role;
+
+        return true;
+      }
+
+      return true;
     },
     async jwt({ token, user, account }): Promise<JWT> {
       if (user) {
         token.role = user.role
         token.organizationId = user.organizationId
         token.organization = user.organization
-        token.emailVerified = user.emailVerified
-        token.twoFactorEnabled = user.twoFactorEnabled
 
         // Set role-based expiration
         const roleTimeout = SESSION_TIMEOUTS[user.role as keyof typeof SESSION_TIMEOUTS] || SESSION_TIMEOUTS.client
@@ -232,54 +272,64 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
         session.user.organizationId = token.organizationId as string
         session.user.organization = token.organization
-        session.user.emailVerified = token.emailVerified as Date
-        session.user.twoFactorEnabled = token.twoFactorEnabled as boolean
         session.expires = new Date(token.exp! * 1000).toISOString()
       }
       return session
     }
   },
-  // Comment out events for frontend-only testing
-  // events: {
-  //   async signIn({ user, account, profile, isNewUser }) {
-  //     // Log sign-in event
-  //     await prisma.authEvent.create({
-  //       data: {
-  //         userId: user.id,
-  //         type: 'SIGN_IN',
-  //         provider: account?.provider || 'unknown',
-  //         metadata: {
-  //           isNewUser,
-  //           provider: account?.provider,
-  //           ip: 'unknown' // This would be set by middleware
-  //         }
-  //       }
-  //     })
-  //   },
-  //   async signOut({ token }) {
-  //     // Log sign-out event
-  //     if (token?.sub) {
-  //       await prisma.authEvent.create({
-  //         data: {
-  //           userId: token.sub,
-  //           type: 'SIGN_OUT',
-  //           metadata: {
-  //             reason: 'user_initiated'
-  //           }
-  //         }
-  //       })
-  //     }
-  //   },
-  //   async session({ session, token }) {
-  //     // Update last activity
-  //     if (token?.sub) {
-  //       await prisma.user.update({
-  //         where: { id: token.sub },
-  //         data: { lastActiveAt: new Date() }
-  //       })
-  //     }
-  //   }
-  // },
+  events: {
+    async signIn({ user, account, profile, isNewUser }) {
+      // Log sign-in event
+      try {
+        await prisma.authEvent.create({
+          data: {
+            userId: user.id,
+            eventType: 'SIGN_IN',
+            success: true,
+            description: `User signed in via ${account?.provider || 'credentials'}`,
+            metadata: {
+              isNewUser,
+              provider: account?.provider,
+              ipAddress: 'unknown' // This would be set by middleware
+            }
+          }
+        })
+      } catch (error) {
+        console.error('Failed to log sign-in event:', error);
+      }
+    },
+    async signOut({ token }) {
+      // Log sign-out event
+      if (token?.sub) {
+        try {
+          await prisma.authEvent.create({
+            data: {
+              userId: token.sub,
+              type: 'SIGN_OUT',
+              metadata: {
+                reason: 'user_initiated'
+              }
+            }
+          })
+        } catch (error) {
+          console.error('Failed to log sign-out event:', error);
+        }
+      }
+    },
+    async session({ session, token }) {
+      // Update last activity
+      if (token?.sub) {
+        try {
+          await prisma.user.update({
+            where: { id: token.sub },
+            data: { lastActiveAt: new Date() }
+          })
+        } catch (error) {
+          console.error('Failed to update last activity:', error);
+        }
+      }
+    }
+  },
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',

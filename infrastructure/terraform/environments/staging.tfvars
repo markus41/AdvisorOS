@@ -1,13 +1,13 @@
-# Staging Environment Configuration
+# Staging Environment Configuration for AdvisorOS
 
 environment = "staging"
 location    = "eastus"
-app_url     = "https://staging.cpaplatform.com"
+app_url     = "https://staging.advisoros.com"
 
 # CORS Origins for staging
 allowed_origins = [
-  "https://staging.cpaplatform.com",
-  "https://staging-api.cpaplatform.com"
+  "https://staging.advisoros.com",
+  "http://localhost:3000"
 ]
 
 # PostgreSQL Configuration - Medium for staging

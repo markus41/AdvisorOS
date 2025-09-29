@@ -1,3 +1,9 @@
+---
+layout: default
+title: Administrator Guide
+nav_order: 40
+---
+
 # AdvisorOS Administrator Guide
 
 ## Table of Contents

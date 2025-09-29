@@ -1,0 +1,581 @@
+# ================================================================
+# AdvisorOS Azure Deployment Pipeline
+# Enterprise-grade CI/CD with security scanning, testing, and deployment
+# ================================================================
+
+name: 'Deploy to Azure'
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/*'
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      deploy_infrastructure:
+        description: 'Deploy infrastructure changes'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  AZURE_CLI_VERSION: '2.60.0'
+  BICEP_VERSION: '0.26.54'
+  DOCKER_VERSION: '24.0.0'
+  TERRAFORM_VERSION: '1.7.0'
+  KUBERNETES_VERSION: '1.29.0'
+
+# ================================================================
+# Jobs Configuration
+# ================================================================
+
+jobs:
+  # ================================================================
+  # Security and Code Quality Checks
+  # ================================================================
+  security-scan:
+    name: 'Security Scanning'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: 'Checkout Code'
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 'Setup Node.js'
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 'Install Dependencies'
+      run: npm ci
+
+    - name: 'Run Security Audit'
+      run: |
+        npm audit --audit-level moderate
+        npm run security:audit || true
+
+    - name: 'Run CodeQL Analysis'
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript, typescript
+
+    - name: 'Perform CodeQL Analysis'
+      uses: github/codeql-action/analyze@v3
+
+    - name: 'Run ESLint Security Check'
+      run: |
+        npx eslint . --ext .ts,.tsx,.js,.jsx --format json --output-file eslint-results.json || true
+
+    - name: 'Trivy Vulnerability Scanner'
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: 'Upload Trivy Results'
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: 'Upload Security Artifacts'
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-results
+        path: |
+          eslint-results.json
+          trivy-results.sarif
+        retention-days: 30
+
+  # ================================================================
+  # Build and Test
+  # ================================================================
+  build-test:
+    name: 'Build and Test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: security-scan
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: advisoros_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: 'Checkout Code'
+      uses: actions/checkout@v4
+
+    - name: 'Setup Node.js'
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 'Install Dependencies'
+      run: npm ci
+
+    - name: 'Generate Prisma Client'
+      run: npm run db:generate
+
+    - name: 'Run Database Migrations'
+      run: npm run db:migrate
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/advisoros_test
+
+    - name: 'Lint Code'
+      run: npm run lint
+
+    - name: 'Type Check'
+      run: npx tsc --noEmit
+
+    - name: 'Run Unit Tests'
+      run: npm test -- --coverage --watchAll=false
+      env:
+        NODE_ENV: test
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/advisoros_test
+        REDIS_URL: redis://localhost:6379
+
+    - name: 'Run Integration Tests'
+      run: npm run test:integration
+      env:
+        NODE_ENV: test
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/advisoros_test
+        REDIS_URL: redis://localhost:6379
+
+    - name: 'Build Application'
+      run: npm run build
+      env:
+        NODE_ENV: production
+        SKIP_ENV_VALIDATION: true
+
+    - name: 'Upload Build Artifacts'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          apps/web/.next
+          apps/web/package.json
+          package*.json
+        retention-days: 7
+
+    - name: 'Upload Test Results'
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          coverage/
+          test-results.xml
+        retention-days: 30
+
+  # ================================================================
+  # Infrastructure Validation
+  # ================================================================
+  infrastructure-validation:
+    name: 'Infrastructure Validation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: 'Checkout Code'
+      uses: actions/checkout@v4
+
+    - name: 'Setup Azure CLI'
+      uses: azure/CLI@v2
+      with:
+        azcliversion: ${{ env.AZURE_CLI_VERSION }}
+
+    - name: 'Install Bicep CLI'
+      run: |
+        az bicep install --version ${{ env.BICEP_VERSION }}
+
+    - name: 'Validate Bicep Templates'
+      run: |
+        echo "Validating Bicep templates..."
+        for template in infrastructure/*.bicep infrastructure/modules/*.bicep; do
+          if [ -f "$template" ]; then
+            echo "Validating $template"
+            az bicep build --file "$template" --stdout > /dev/null
+          fi
+        done
+
+    - name: 'Bicep Linting'
+      run: |
+        echo "Running Bicep linter..."
+        find infrastructure -name "*.bicep" -exec az bicep lint --file {} \;
+
+    - name: 'Parameter File Validation'
+      run: |
+        echo "Validating parameter files..."
+        for param_file in infrastructure/parameters/*.json; do
+          if [ -f "$param_file" ]; then
+            echo "Validating $param_file"
+            python -m json.tool "$param_file" > /dev/null
+          fi
+        done
+
+  # ================================================================
+  # Determine Environment
+  # ================================================================
+  determine-environment:
+    name: 'Determine Environment'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+      deploy-infra: ${{ steps.set-env.outputs.deploy-infra }}
+
+    steps:
+    - name: 'Set Environment'
+      id: set-env
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          echo "deploy-infra=${{ github.event.inputs.deploy_infrastructure }}" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "environment=prod" >> $GITHUB_OUTPUT
+          echo "deploy-infra=true" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          echo "environment=staging" >> $GITHUB_OUTPUT
+          echo "deploy-infra=true" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+          echo "environment=staging" >> $GITHUB_OUTPUT
+          echo "deploy-infra=false" >> $GITHUB_OUTPUT
+        else
+          echo "environment=dev" >> $GITHUB_OUTPUT
+          echo "deploy-infra=false" >> $GITHUB_OUTPUT
+        fi
+
+  # ================================================================
+  # Deploy Infrastructure
+  # ================================================================
+  deploy-infrastructure:
+    name: 'Deploy Infrastructure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [infrastructure-validation, determine-environment]
+    if: needs.determine-environment.outputs.deploy-infra == 'true'
+    environment: ${{ needs.determine-environment.outputs.environment }}
+
+    steps:
+    - name: 'Checkout Code'
+      uses: actions/checkout@v4
+
+    - name: 'Azure CLI Login'
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Setup Azure CLI'
+      uses: azure/CLI@v2
+      with:
+        azcliversion: ${{ env.AZURE_CLI_VERSION }}
+
+    - name: 'Install Bicep CLI'
+      run: |
+        az bicep install --version ${{ env.BICEP_VERSION }}
+
+    - name: 'Create Resource Groups'
+      run: |
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+        LOCATION="${{ vars.AZURE_LOCATION || 'East US 2' }}"
+
+        az group create \
+          --name "advisoros-${ENV}-primary-rg" \
+          --location "$LOCATION" \
+          --tags Environment="$ENV" Application="advisoros"
+
+    - name: 'Deploy Infrastructure'
+      id: deploy
+      run: |
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+        LOCATION="${{ vars.AZURE_LOCATION || 'East US 2' }}"
+
+        # Deploy main infrastructure template
+        az deployment sub create \
+          --location "$LOCATION" \
+          --template-file infrastructure/main.bicep \
+          --parameters infrastructure/parameters/${ENV}.json \
+          --parameters adminEmail="${{ vars.ADMIN_EMAIL }}" \
+          --parameters domainName="${{ vars.DOMAIN_NAME }}" \
+          --name "advisoros-${ENV}-deployment-$(date +%Y%m%d-%H%M%S)" \
+          --verbose
+      env:
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: 'Capture Deployment Outputs'
+      id: outputs
+      run: |
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+        DEPLOYMENT_NAME=$(az deployment sub list --query "[?contains(name, 'advisoros-${ENV}-deployment')].name | [0]" -o tsv)
+
+        # Get deployment outputs
+        az deployment sub show \
+          --name "$DEPLOYMENT_NAME" \
+          --query properties.outputs > deployment-outputs.json
+
+        # Extract key values for GitHub secrets
+        APP_NAME=$(jq -r '.appServiceName.value' deployment-outputs.json)
+        STORAGE_NAME=$(jq -r '.storageAccountName.value' deployment-outputs.json)
+        KV_NAME=$(jq -r '.keyVaultName.value' deployment-outputs.json)
+
+        echo "app-service-name=$APP_NAME" >> $GITHUB_OUTPUT
+        echo "storage-account-name=$STORAGE_NAME" >> $GITHUB_OUTPUT
+        echo "key-vault-name=$KV_NAME" >> $GITHUB_OUTPUT
+
+    - name: 'Upload Deployment Artifacts'
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-outputs-${{ needs.determine-environment.outputs.environment }}
+        path: deployment-outputs.json
+        retention-days: 30
+
+  # ================================================================
+  # Deploy Application
+  # ================================================================
+  deploy-application:
+    name: 'Deploy Application'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [build-test, determine-environment, deploy-infrastructure]
+    if: always() && needs.build-test.result == 'success'
+    environment: ${{ needs.determine-environment.outputs.environment }}
+
+    steps:
+    - name: 'Checkout Code'
+      uses: actions/checkout@v4
+
+    - name: 'Download Build Artifacts'
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+
+    - name: 'Azure CLI Login'
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Get Deployment Configuration'
+      id: config
+      run: |
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+
+        if [ -f "deployment-outputs.json" ]; then
+          APP_NAME=$(jq -r '.appServiceName.value' deployment-outputs.json)
+          KV_NAME=$(jq -r '.keyVaultName.value' deployment-outputs.json)
+        else
+          # Fallback to existing infrastructure
+          APP_NAME=$(az webapp list --query "[?contains(name, 'advisoros-${ENV}')].name | [0]" -o tsv)
+          KV_NAME=$(az keyvault list --query "[?contains(name, 'advisoros-${ENV}')].name | [0]" -o tsv)
+        fi
+
+        echo "app-service-name=$APP_NAME" >> $GITHUB_OUTPUT
+        echo "key-vault-name=$KV_NAME" >> $GITHUB_OUTPUT
+
+    - name: 'Configure Application Settings'
+      run: |
+        APP_NAME="${{ steps.config.outputs.app-service-name }}"
+        KV_NAME="${{ steps.config.outputs.key-vault-name }}"
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+
+        # Update application settings with environment-specific values
+        az webapp config appsettings set \
+          --name "$APP_NAME" \
+          --resource-group "advisoros-${ENV}-primary-rg" \
+          --settings \
+            NODE_ENV="$ENV" \
+            NEXTAUTH_URL="https://${APP_NAME}.azurewebsites.net" \
+            AZURE_KEY_VAULT_NAME="$KV_NAME" \
+            BUILD_TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            DEPLOYMENT_SHA="${{ github.sha }}" \
+            DEPLOYMENT_BRANCH="${{ github.ref_name }}"
+
+    - name: 'Run Database Migrations'
+      run: |
+        APP_NAME="${{ steps.config.outputs.app-service-name }}"
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+
+        # Execute migrations using App Service SSH
+        az webapp ssh \
+          --name "$APP_NAME" \
+          --resource-group "advisoros-${ENV}-primary-rg" \
+          --command "cd /home/site/wwwroot && npm run db:migrate"
+
+    - name: 'Deploy to App Service'
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ steps.config.outputs.app-service-name }}
+        package: apps/web
+        startup-command: 'npm start'
+
+    - name: 'Health Check'
+      run: |
+        APP_NAME="${{ steps.config.outputs.app-service-name }}"
+        URL="https://${APP_NAME}.azurewebsites.net/api/health"
+
+        echo "Performing health check on $URL"
+
+        for i in {1..10}; do
+          if curl -f -s "$URL" > /dev/null; then
+            echo "Health check passed"
+            exit 0
+          fi
+          echo "Attempt $i failed, retrying in 30 seconds..."
+          sleep 30
+        done
+
+        echo "Health check failed after 10 attempts"
+        exit 1
+
+    - name: 'Run Smoke Tests'
+      run: |
+        APP_NAME="${{ steps.config.outputs.app-service-name }}"
+        URL="https://${APP_NAME}.azurewebsites.net"
+
+        # Basic smoke tests
+        curl -f "$URL" || exit 1
+        curl -f "$URL/api/health" || exit 1
+        curl -f "$URL/api/trpc/health" || exit 1
+
+  # ================================================================
+  # Production Deployment Approval
+  # ================================================================
+  production-approval:
+    name: 'Production Approval'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [determine-environment, deploy-application]
+    if: needs.determine-environment.outputs.environment == 'prod'
+    environment:
+      name: production-approval
+      url: https://advisoros-prod-app.azurewebsites.net
+
+    steps:
+    - name: 'Manual Approval Required'
+      run: |
+        echo "Manual approval required for production deployment"
+        echo "Please review the deployment and approve to continue"
+
+  # ================================================================
+  # Post-Deployment Verification
+  # ================================================================
+  post-deployment-verification:
+    name: 'Post-Deployment Verification'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [deploy-application, determine-environment]
+    if: always() && needs.deploy-application.result == 'success'
+
+    steps:
+    - name: 'Checkout Code'
+      uses: actions/checkout@v4
+
+    - name: 'Azure CLI Login'
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Get Application URL'
+      id: app-info
+      run: |
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+        APP_NAME=$(az webapp list --query "[?contains(name, 'advisoros-${ENV}')].name | [0]" -o tsv)
+        APP_URL="https://${APP_NAME}.azurewebsites.net"
+
+        echo "app-url=$APP_URL" >> $GITHUB_OUTPUT
+
+    - name: 'Run End-to-End Tests'
+      run: |
+        echo "Running E2E tests against ${{ steps.app-info.outputs.app-url }}"
+        # Add your E2E test commands here
+        # npx playwright test --config=e2e.config.ts
+      env:
+        BASE_URL: ${{ steps.app-info.outputs.app-url }}
+
+    - name: 'Performance Testing'
+      run: |
+        echo "Running performance tests"
+        # Add performance testing commands here
+        # npx lighthouse-ci autorun --upload.target=temporary-public-storage
+
+    - name: 'Security Verification'
+      run: |
+        URL="${{ steps.app-info.outputs.app-url }}"
+
+        # Check security headers
+        echo "Checking security headers..."
+        curl -I "$URL" | grep -E "(X-Frame-Options|X-Content-Type-Options|Strict-Transport-Security)"
+
+        # Check HTTPS redirect
+        echo "Verifying HTTPS redirect..."
+        curl -I "${URL/https/http}" | grep -q "301\|302"
+
+    - name: 'Update Deployment Status'
+      if: always()
+      run: |
+        ENV="${{ needs.determine-environment.outputs.environment }}"
+        STATUS="${{ job.status }}"
+
+        echo "Deployment to $ENV completed with status: $STATUS"
+
+        # Update deployment tracking (could be a database, external API, etc.)
+        # curl -X POST "https://api.deployments.internal" \
+        #   -H "Content-Type: application/json" \
+        #   -d "{\"environment\":\"$ENV\",\"status\":\"$STATUS\",\"sha\":\"${{ github.sha }}\"}"
+
+  # ================================================================
+  # Cleanup
+  # ================================================================
+  cleanup:
+    name: 'Cleanup'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [post-deployment-verification]
+    if: always()
+
+    steps:
+    - name: 'Clean up temporary resources'
+      run: |
+        echo "Cleaning up temporary resources and artifacts"
+        # Add cleanup commands here if needed

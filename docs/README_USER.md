@@ -1,22 +1,93 @@
-# CPA Platform User Manual
+---
+layout: default
+title: Implementation Runbook
+nav_order: 20
+mermaid: true
+---
 
+# Implementation Runbook
+
+> [!SUMMARY]
+> Step-by-step guide for operations teams to configure AdvisorOS, onboard firms, and coach end users.
+
+## Quick Links
+
+- [Platform Overview](FEATURES.md)
+- [Architecture Cheat Sheet](ARCHITECTURE.md)
+- [Admin Checklist](ADMINISTRATOR_GUIDE.md)
+- [Jump to Troubleshooting](#troubleshooting)
+- [Client Success Playbook]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md)
+
+---
 ## Table of Contents
 
-1. [Getting Started](#getting-started)
-2. [Navigation Overview](#navigation-overview)
-3. [Client Management](#client-management)
-4. [Document Management](#document-management)
-5. [Financial Dashboard](#financial-dashboard)
-6. [Task Management](#task-management)
-7. [Reports and Analytics](#reports-and-analytics)
-8. [QuickBooks Integration](#quickbooks-integration)
-9. [User Settings](#user-settings)
-10. [Billing and Subscriptions](#billing-and-subscriptions)
-11. [Collaboration Features](#collaboration-features)
-12. [Troubleshooting](#troubleshooting)
+1. [Launch Checklist (45 Days to Go-Live)](#launch-checklist-45-days-to-go-live)
+2. [Weekly Operating Rhythm](#weekly-operating-rhythm)
+3. [Implementation Timeline](#implementation-timeline)
+4. [Feedback Loop](#feedback-loop)
+5. [Getting Started](#getting-started)
+6. [Navigation Overview](#navigation-overview)
+7. [Client Management](#client-management)
+8. [Document Management](#document-management)
+9. [Financial Dashboard](#financial-dashboard)
+10. [Task Management](#task-management)
+11. [Reports and Analytics](#reports-and-analytics)
+12. [QuickBooks Integration](#quickbooks-integration)
+13. [User Settings](#user-settings)
+14. [Billing and Subscriptions](#billing-and-subscriptions)
+15. [Collaboration Features](#collaboration-features)
+16. [Troubleshooting](#troubleshooting)
 
 ---
 
+## Launch Checklist (45 Days to Go-Live)
+
+| Milestone | Owner | Reference |
+| --- | --- | --- |
+| Provision Azure foundations | Platform Engineering | [Deployment Blueprint](DEPLOYMENT.md) |
+| Stand up non-production environments | DevOps | [Administrator Guide](ADMINISTRATOR_GUIDE.md#environment-configuration) |
+| Run pilot firm readiness review | Client Success Lead | [Implementation Runbook](#weekly-operating-rhythm) |
+| Validate integrations & data sync | Integrations Squad | [QuickBooks Integration Guide](QUICKBOOKS_SETUP.md) |
+| Train frontline teams | Enablement Lead | [User Guide (Comprehensive)](USER_GUIDE_COMPREHENSIVE.md) |
+
+> [!IMPORTANT]
+> Mirror every milestone in your backlog tool. Use the [Production Launch Plan]({{ site.github.repository_url }}/blob/main/ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) as the master schedule and link tasks back to these checklist items.
+
+## Weekly Operating Rhythm
+
+- **Monday stand-up (15 min)** -> Confirm weekend automation status using [Operations Runbook](operations/RUNBOOK.md#monitoring-checklist) and review open incidents.
+- **Mid-week adoption review (30 min)** -> Pull usage insights from [Feature Adoption dashboards]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md) and adjust enablement focus.
+- **Thursday release readiness (45 min)** -> Walk through the [Production Readiness Checklist](PRODUCTION_READINESS_CHECKLIST.md) before shipping any changes.
+- **Friday retro (30 min)** -> Log wins, blockers, and client insights in the [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) so the next sprint starts with context.
+
+## Implementation Timeline
+
+```mermaid
+gantt
+    title AdvisorOS Implementation Wave
+    dateFormat  YYYY-MM-DD
+    section Prepare
+    Infrastructure Provisioning      :done,    prep1, 2025-01-08, 2025-01-22
+    Security & Compliance Baseline   :active,  prep2, 2025-01-23, 2025-02-05
+    section Pilot
+    Pilot Firm Enablement            :         pilot1, 2025-02-06, 2025-02-20
+    Data Migration & Validation      :         pilot2, 2025-02-10, 2025-02-24
+    section Launch
+    Firm Rollout                     :         launch1, 2025-02-25, 2025-03-20
+    Automation Tuning                :         launch2, 2025-03-05, 2025-03-31
+```
+
+Align this view with the more detailed [Production Launch Plan]({{ site.github.repository_url }}/blob/main/ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) so every workstream leads with the same timeline.
+
+## Feedback Loop
+
+> [!NOTE]
+> The fastest way to keep the platform sharp is to close the loop between support, product, and engineering.
+
+1. Capture field learnings in the [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) immediately after each onboarding session.
+2. Translate systemic issues into product backlog items using the [Technical Debt Assessment]({{ site.github.repository_url }}/blob/main/TECHNICAL_DEBT_ASSESSMENT.md).
+3. Run quarterly reviews against the [Post-Launch Support Optimization]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md) checklist to ensure playbooks stay relevant.
+4. Feed resolved issues back into this runbook so new team members inherit the latest guidance.
 ## Getting Started
 
 ### System Requirements
@@ -25,7 +96,7 @@
 - **Screen Resolution**: Minimum 1280x720, recommended 1920x1080
 
 ### First-Time Login
-1. Access your organization's portal at `https://[your-subdomain].cpaplatform.com`
+1. Access your organization's portal at `https://[your-subdomain]cpaplatformcom`
 2. Enter your email address and password
 3. Complete two-factor authentication setup if required
 4. Review and accept terms of service
@@ -61,7 +132,7 @@ The main dashboard provides:
 ## Client Management
 
 ### Adding New Clients
-1. Navigate to **Clients** → **Add New Client**
+1. Navigate to **Clients** -> **Add New Client**
 2. Fill out required information:
    - Business name and legal name
    - Contact information
@@ -102,7 +173,7 @@ Each client profile includes:
    - Other
 
 ### Document Categories and Tags
-- **Category**: Primary classification (tax_return, bank_statement, etc.)
+- **Category**: Primary classification (tax_return, bank_statement, etc)
 - **Subcategory**: More specific classification
 - **Year/Quarter**: Time period association
 - **Tags**: Custom labels for easy searching
@@ -147,7 +218,7 @@ Powered by Tremor UI for:
 ## Task Management
 
 ### Creating Tasks
-1. Navigate to **Tasks** → **Create New Task**
+1. Navigate to **Tasks** ->  **Create New Task**
 2. Fill out task details:
    - Title and description
    - Assigned team member
@@ -198,7 +269,7 @@ Powered by Tremor UI for:
 ## QuickBooks Integration
 
 ### Initial Setup
-1. Navigate to **Settings** → **Integrations** → **QuickBooks**
+1. Navigate to **Settings** ->  **Integrations** ->  **QuickBooks**
 2. Click **Connect to QuickBooks**
 3. Authorize access through Intuit OAuth
 4. Select company file for synchronization
@@ -316,14 +387,14 @@ Powered by Tremor UI for:
 ### Getting Help
 - **Help Center**: Access built-in help documentation
 - **Support Tickets**: Submit issues through platform
-- **Email Support**: Contact support@cpaplatform.com
+- **Email Support**: Contact support@cpaplatformcom
 - **Phone Support**: Available during business hours
 
 ### Emergency Contacts
-- **Technical Issues**: technical-support@cpaplatform.com
-- **Billing Issues**: billing@cpaplatform.com
-- **Security Concerns**: security@cpaplatform.com
-- **General Support**: support@cpaplatform.com
+- **Technical Issues**: technical-support@cpaplatformcom
+- **Billing Issues**: billing@cpaplatformcom
+- **Security Concerns**: security@cpaplatformcom
+- **General Support**: support@cpaplatformcom
 
 ---
 
@@ -355,4 +426,15 @@ Powered by Tremor UI for:
 
 ---
 
-*For additional support, please contact your system administrator or our support team.*
+*For additional support, please contact your system administrator or our support team*
+
+
+
+
+
+
+
+
+
+
+

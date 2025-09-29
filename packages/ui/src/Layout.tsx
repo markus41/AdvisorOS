@@ -164,9 +164,12 @@ export const CardGrid: React.FC<CardGridProps> = ({
   return (
     <div
       className={cn('grid', `gap-${gap}`, className)}
-      style={{
-        gridTemplateColumns: `repeat(auto-fill, minmax(${minCardWidth}, 1fr))`,
-      }}
+      style={
+        {
+          '--min-card-width': minCardWidth,
+          gridTemplateColumns: `repeat(auto-fill, minmax(var(--min-card-width), 1fr))`,
+        } as React.CSSProperties
+      }
     >
       {children}
     </div>

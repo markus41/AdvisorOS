@@ -1,0 +1,141 @@
+{
+  "recommended_mcp_servers": {
+    "stripe": {
+      "description": "Stripe payment processing integration for billing and subscription management",
+      "use_cases": [
+        "Debug subscription issues with financial-prediction-modeler agent",
+        "Validate payment processing with integration-specialist agent",
+        "Monitor revenue metrics with revenue-intelligence-analyst agent"
+      ],
+      "installation": "npm install @mcp-stripe/server",
+      "configuration": {
+        "required_env_vars": ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"],
+        "permissions": ["read:customers", "read:subscriptions", "read:invoices", "write:webhooks"]
+      }
+    },
+
+    "postgresql": {
+      "description": "Direct database access for complex queries and schema analysis",
+      "use_cases": [
+        "Advanced query optimization with database-optimizer agent",
+        "Schema analysis with architecture-designer agent",
+        "Data migration with backend-api-developer agent"
+      ],
+      "installation": "npm install @mcp-postgresql/server",
+      "configuration": {
+        "connection_string": "postgresql://cpa_user:password@localhost:5432/cpa_platform",
+        "permissions": ["read:schema", "read:data", "write:data"],
+        "security_note": "Ensure least privilege access for production"
+      }
+    },
+
+    "azure_cognitive": {
+      "description": "Azure Cognitive Services for AI-powered document processing",
+      "use_cases": [
+        "Enhanced OCR processing with document-intelligence-optimizer agent",
+        "Text analytics with ai-features-orchestrator agent",
+        "Form recognition with smart-automation-designer agent"
+      ],
+      "installation": "npm install @mcp-azure/cognitive-services",
+      "configuration": {
+        "required_env_vars": ["AZURE_COGNITIVE_KEY", "AZURE_COGNITIVE_ENDPOINT"],
+        "services": ["form-recognizer", "text-analytics", "computer-vision"]
+      }
+    },
+
+    "quickbooks": {
+      "description": "QuickBooks API integration for accounting data synchronization",
+      "use_cases": [
+        "Real-time data sync with integration-specialist agent",
+        "Financial data validation with financial-prediction-modeler agent",
+        "Audit trail verification with audit-trail-perfectionist agent"
+      ],
+      "installation": "npm install @mcp-quickbooks/server",
+      "configuration": {
+        "oauth_flow": "authorization_code",
+        "required_scopes": ["com.intuit.quickbooks.accounting"],
+        "webhook_verification": true
+      }
+    },
+
+    "browser_automation": {
+      "description": "Puppeteer-based browser automation for E2E testing and QA",
+      "use_cases": [
+        "Automated UI testing with test-suite-developer agent",
+        "Visual regression testing with frontend-builder agent",
+        "User journey validation with user-journey-optimizer agent"
+      ],
+      "installation": "npm install @mcp-puppeteer/server",
+      "configuration": {
+        "headless": true,
+        "screenshot_capabilities": true,
+        "form_automation": true
+      }
+    },
+
+    "documentation": {
+      "description": "Live documentation access for framework updates and best practices",
+      "use_cases": [
+        "Keep agents updated with latest Next.js, tRPC, and Prisma docs",
+        "Reference Azure services documentation",
+        "Access TypeScript and React best practices"
+      ],
+      "installation": "npm install @mcp-docs/server",
+      "configuration": {
+        "sources": ["nextjs.org", "trpc.io", "prisma.io", "docs.microsoft.com/azure"],
+        "cache_duration": "24h",
+        "auto_update": true
+      }
+    }
+  },
+
+  "integration_priorities": {
+    "high": ["postgresql", "stripe", "azure_cognitive"],
+    "medium": ["quickbooks", "documentation"],
+    "low": ["browser_automation"]
+  },
+
+  "agent_mcp_mappings": {
+    "financial-prediction-modeler": ["postgresql", "stripe", "quickbooks"],
+    "integration-specialist": ["quickbooks", "stripe", "azure_cognitive"],
+    "database-optimizer": ["postgresql"],
+    "ai-features-orchestrator": ["azure_cognitive", "documentation"],
+    "test-suite-developer": ["browser_automation", "postgresql"],
+    "security-auditor": ["postgresql", "azure_cognitive"],
+    "audit-trail-perfectionist": ["postgresql", "quickbooks"],
+    "revenue-intelligence-analyst": ["stripe", "quickbooks"],
+    "backend-api-developer": ["postgresql", "documentation"],
+    "frontend-builder": ["browser_automation", "documentation"]
+  },
+
+  "setup_commands": [
+    {
+      "step": 1,
+      "description": "Install high-priority MCP servers",
+      "command": "npm install @mcp-postgresql/server @mcp-stripe/server @mcp-azure/cognitive-services"
+    },
+    {
+      "step": 2,
+      "description": "Configure environment variables",
+      "command": "cp .env.example .env.mcp && edit .env.mcp"
+    },
+    {
+      "step": 3,
+      "description": "Update Claude Code settings to include MCP servers",
+      "command": "edit .claude/settings.local.json"
+    },
+    {
+      "step": 4,
+      "description": "Test MCP server connections",
+      "command": "node scripts/test-mcp-connections.js"
+    }
+  ],
+
+  "security_considerations": {
+    "environment_isolation": "Use separate MCP configurations for development, staging, and production",
+    "credential_management": "Store all API keys and secrets in secure environment variables",
+    "access_control": "Implement least privilege access for each MCP server",
+    "audit_logging": "Log all MCP server interactions for security monitoring",
+    "rate_limiting": "Implement rate limiting to prevent API abuse"
+  }
+}

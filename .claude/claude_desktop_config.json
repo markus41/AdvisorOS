@@ -1,0 +1,138 @@
+{
+  "mcpServers": {
+    "advisoros-context": {
+      "command": "node",
+      "args": [".superclaude/mcp-servers/advisoros-context.js"],
+      "env": {},
+      "description": "AdvisorOS multi-tenant patterns and CPA workflow context provider"
+    },
+    "tenant-validator": {
+      "command": "node",
+      "args": [".superclaude/mcp-servers/tenant-validator.js"],
+      "env": {},
+      "description": "Multi-tenant query validation and security checks"
+    },
+    "zen-mcp-server": {
+      "command": "python",
+      "args": ["./zen-mcp-server/server.py"],
+      "env": {
+        "PYTHONPATH": "./zen-mcp-server"
+      },
+      "description": "Professional AI development tools for CPA platform development"
+    },
+    "postgresql-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://user:pass@localhost:5432/advisoros_dev?schema=public"
+      },
+      "description": "Multi-tenant PostgreSQL operations with organization isolation"
+    },
+    "github-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      },
+      "description": "GitHub repository management for AdvisorOS development"
+    },
+    "azure-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/azure-mcp-bridge.py"],
+      "env": {
+        "AZURE_FORM_RECOGNIZER_KEY": "",
+        "AZURE_TEXT_ANALYTICS_KEY": "",
+        "AZURE_OPENAI_KEY": "",
+        "PYTHONPATH": ".superclaude/mcp-servers"
+      },
+      "description": "Azure AI services integration for CPA workflows"
+    },
+    "browser-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "env": {},
+      "description": "Web automation and testing for CPA applications"
+    },
+    "notion-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-notion"],
+      "env": {
+        "NOTION_API_KEY": ""
+      },
+      "description": "CPA knowledge base and documentation management"
+    },
+    "memory-bank-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {},
+      "description": "Persistent context storage for complex CPA projects"
+    },
+    "amem-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/amem-server.py"],
+      "env": {
+        "PYTHONPATH": ".superclaude/mcp-servers"
+      },
+      "description": "Advanced memory management for CPA workflows"
+    },
+    "gateway-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/gateway-server.py"],
+      "env": {
+        "PYTHONPATH": ".superclaude/mcp-servers"
+      },
+      "description": "API gateway management for multi-tenant CPA platform"
+    },
+    "ref-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-reference"],
+      "env": {},
+      "description": "Technical documentation and reference lookup"
+    }
+  },
+  "advisoros": {
+    "version": "3.0.0",
+    "description": "AdvisorOS Complete MCP Ecosystem for Professional CPA Development",
+    "capabilities": [
+      "Multi-tenant database operations with organization isolation",
+      "Professional AI development tools (Zen MCP Server)",
+      "Azure AI services for CPA workflows (Form Recognizer, Text Analytics, OpenAI)",
+      "GitHub repository management and CI/CD workflows",
+      "Web automation and testing for CPA applications",
+      "CPA knowledge base and documentation management",
+      "Advanced memory and context management",
+      "API gateway management for multi-tenant platform",
+      "Technical documentation and tax code reference lookup"
+    ],
+    "cpa_workflows": {
+      "comprehensive_tax_review": [
+        "postgresql-mcp",
+        "zen-mcp-server", 
+        "azure-mcp",
+        "memory-bank-mcp",
+        "ref-mcp"
+      ],
+      "multi_tenant_security_audit": [
+        "postgresql-mcp",
+        "zen-mcp-server",
+        "github-mcp", 
+        "gateway-mcp",
+        "browser-mcp"
+      ],
+      "financial_compliance_validation": [
+        "postgresql-mcp",
+        "zen-mcp-server",
+        "azure-mcp",
+        "notion-mcp",
+        "amem-mcp"
+      ],
+      "cpa_feature_development": [
+        "zen-mcp-server",
+        "github-mcp",
+        "postgresql-mcp",
+        "browser-mcp",
+        "memory-bank-mcp"
+      ]
+    }
+  }
+}

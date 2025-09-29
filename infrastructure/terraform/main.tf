@@ -52,15 +52,7 @@ resource "azurerm_user_assigned_identity" "main" {
   tags = local.tags
 }
 
-# Application Insights
-resource "azurerm_application_insights" "main" {
-  name                = "${var.environment}-cpa-insights"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  application_type    = "web"
-
-  tags = local.tags
-}
+# Application Insights configuration moved to monitoring.tf
 
 # Key Vault
 resource "azurerm_key_vault" "main" {
@@ -125,56 +117,9 @@ resource "azurerm_storage_container" "backups" {
   container_access_type = "private"
 }
 
-# PostgreSQL Flexible Server
-resource "azurerm_postgresql_flexible_server" "main" {
-  name                = "${var.environment}-cpa-postgres"
-  resource_group_name = azurerm_resource_group.main.name
-  location           = azurerm_resource_group.main.location
-  version            = "15"
+# PostgreSQL configuration moved to database.tf
 
-  administrator_login    = "cpaadmin"
-  administrator_password = random_password.postgres_password.result
-
-  storage_mb = var.postgres_storage_mb
-  sku_name   = var.postgres_sku
-
-  backup_retention_days        = var.environment == "prod" ? 30 : 7
-  geo_redundant_backup_enabled = var.environment == "prod"
-
-  high_availability {
-    mode                      = var.environment == "prod" ? "ZoneRedundant" : "Disabled"
-    standby_availability_zone = var.environment == "prod" ? "2" : null
-  }
-
-  tags = local.tags
-}
-
-# PostgreSQL Database
-resource "azurerm_postgresql_flexible_server_database" "main" {
-  name      = "cpadb"
-  server_id = azurerm_postgresql_flexible_server.main.id
-  charset   = "UTF8"
-  collation = "en_US.utf8"
-}
-
-# PostgreSQL Firewall Rules
-resource "azurerm_postgresql_flexible_server_firewall_rule" "azure_services" {
-  name             = "allow-azure-services"
-  server_id        = azurerm_postgresql_flexible_server.main.id
-  start_ip_address = "0.0.0.0"
-  end_ip_address   = "0.0.0.0"
-}
-
-# Static Web App for Next.js
-resource "azurerm_static_site" "web" {
-  name                = "${var.environment}-cpa-web"
-  resource_group_name = azurerm_resource_group.main.name
-  location           = "westus2" # Static Web Apps limited regions
-  sku_tier           = var.environment == "prod" ? "Standard" : "Free"
-  sku_size           = var.environment == "prod" ? "Standard" : "Free"
-
-  tags = local.tags
-}
+# Web app configuration moved to app-service.tf
 
 # Function App for API
 resource "azurerm_service_plan" "api" {
@@ -336,11 +281,26 @@ data "azurerm_client_config" "current" {}
 locals {
   tags = {
     Environment = var.environment
-    Project     = "CPA-Platform"
+    Project     = "AdvisorOS"
     ManagedBy   = "Terraform"
     CostCenter  = var.cost_center
     CreatedDate = timestamp()
   }
 
-  database_url = "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.main.fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require"
+  # Network configuration for consistent naming
+  vnet_address_space = ["10.0.0.0/16"]
+  subnet_configs = {
+    app_service = {
+      address_prefixes = ["10.0.1.0/24"]
+    }
+    database = {
+      address_prefixes = ["10.0.2.0/24"]
+    }
+    application_gateway = {
+      address_prefixes = ["10.0.3.0/24"]
+    }
+    private_endpoints = {
+      address_prefixes = ["10.0.4.0/24"]
+    }
+  }
 }

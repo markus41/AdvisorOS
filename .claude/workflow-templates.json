@@ -1,0 +1,191 @@
+{
+  "cpa-document-processing": [
+    {
+      "type": "document-intelligence",
+      "description": "extract and classify document content using OCR and AI analysis",
+      "agent": "document-intelligence-optimizer",
+      "estimatedDuration": "2-3 minutes",
+      "dependencies": []
+    },
+    {
+      "type": "financial-validation",
+      "description": "validate extracted financial data for accuracy and anomaly detection",
+      "agent": "financial-prediction-modeler",
+      "estimatedDuration": "3-5 minutes",
+      "dependencies": ["document-intelligence"]
+    },
+    {
+      "type": "tax-compliance",
+      "description": "analyze tax implications and ensure compliance requirements",
+      "agent": "cpa-tax-compliance",
+      "estimatedDuration": "5-7 minutes",
+      "dependencies": ["financial-validation"]
+    },
+    {
+      "type": "audit-trail",
+      "description": "generate comprehensive audit trail and compliance documentation",
+      "agent": "audit-trail-perfectionist",
+      "estimatedDuration": "2-3 minutes",
+      "dependencies": ["tax-compliance"]
+    },
+    {
+      "type": "client-communication",
+      "description": "prepare client notification and next action steps",
+      "agent": "client-success-optimizer",
+      "estimatedDuration": "1-2 minutes",
+      "dependencies": ["audit-trail"]
+    }
+  ],
+
+  "client-onboarding-complete": [
+    {
+      "type": "backend-setup",
+      "description": "create client database records, authentication, and organization setup",
+      "agent": "backend-api-developer",
+      "estimatedDuration": "5-7 minutes",
+      "dependencies": []
+    },
+    {
+      "type": "integration-configuration",
+      "description": "configure QuickBooks OAuth, banking integrations, and data sync",
+      "agent": "integration-specialist",
+      "estimatedDuration": "7-10 minutes",
+      "dependencies": ["backend-setup"]
+    },
+    {
+      "type": "portal-customization",
+      "description": "customize client portal interface and communication preferences",
+      "agent": "client-portal-designer",
+      "estimatedDuration": "4-6 minutes",
+      "dependencies": ["backend-setup"]
+    },
+    {
+      "type": "security-audit",
+      "description": "verify security settings, permissions, and data access controls",
+      "agent": "security-auditor",
+      "estimatedDuration": "3-4 minutes",
+      "dependencies": ["portal-customization", "integration-configuration"]
+    },
+    {
+      "type": "welcome-automation",
+      "description": "set up welcome sequence, training materials, and support workflows",
+      "agent": "client-success-optimizer",
+      "estimatedDuration": "3-5 minutes",
+      "dependencies": ["security-audit"]
+    }
+  ],
+
+  "tax-season-readiness": [
+    {
+      "type": "capacity-planning",
+      "description": "analyze and optimize system capacity for peak tax season load",
+      "agent": "tax-season-optimizer",
+      "estimatedDuration": "10-15 minutes",
+      "dependencies": []
+    },
+    {
+      "type": "performance-optimization",
+      "description": "optimize database queries, implement caching, and enhance scalability",
+      "agent": "performance-optimization-specialist",
+      "estimatedDuration": "15-20 minutes",
+      "dependencies": ["capacity-planning"]
+    },
+    {
+      "type": "workflow-automation",
+      "description": "streamline document processing and approval workflows",
+      "agent": "workflow-efficiency-analyzer",
+      "estimatedDuration": "8-12 minutes",
+      "dependencies": ["performance-optimization"]
+    },
+    {
+      "type": "compliance-verification",
+      "description": "ensure audit trail completeness and regulatory compliance",
+      "agent": "audit-trail-perfectionist",
+      "estimatedDuration": "6-8 minutes",
+      "dependencies": ["workflow-automation"]
+    },
+    {
+      "type": "testing-validation",
+      "description": "execute comprehensive load testing and stress testing",
+      "agent": "test-suite-developer",
+      "estimatedDuration": "12-15 minutes",
+      "dependencies": ["compliance-verification"]
+    }
+  ],
+
+  "feature-deployment-pipeline": [
+    {
+      "type": "comprehensive-testing",
+      "description": "create and execute complete test coverage for new feature",
+      "agent": "test-suite-developer",
+      "estimatedDuration": "10-15 minutes",
+      "dependencies": []
+    },
+    {
+      "type": "security-assessment",
+      "description": "perform security vulnerability assessment and penetration testing",
+      "agent": "security-auditor",
+      "estimatedDuration": "8-12 minutes",
+      "dependencies": ["comprehensive-testing"]
+    },
+    {
+      "type": "performance-analysis",
+      "description": "analyze performance impact and optimize for production load",
+      "agent": "performance-optimization-specialist",
+      "estimatedDuration": "6-10 minutes",
+      "dependencies": ["security-assessment"]
+    },
+    {
+      "type": "adoption-strategy",
+      "description": "design feature adoption tracking and success measurement",
+      "agent": "feature-adoption-tracker",
+      "estimatedDuration": "4-6 minutes",
+      "dependencies": ["performance-analysis"]
+    },
+    {
+      "type": "deployment-execution",
+      "description": "execute blue-green deployment with monitoring and rollback capability",
+      "agent": "devops-azure-specialist",
+      "estimatedDuration": "8-12 minutes",
+      "dependencies": ["adoption-strategy"]
+    }
+  ],
+
+  "ai-workflow-optimization": [
+    {
+      "type": "automation-identification",
+      "description": "identify repetitive tasks and automation opportunities",
+      "agent": "smart-automation-designer",
+      "estimatedDuration": "8-10 minutes",
+      "dependencies": []
+    },
+    {
+      "type": "ai-integration",
+      "description": "implement AI-powered features and document intelligence",
+      "agent": "ai-features-orchestrator",
+      "estimatedDuration": "12-18 minutes",
+      "dependencies": ["automation-identification"]
+    },
+    {
+      "type": "workflow-redesign",
+      "description": "redesign workflows to incorporate AI automation",
+      "agent": "workflow-efficiency-analyzer",
+      "estimatedDuration": "10-15 minutes",
+      "dependencies": ["ai-integration"]
+    },
+    {
+      "type": "user-experience",
+      "description": "optimize user journey and reduce friction in AI-assisted workflows",
+      "agent": "user-journey-optimizer",
+      "estimatedDuration": "6-8 minutes",
+      "dependencies": ["workflow-redesign"]
+    },
+    {
+      "type": "success-tracking",
+      "description": "implement success metrics and continuous improvement monitoring",
+      "agent": "feature-adoption-tracker",
+      "estimatedDuration": "4-6 minutes",
+      "dependencies": ["user-experience"]
+    }
+  ]
+}
