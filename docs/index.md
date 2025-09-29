@@ -136,7 +136,7 @@ graph TD
   Fabric --> DB
 ```
 
-Dive deeper with the full [architecture deep dive](ARCHITECTURE.md) and deployment automation in the [Azure blueprint]({{ site.github.repository_url }}/blob/main/infrastructure/main.bicep).
+Dive deeper with the full [architecture deep dive](ARCHITECTURE.md) and deployment automation in the [Azure blueprint](../infrastructure/main.bicep).
 
 ## Automation Scorecard
 
