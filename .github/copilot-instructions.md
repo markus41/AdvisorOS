@@ -333,6 +333,17 @@ SENDGRID_API_KEY="your-sendgrid-api-key"
 - Validate responsive design across devices
 - Test performance impact of changes
 
+## Important Notes
+
+This platform serves CPA firms with mission-critical financial data. Always prioritize:
+- **Security**: Implement proper authentication and data protection
+- **Reliability**: Ensure robust error handling and monitoring
+- **Compliance**: Follow accounting industry standards and regulations
+- **Multi-tenancy**: Maintain strict data isolation between organizations
+- **Performance**: Optimize for responsive user experience
+
 ---
+
+*This Copilot instruction file provides comprehensive guidance for AI-assisted development of the AdvisorOS platform. Follow these guidelines to maintain code quality, security, and architectural consistency.*
 
 This platform serves CPA firms with mission-critical financial data. Prioritize security, reliability, and compliance in all development decisions.
