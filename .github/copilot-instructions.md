@@ -1123,3 +1123,5 @@ When working on AI features:
 The AI system is designed to be intelligent, context-aware, and highly capable while maintaining professional standards and cost efficiency. All AI operations must follow the same multi-tenant patterns as the rest of the platform.
 
 **🎯 Remember: AdvisorOS is a production CPA platform where security, compliance, and performance are paramount. Every code change must consider multi-tenant implications and professional CPA requirements.**
+
+**🎯 Remember: AdvisorOS is a production CPA platform where security, compliance, and performance are paramount. Every code change must consider multi-tenant implications and professional CPA requirements.**
