@@ -1,0 +1,210 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "value": "prod"
+    },
+    "appName": {
+      "value": "advisoros"
+    },
+    "primaryRegion": {
+      "value": "East US 2"
+    },
+    "secondaryRegion": {
+      "value": "West US 2"
+    },
+    "enableMultiRegion": {
+      "value": true
+    },
+    "productionTier": {
+      "value": "Premium"
+    },
+    "adminEmail": {
+      "value": "devops@advisoros.com"
+    },
+    "domainName": {
+      "value": "app.advisoros.com"
+    },
+    "enableFrontDoor": {
+      "value": true
+    },
+    "enableDdosProtection": {
+      "value": true
+    },
+    "enableAzureDefender": {
+      "value": true
+    },
+    "enableAdvancedThreatProtection": {
+      "value": true
+    },
+    "enablePrivateEndpoints": {
+      "value": true
+    },
+    "enableZoneRedundancy": {
+      "value": true
+    },
+    "maxConcurrentClients": {
+      "value": 10000
+    },
+    "autoscaleSettings": {
+      "value": {
+        "minInstances": 3,
+        "maxInstances": 20,
+        "targetCpuPercentage": 70,
+        "targetMemoryPercentage": 80,
+        "scaleOutCooldown": "PT5M",
+        "scaleInCooldown": "PT10M"
+      }
+    },
+    "databaseConfig": {
+      "value": {
+        "sku": "GP_Gen5_8",
+        "storageSize": 2048,
+        "backupRetention": 35,
+        "geoRedundantBackup": true,
+        "highAvailability": true,
+        "maintenanceWindow": {
+          "dayOfWeek": 0,
+          "startHour": 2,
+          "startMinute": 0
+        },
+        "connectionPooling": {
+          "maxConnections": 200,
+          "minConnections": 20
+        }
+      }
+    },
+    "redisConfig": {
+      "value": {
+        "sku": "Premium",
+        "family": "P",
+        "capacity": 3,
+        "enableNonSslPort": false,
+        "redisVersion": "6.0",
+        "maxMemoryPolicy": "allkeys-lru",
+        "clustering": {
+          "enabled": true,
+          "shardCount": 3
+        }
+      }
+    },
+    "storageConfig": {
+      "value": {
+        "sku": "Premium_ZRS",
+        "tier": "Premium",
+        "enableHierarchicalNamespace": true,
+        "enableVersioning": true,
+        "enableSoftDelete": true,
+        "softDeleteRetentionDays": 30,
+        "enablePointInTimeRestore": true,
+        "restoreRetentionDays": 7
+      }
+    },
+    "monitoringConfig": {
+      "value": {
+        "enableDetailedMetrics": true,
+        "enableApplicationMap": true,
+        "enableLiveMetrics": true,
+        "enableProfiling": true,
+        "enableDebugSnapshot": false,
+        "samplingPercentage": 100,
+        "retentionDays": 730
+      }
+    },
+    "securityConfig": {
+      "value": {
+        "enableManagedIdentity": true,
+        "enableKeyVaultIntegration": true,
+        "enableAzureAD": true,
+        "enableConditionalAccess": true,
+        "enforceHttps": true,
+        "minTlsVersion": "1.2",
+        "enableFirewall": true,
+        "allowedIpRanges": [
+          "0.0.0.0/0"
+        ],
+        "enableAuditLogging": true,
+        "enableComplianceLogging": true
+      }
+    },
+    "backupConfig": {
+      "value": {
+        "enableAutomatedBackup": true,
+        "backupFrequency": "Daily",
+        "backupRetentionDays": 90,
+        "enableGeoRedundantBackup": true,
+        "enableCrossRegionRestore": true,
+        "pointInTimeRecoveryDays": 35
+      }
+    },
+    "disasterRecoveryConfig": {
+      "value": {
+        "enableGeoDR": true,
+        "rpoMinutes": 15,
+        "rtoMinutes": 60,
+        "failoverPolicy": "Automatic",
+        "enableReadReplica": true,
+        "replicationLag": "5m"
+      }
+    },
+    "complianceConfig": {
+      "value": {
+        "enableSoc2Compliance": true,
+        "enableGdprCompliance": true,
+        "enableHipaaCompliance": true,
+        "enablePciCompliance": false,
+        "dataResidency": "US",
+        "encryptionAtRest": true,
+        "encryptionInTransit": true,
+        "keyRotationDays": 90
+      }
+    },
+    "performanceConfig": {
+      "value": {
+        "enableCdn": true,
+        "cdnCachingRules": {
+          "staticContent": "1y",
+          "dynamicContent": "1h",
+          "apiResponses": "5m"
+        },
+        "enableCompression": true,
+        "enableImageOptimization": true,
+        "enableEdgeComputing": true
+      }
+    },
+    "taxSeasonConfig": {
+      "value": {
+        "enableTaxSeasonScaling": true,
+        "taxSeasonStartDate": "2024-01-01",
+        "taxSeasonEndDate": "2024-04-30",
+        "taxSeasonScaling": {
+          "minInstances": 5,
+          "maxInstances": 50,
+          "targetCpuPercentage": 60,
+          "scaleOutCooldown": "PT2M",
+          "scaleInCooldown": "PT15M"
+        },
+        "enablePriorityQueues": true,
+        "enableDedicatedInstances": true
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "prod",
+        "Application": "advisoros",
+        "Owner": "DevOps",
+        "CostCenter": "Production",
+        "BackupPolicy": "Daily",
+        "Compliance": "SOC2-GDPR-HIPAA",
+        "BusinessCriticality": "High",
+        "DataClassification": "Confidential",
+        "DisasterRecovery": "Tier1",
+        "MaintenanceWindow": "Sunday-02:00-06:00",
+        "AutoShutdown": "Disabled",
+        "MonitoringLevel": "Enhanced",
+        "SecurityLevel": "Maximum"
+      }
+    }
+  }
+}

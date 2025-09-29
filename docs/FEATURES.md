@@ -1,22 +1,65 @@
-# CPA Platform Features Overview
-
-## Table of Contents
-
-1. [Core Platform Features](#core-platform-features)
-2. [Client Management](#client-management)
-3. [Document Management](#document-management)
-4. [Financial Management](#financial-management)
-5. [Workflow Automation](#workflow-automation)
-6. [Reporting and Analytics](#reporting-and-analytics)
-7. [Integration Capabilities](#integration-capabilities)
-8. [Security and Compliance](#security-and-compliance)
-9. [Collaboration Tools](#collaboration-tools)
-10. [AI and Automation](#ai-and-automation)
-11. [Mobile and Accessibility](#mobile-and-accessibility)
-12. [Administration](#administration)
-
+---
+layout: default
+title: Product Capabilities
+nav_order: 2
+mermaid: true
 ---
 
+# Product Capability Map
+
+> [!SUMMARY]
+> Use this page as the briefing deck for demos, roadmap discussions, and enablement. It distills the platform pillars, highlights where AdvisorOS wins, and links straight into the deeper specs that live in this repo.
+
+## Capability Pillars
+
+| Pillar | What to Spotlight | Proof Points |
+| --- | --- | --- |
+| Client Experience | Unified client workspace, secure messaging, branded portal | [Client Portal Guide](CLIENT_PORTAL_GUIDE.md), [User Guide](USER_GUIDE_COMPREHENSIVE.md) |
+| Operational Automation | Workflow templates, task routing, SLA monitoring | [CPA Workflow Optimization]({{ site.github.repository_url }}/blob/main/CPA_WORKFLOW_OPTIMIZATION_SUMMARY.md), [Testing Automation Framework]({{ site.github.repository_url }}/blob/main/TESTING_AUTOMATION_FRAMEWORK.md) |
+| Financial Intelligence | Real-time dashboards, anomaly detection, scenario planning | [Financial Analytics Implementation]({{ site.github.repository_url }}/blob/main/FINANCIAL_ANALYTICS_IMPLEMENTATION.md), [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md) |
+| Compliance & Trust | Role-based access, audit trails, encryption posture | [Comprehensive Security Audit]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md), [Security Compliance Report]({{ site.github.repository_url }}/blob/main/SECURITY_COMPLIANCE_REPORT.md) |
+| Integration & Extensibility | QuickBooks sync, API toolkit, data export | [Integration Guides](INTEGRATION_GUIDES.md), [API Reference](API_REFERENCE.md) |
+
+## Adoption Lens
+
+- **Who benefits first?** Start with firms drowning in email + spreadsheets. The [Market Intelligence Analysis]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) surfaces the trigger events.
+- **What metrics move?** Track automation coverage, cycle time, and client NPS using the [Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md).
+- **Where to focus enablement?** Pull enablement checkpoints from the [Implementation Runbook](README_USER.md) and align them with each capability pillar above.
+
+## Automation Flow
+
+```mermaid
+graph LR
+  LeadIntake[Lead Intake]
+  Proposal[Proposal Builder]
+  Onboarding[Client Onboarding]
+  Documents[Document Intelligence]
+  Workflow[Workflow Automation]
+  Insights[Financial Insights]
+  Review[Quality Review]
+  Reporting[Client Reporting]
+
+  LeadIntake --> Proposal
+  Proposal --> Onboarding
+  Onboarding --> Documents
+  Documents --> Workflow
+  Workflow --> Insights
+  Insights --> Review
+  Review --> Reporting
+  Reporting --> Feedback((Client Feedback))
+  Feedback --> Workflow
+```
+
+Use this map during demos to narrate how AdvisorOS eliminates swivel-chair work. Each node lines up with a deeper dive section below.
+
+## Demo Storyline
+
+1. Open on the **Executive Dashboard** (see [Financial Analytics Dashboard]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md)) and highlight automation coverage.
+2. Jump into a **Client Workspace** to demonstrate collaborative document review using the [Document Management](#document-management) features.
+3. Showcase **Workflow Automation** with SLA tracking from the [Task Management](#task-management) section.
+4. Close with the **Compliance cockpit**, referencing audit trails and encryption from [Security and Compliance](#security-and-compliance).
+
+---
 ## Core Platform Features
 
 ### Multi-Tenant Architecture
@@ -467,3 +510,4 @@
 ---
 
 *This comprehensive feature overview demonstrates the platform's capabilities. For detailed implementation guidance, refer to the technical documentation and setup guides.*
+

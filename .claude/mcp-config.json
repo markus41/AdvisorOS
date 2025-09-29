@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "azure-cosmos": {
+      "command": "npx",
+      "args": ["@azure/mcp-server-cosmos"],
+      "env": {
+        "COSMOS_ENDPOINT": "${AZURE_COSMOS_ENDPOINT}",
+        "COSMOS_KEY": "${AZURE_COSMOS_KEY}",
+        "COSMOS_DATABASE": "advisoros",
+        "COSMOS_CONTAINER": "memory"
+      }
+    },
+    "azure-redis": {
+      "command": "npx",
+      "args": ["@azure/mcp-server-redis"],
+      "env": {
+        "REDIS_CONNECTION_STRING": "${AZURE_REDIS_CONNECTION_STRING}",
+        "REDIS_DATABASE": "0",
+        "REDIS_KEY_PREFIX": "advisoros:"
+      }
+    },
+    "advisoros-memory": {
+      "command": "node",
+      "args": ["./mcp-servers/advisoros-memory-server.js"],
+      "env": {
+        "AZURE_COSMOS_ENDPOINT": "${AZURE_COSMOS_ENDPOINT}",
+        "AZURE_REDIS_CONNECTION": "${AZURE_REDIS_CONNECTION_STRING}",
+        "MEMORY_SCOPE": "enterprise",
+        "PROJECT_ID": "advisoros",
+        "LOG_LEVEL": "info"
+      }
+    },
+    "claude-memory": {
+      "command": "npx",
+      "args": ["claude-memory-mcp"],
+      "env": {
+        "MEMORY_STORAGE_PATH": "./.claude/memory",
+        "ENABLE_SEARCH": "true",
+        "MAX_MEMORIES": "10000"
+      }
+    }
+  }
+}

@@ -1,3 +1,9 @@
+---
+layout: default
+title: Deployment Blueprint
+nav_order: 35
+---
+
 # Deployment Guide
 
 ## Table of Contents

@@ -1,8 +1,10 @@
 import { DocumentAnalysisClient, AzureKeyCredential } from '@azure/ai-form-recognizer';
 import { SearchClient, SearchIndexClient, AzureKeyCredential as SearchKeyCredential } from '@azure/search-documents';
-import { OpenAIApi, Configuration } from 'openai';
-import { prisma } from '../../server/db';
-import { formRecognizer, type OCRResult } from '../azure/form-recognizer';
+import { openaiClient } from './openai-client';
+import { documentAnalysisPrompts, formatPrompt } from './prompts';
+import { db } from '../../server/db';
+import pdfParse from 'pdf-parse';
+import sharp from 'sharp';
 
 export interface EnhancedDocumentAnalysis {
   id: string;
@@ -122,8 +124,8 @@ export interface BatchProcessingOptions {
 class EnhancedDocumentIntelligenceService {
   private formRecognizerClient: DocumentAnalysisClient;
   private searchClient?: SearchClient;
-  private openaiClient?: OpenAIApi;
   private classificationRules: DocumentClassificationRule[] = [];
+  private isInitialized = false;
 
   constructor() {
     // Initialize Form Recognizer
@@ -145,12 +147,7 @@ class EnhancedDocumentIntelligenceService {
       );
     }
 
-    // Initialize OpenAI for enhanced analysis
-    if (process.env.OPENAI_API_KEY) {
-      this.openaiClient = new OpenAIApi(new Configuration({
-        apiKey: process.env.OPENAI_API_KEY,
-      }));
-    }
+    this.isInitialized = true;
 
     this.loadClassificationRules();
   }
@@ -178,12 +175,8 @@ class EnhancedDocumentIntelligenceService {
     const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     try {
-      // Step 1: Basic OCR with Form Recognizer
-      const typeDetection = await formRecognizer.detectDocumentType(documentBuffer);
-      const ocrResult = await formRecognizer.analyzeDocument(
-        documentBuffer,
-        typeDetection.detectedType
-      );
+      // Step 1: OCR with Form Recognizer
+      const ocrResult = await this.performOCR(documentBuffer, metadata.mimeType);
 
       // Step 2: Enhanced data extraction
       const extractedData = await this.performEnhancedExtraction(ocrResult, documentBuffer);
@@ -440,11 +433,11 @@ class EnhancedDocumentIntelligenceService {
    * Enhanced data extraction with AI augmentation
    */
   private async performEnhancedExtraction(
-    ocrResult: OCRResult,
+    ocrResult: any,
     documentBuffer: Buffer
   ): Promise<EnhancedDocumentAnalysis['extractedData']> {
     const extractedData: EnhancedDocumentAnalysis['extractedData'] = {
-      structuredFields: ocrResult.extractedData,
+      structuredFields: ocrResult.extractedData || {},
       keyValuePairs: [],
       tables: [],
       entities: []
@@ -456,27 +449,89 @@ class EnhancedDocumentIntelligenceService {
     // Process tables
     extractedData.tables = this.processTables(ocrResult.pages);
 
-    // Extract entities using NLP
-    if (this.openaiClient) {
-      extractedData.entities = await this.extractEntitiesWithAI(ocrResult.rawText);
+    // Extract entities using AI
+    extractedData.entities = await this.extractEntitiesWithAI(ocrResult.rawText);
+
+    // AI-enhanced structured data extraction
+    if (openaiClient.isReady()) {
+      try {
+        const prompt = formatPrompt(documentAnalysisPrompts.dataExtraction, {
+          documentType: 'document', // Would be determined from context
+          textContent: ocrResult.rawText.slice(0, 4000),
+          ocrData: JSON.stringify({
+            keyValuePairs: extractedData.keyValuePairs.slice(0, 20),
+            tables: extractedData.tables.slice(0, 3),
+          }),
+        });
+
+        const response = await openaiClient.createStructuredCompletion(
+          prompt.user,
+          {},
+          {
+            systemMessage: prompt.system,
+            temperature: 0.1,
+          }
+        );
+
+        // Merge AI-extracted data with existing structured fields
+        extractedData.structuredFields = {
+          ...extractedData.structuredFields,
+          ...response.data
+        };
+      } catch (error) {
+        console.warn('AI data extraction failed, using basic extraction:', error);
+      }
     }
 
     return extractedData;
   }
 
   /**
-   * Intelligent document categorization
+   * Intelligent document categorization using AI and rules
    */
   private async performIntelligentCategorization(
-    ocrResult: OCRResult,
+    ocrResult: any,
     extractedData: EnhancedDocumentAnalysis['extractedData'],
     metadata: any,
     customRules?: DocumentClassificationRule[]
   ): Promise<EnhancedDocumentAnalysis['intelligentCategorization']> {
+    // First try AI-based categorization
+    let aiCategory = null;
+    if (openaiClient.isReady()) {
+      try {
+        const prompt = formatPrompt(documentAnalysisPrompts.categorization, {
+          documentType: metadata.mimeType,
+          textContent: ocrResult.rawText.slice(0, 4000),
+          fileName: metadata.fileName,
+        });
+
+        const response = await openaiClient.createStructuredCompletion(
+          prompt.user,
+          {
+            category: 'string',
+            confidence: 'number',
+            subcategory: 'string (optional)',
+            description: 'string',
+            extractedData: 'object'
+          },
+          {
+            systemMessage: prompt.system,
+            organizationId: metadata.organizationId,
+            temperature: 0.1,
+          }
+        );
+
+        aiCategory = response.data;
+      } catch (error) {
+        console.warn('AI categorization failed, falling back to rules:', error);
+      }
+    }
+
+    // Apply rule-based categorization as fallback or validation
     const allRules = [...this.classificationRules, ...(customRules || [])];
     const text = ocrResult.rawText.toLowerCase();
 
-    let bestMatch = {
+    let ruleBasedMatch = {
       primaryCategory: 'general',
       subcategory: undefined as string | undefined,
       confidence: 0.5,
@@ -489,8 +544,8 @@ class EnhancedDocumentIntelligenceService {
     for (const rule of allRules.filter(r => r.isActive)) {
       const score = this.evaluateClassificationRule(rule, text, extractedData, metadata);
 
-      if (score > bestMatch.confidence) {
-        bestMatch = {
+      if (score > ruleBasedMatch.confidence) {
+        ruleBasedMatch = {
           primaryCategory: rule.category,
           subcategory: rule.subcategory,
           confidence: score,
@@ -501,19 +556,66 @@ class EnhancedDocumentIntelligenceService {
       }
     }
 
-    return bestMatch;
+    // Use AI result if available and confident, otherwise use rule-based
+    if (aiCategory && aiCategory.confidence > 0.8) {
+      return {
+        primaryCategory: aiCategory.category,
+        subcategory: aiCategory.subcategory,
+        confidence: aiCategory.confidence,
+        businessRelevance: this.calculateBusinessRelevance(aiCategory.category, extractedData),
+        taxRelevance: this.calculateTaxRelevance(aiCategory.category, extractedData),
+        complianceFlags: this.identifyComplianceFlags(aiCategory.category, extractedData)
+      };
+    }
+
+    return ruleBasedMatch;
   }
 
   /**
-   * Anomaly detection
+   * Enhanced anomaly detection using AI and heuristics
    */
   private async detectAnomalies(
-    ocrResult: OCRResult,
+    ocrResult: any,
     extractedData: EnhancedDocumentAnalysis['extractedData'],
     categorization: EnhancedDocumentAnalysis['intelligentCategorization']
   ): Promise<EnhancedDocumentAnalysis['anomalies']> {
     const anomalies: EnhancedDocumentAnalysis['anomalies'] = [];
 
+    // AI-based anomaly detection
+    if (openaiClient.isReady()) {
+      try {
+        const prompt = formatPrompt(documentAnalysisPrompts.anomalyDetection, {
+          documentType: categorization.primaryCategory,
+          extractedData: JSON.stringify(extractedData),
+          historicalData: JSON.stringify({}), // Would be populated with actual historical data
+        });
+
+        const response = await openaiClient.createStructuredCompletion(
+          prompt.user,
+          {
+            anomalies: 'array of objects with type, severity, description, location, suggestion, confidence'
+          },
+          {
+            systemMessage: prompt.system,
+            temperature: 0.1,
+          }
+        );
+
+        const aiAnomalies = (response.data.anomalies || []).map((anomaly: any) => ({
+          type: anomaly.type as EnhancedDocumentAnalysis['anomalies'][0]['type'],
+          severity: anomaly.severity as EnhancedDocumentAnalysis['anomalies'][0]['severity'],
+          description: anomaly.description,
+          location: anomaly.location,
+          suggestedAction: anomaly.suggestion
+        }));
+
+        anomalies.push(...aiAnomalies);
+      } catch (error) {
+        console.warn('AI anomaly detection failed, using heuristics:', error);
+      }
+    }
+
+    // Heuristic-based anomaly detection as backup
     // Check for missing signatures on important documents
     if (this.requiresSignature(categorization.primaryCategory)) {
       const hasSignature = this.detectSignature(ocrResult.rawText);
@@ -705,9 +807,42 @@ class EnhancedDocumentIntelligenceService {
     confidence: number;
     mentions: Array<{ text: string; offset: number; length: number }>;
   }>> {
-    // This would use OpenAI or Azure Cognitive Services for entity extraction
-    // For now, return empty array
-    return [];
+    if (!openaiClient.isReady()) {
+      return [];
+    }
+
+    try {
+      const prompt = `Extract financial and business entities from this text:
+
+${text.slice(0, 3000)}
+
+Identify and extract:
+1. Monetary amounts
+2. Dates
+3. Company names
+4. Person names
+5. Account numbers
+6. Tax identification numbers
+7. Financial terms
+
+Return as JSON array with type, value, confidence, and mentions.`;
+
+      const response = await openaiClient.createStructuredCompletion(
+        prompt,
+        {
+          entities: 'array of objects with type, value, confidence, mentions'
+        },
+        {
+          temperature: 0.1,
+          maxTokens: 1000,
+        }
+      );
+
+      return response.data.entities || [];
+    } catch (error) {
+      console.error('Entity extraction failed:', error);
+      return [];
+    }
   }
 
   private calculateProcessingCosts(
@@ -905,8 +1040,24 @@ class EnhancedDocumentIntelligenceService {
   }
 
   private async generateSemanticSummary(text: string): Promise<string> {
-    // OpenAI-based semantic summary generation
-    return text.substring(0, 200) + '...';
+    if (!openaiClient.isReady()) {
+      return text.substring(0, 200) + '...';
+    }
+
+    try {
+      const response = await openaiClient.createCompletion(
+        `Summarize this financial document in 2-3 sentences, focusing on key financial information, purpose, and important details:\n\n${text.slice(0, 2000)}`,
+        {
+          temperature: 0.3,
+          maxTokens: 150,
+        }
+      );
+
+      return response.data || text.substring(0, 200) + '...';
+    } catch (error) {
+      console.error('Semantic summary generation failed:', error);
+      return text.substring(0, 200) + '...';
+    }
   }
 
   private extractClassificationPatterns(
@@ -951,10 +1102,111 @@ class EnhancedDocumentIntelligenceService {
   }
 
   /**
+   * Perform OCR using Azure Form Recognizer with enhanced processing
+   */
+  private async performOCR(fileBuffer: Buffer, mimeType: string): Promise<any> {
+    if (!this.formRecognizerClient) {
+      throw new Error('Form Recognizer client not initialized');
+    }
+
+    try {
+      let processedBuffer = fileBuffer;
+      let contentType = mimeType;
+
+      // Handle different file types
+      if (mimeType === 'application/pdf') {
+        // Extract text from PDF for hybrid approach
+        const pdfData = await pdfParse(fileBuffer);
+        const pdfText = pdfData.text;
+
+        if (pdfText.trim().length > 0) {
+          const ocrData = await this.formRecognizerClient.beginAnalyzeDocument(
+            'prebuilt-document',
+            fileBuffer,
+            { contentType: 'application/pdf' }
+          );
+
+          const result = await ocrData.pollUntilDone();
+          return this.processFormRecognizerResult(result, pdfText);
+        }
+      } else if (mimeType.startsWith('image/')) {
+        // Optimize image for better OCR results
+        processedBuffer = await this.optimizeImageForOCR(fileBuffer);
+        contentType = 'image/png';
+      }
+
+      const poller = await this.formRecognizerClient.beginAnalyzeDocument(
+        'prebuilt-document',
+        processedBuffer,
+        { contentType }
+      );
+
+      const result = await poller.pollUntilDone();
+      return this.processFormRecognizerResult(result);
+    } catch (error) {
+      console.error('OCR processing failed:', error);
+      throw new Error(`OCR processing failed: ${error}`);
+    }
+  }
+
+  /**
+   * Process Form Recognizer results into our format
+   */
+  private processFormRecognizerResult(result: any, additionalText?: string): any {
+    const pages: any[] = [];
+    let fullText = additionalText || '';
+
+    // Process pages
+    if (result.pages) {
+      result.pages.forEach((page: any, index: number) => {
+        const pageText = page.lines?.map((line: any) => line.content).join('\n') || '';
+        fullText += (fullText ? '\n' : '') + pageText;
+
+        pages.push({
+          pageNumber: index + 1,
+          text: pageText,
+          confidence: page.lines?.reduce((avg: number, line: any) => avg + (line.confidence || 0), 0) / (page.lines?.length || 1) || 0,
+          tables: page.tables || [],
+        });
+      });
+    }
+
+    return {
+      rawText: fullText,
+      pages,
+      confidence: result.pages?.reduce((avg: number, page: any) =>
+        avg + (page.lines?.reduce((lineAvg: number, line: any) => lineAvg + (line.confidence || 0), 0) / (page.lines?.length || 1) || 0), 0
+      ) / (result.pages?.length || 1) || 0,
+      extractedData: {},
+    };
+  }
+
+  /**
+   * Optimize image for better OCR results
+   */
+  private async optimizeImageForOCR(imageBuffer: Buffer): Promise<Buffer> {
+    try {
+      return await sharp(imageBuffer)
+        .resize(2000, 2000, {
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .normalize()
+        .sharpen({ sigma: 1, flat: 1, jagged: 2 })
+        .greyscale()
+        .png({ compressionLevel: 6 })
+        .toBuffer();
+    } catch (error) {
+      console.warn('Image optimization failed, using original:', error);
+      return imageBuffer;
+    }
+  }
+
+  /**
    * Check if service is ready
    */
   isReady(): boolean {
-    return !!this.formRecognizerClient;
+    return this.isInitialized && !!this.formRecognizerClient && openaiClient.isReady();
   }
 }
 

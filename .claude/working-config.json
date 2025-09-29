@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {},
+      "description": "Memory storage for conversation context"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\MarkusAhling\\AdvisorOS"],
+      "env": {},
+      "description": "File system access for AdvisorOS project"
+    }
+  },
+  "advisoros": {
+    "version": "1.0.0",
+    "description": "AdvisorOS MCP Ecosystem for CPA Development",
+    "capabilities": [
+      "Memory management for complex CPA projects", 
+      "File system operations for codebase analysis",
+      "Context preservation across development sessions"
+    ],
+    "usage_examples": [
+      "Analyze multi-tenant architecture implementation",
+      "Review tax calculation logic for compliance",
+      "Audit database security and organization isolation",
+      "Optimize tRPC API performance for CPA workflows"
+    ]
+  }
+}

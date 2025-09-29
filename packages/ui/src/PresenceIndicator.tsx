@@ -146,11 +146,15 @@ export const LiveCursor: React.FC<LiveCursorProps> = ({
   return (
     <div
       className="absolute pointer-events-none z-50 transition-all duration-100"
-      style={{
-        left: `${x}px`,
-        top: `${y}px`,
-        transform: 'translate(-2px, -2px)',
-      }}
+      style={
+        {
+          '--cursor-x': `${x}px`,
+          '--cursor-y': `${y}px`,
+          left: 'var(--cursor-x)',
+          top: 'var(--cursor-y)',
+          transform: 'translate(-2px, -2px)',
+        } as React.CSSProperties
+      }
     >
       {/* Cursor */}
       <svg
@@ -171,7 +175,12 @@ export const LiveCursor: React.FC<LiveCursorProps> = ({
       {/* User label */}
       <div
         className="absolute top-5 left-2 px-2 py-1 rounded text-xs text-white font-medium whitespace-nowrap"
-        style={{ backgroundColor: user.color || '#3B82F6' }}
+        style={
+          {
+            '--user-color': user.color || '#3B82F6',
+            backgroundColor: 'var(--user-color)',
+          } as React.CSSProperties
+        }
       >
         {user.name}
       </div>
@@ -207,14 +216,21 @@ export const LiveSelection: React.FC<LiveSelectionProps> = ({
   return (
     <div
       className="absolute pointer-events-none z-40 border-2 rounded opacity-30"
-      style={{
-        left: `${left}px`,
-        top: `${top}px`,
-        width: `${width}px`,
-        height: `${height}px`,
-        borderColor: user.color || '#3B82F6',
-        backgroundColor: user.color || '#3B82F6',
-      }}
+      style={
+        {
+          '--selection-left': `${left}px`,
+          '--selection-top': `${top}px`,
+          '--selection-width': `${width}px`,
+          '--selection-height': `${height}px`,
+          '--selection-color': user.color || '#3B82F6',
+          left: 'var(--selection-left)',
+          top: 'var(--selection-top)',
+          width: 'var(--selection-width)',
+          height: 'var(--selection-height)',
+          borderColor: 'var(--selection-color)',
+          backgroundColor: 'var(--selection-color)',
+        } as React.CSSProperties
+      }
     />
   )
 }
