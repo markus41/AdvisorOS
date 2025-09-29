@@ -138,10 +138,324 @@ export const CLIENT_FINANCIAL_HEALTH_WORKFLOW: WorkflowDefinition = {
 };
 
 /**
+ * Code Review Workflow
+ */
+export const CODE_REVIEW_WORKFLOW: WorkflowDefinition = {
+  id: 'code-review-workflow',
+  name: 'Comprehensive Code Review',
+  description: 'Multi-agent code review with security, performance, and quality analysis',
+  category: 'development',
+  version: '1.0.0',
+  steps: [
+    {
+      id: 'analyze-code-quality',
+      name: 'Analyze Code Quality',
+      type: 'mcp-tool',
+      description: 'Perform comprehensive code quality analysis',
+      config: {
+        toolId: 'code-analyzer',
+        parameters: {
+          analysisType: 'complexity_analysis',
+          codeContent: '{codeContent}',
+          language: '{language}',
+          framework: '{framework}'
+        }
+      }
+    },
+    {
+      id: 'security-scan',
+      name: 'Security Vulnerability Scan',
+      type: 'mcp-tool',
+      description: 'Scan for security vulnerabilities and risks',
+      config: {
+        toolId: 'code-analyzer',
+        parameters: {
+          analysisType: 'security_scan',
+          codeContent: '{codeContent}',
+          language: '{language}',
+          framework: '{framework}'
+        }
+      }
+    },
+    {
+      id: 'performance-audit',
+      name: 'Performance Analysis',
+      type: 'mcp-tool',
+      description: 'Analyze performance implications',
+      config: {
+        toolId: 'code-analyzer',
+        parameters: {
+          analysisType: 'performance_audit',
+          codeContent: '{codeContent}',
+          language: '{language}',
+          framework: '{framework}'
+        }
+      }
+    },
+    {
+      id: 'typescript-validation',
+      name: 'TypeScript Type Checking',
+      type: 'mcp-tool',
+      description: 'Validate TypeScript types and suggest improvements',
+      config: {
+        toolId: 'typescript-checker',
+        parameters: {
+          sourceCode: '{codeContent}',
+          strictMode: true,
+          checkType: 'all'
+        }
+      },
+      dependencies: ['analyze-code-quality']
+    },
+    {
+      id: 'comprehensive-review',
+      name: 'AI Code Review Analysis',
+      type: 'agent-task',
+      description: 'Generate comprehensive code review with recommendations',
+      config: {
+        agentId: 'code-reviewer',
+        taskType: 'review',
+        prompt: 'code-review-cot',
+        context: {
+          codeContent: '{codeContent}',
+          qualityAnalysis: '{codeQualityResults}',
+          securityFindings: '{securityScanResults}',
+          performanceIssues: '{performanceAuditResults}',
+          typeIssues: '{typescriptValidationResults}'
+        }
+      },
+      dependencies: ['security-scan', 'performance-audit', 'typescript-validation']
+    }
+  ],
+  triggers: [
+    {
+      type: 'manual',
+      config: {
+        requiredRole: ['developer', 'senior-developer', 'tech-lead']
+      }
+    },
+    {
+      type: 'event',
+      config: {
+        eventType: 'pull-request-created',
+        autoTrigger: false
+      }
+    }
+  ],
+  requiredContext: ['codeContent', 'language'],
+  expectedOutputs: ['codeQualityResults', 'securityFindings', 'performanceIssues', 'comprehensiveReview'],
+  estimatedDuration: 180000, // 3 minutes
+  costEstimate: 1.75
+};
+
+/**
+ * Feature Development Workflow
+ */
+export const FEATURE_DEVELOPMENT_WORKFLOW: WorkflowDefinition = {
+  id: 'feature-development',
+  name: 'Feature Development Assistant',
+  description: 'End-to-end feature development with code generation, testing, and documentation',
+  category: 'development',
+  version: '1.0.0',
+  steps: [
+    {
+      id: 'analyze-requirements',
+      name: 'Analyze Feature Requirements',
+      type: 'agent-task',
+      description: 'Break down requirements and plan implementation',
+      config: {
+        agentId: 'senior-developer',
+        taskType: 'analysis',
+        context: {
+          requirements: '{requirements}',
+          existingArchitecture: '{architecture}',
+          constraints: '{constraints}'
+        }
+      }
+    },
+    {
+      id: 'generate-code',
+      name: 'Generate Feature Code',
+      type: 'agent-task',
+      description: 'Generate clean, maintainable code following best practices',
+      config: {
+        agentId: 'senior-developer',
+        taskType: 'generation',
+        prompt: 'code-generation-cot',
+        context: {
+          requirements: '{requirements}',
+          framework: '{framework}',
+          language: '{language}',
+          architecture: '{architecture}',
+          analysisResults: '{requirementsAnalysis}'
+        }
+      },
+      dependencies: ['analyze-requirements']
+    },
+    {
+      id: 'generate-tests',
+      name: 'Generate Unit Tests',
+      type: 'agent-task',
+      description: 'Create comprehensive test suite for the feature',
+      config: {
+        agentId: 'testing-specialist',
+        taskType: 'generation',
+        context: {
+          codeGenerated: '{generatedCode}',
+          testingFramework: '{testingFramework}',
+          requirements: '{requirements}'
+        }
+      },
+      dependencies: ['generate-code']
+    },
+    {
+      id: 'code-review',
+      name: 'Automated Code Review',
+      type: 'agent-task',
+      description: 'Review generated code for quality and best practices',
+      config: {
+        agentId: 'code-reviewer',
+        taskType: 'review',
+        prompt: 'code-review-cot',
+        context: {
+          codeContent: '{generatedCode}',
+          requirements: '{requirements}',
+          framework: '{framework}'
+        }
+      },
+      dependencies: ['generate-code']
+    },
+    {
+      id: 'run-tests',
+      name: 'Execute Test Suite',
+      type: 'mcp-tool',
+      description: 'Run tests and generate coverage report',
+      config: {
+        toolId: 'test-runner',
+        parameters: {
+          testType: 'unit',
+          coverage: true,
+          environment: 'testing'
+        }
+      },
+      dependencies: ['generate-tests']
+    }
+  ],
+  triggers: [
+    {
+      type: 'manual',
+      config: {
+        requiredRole: ['developer', 'senior-developer']
+      }
+    }
+  ],
+  requiredContext: ['requirements', 'framework', 'language', 'architecture'],
+  expectedOutputs: ['requirementsAnalysis', 'generatedCode', 'testSuite', 'codeReviewResults'],
+  estimatedDuration: 420000, // 7 minutes
+  costEstimate: 3.50
+};
+
+/**
+ * Performance Optimization Workflow
+ */
+export const PERFORMANCE_OPTIMIZATION_WORKFLOW: WorkflowDefinition = {
+  id: 'performance-optimization',
+  name: 'Performance Optimization Analysis',
+  description: 'Comprehensive performance analysis and optimization recommendations',
+  category: 'performance',
+  version: '1.0.0',
+  steps: [
+    {
+      id: 'bundle-analysis',
+      name: 'Analyze Bundle Size',
+      type: 'mcp-tool',
+      description: 'Analyze bundle size and identify optimization opportunities',
+      config: {
+        toolId: 'bundle-analyzer',
+        parameters: {
+          bundlePath: '{bundlePath}',
+          analysisType: 'size_analysis',
+          threshold: 100
+        }
+      }
+    },
+    {
+      id: 'performance-profiling',
+      name: 'Profile Application Performance',
+      type: 'mcp-tool',
+      description: 'Generate performance profile and Core Web Vitals',
+      config: {
+        toolId: 'performance-profiler',
+        parameters: {
+          profileType: 'core_web_vitals',
+          targetUrl: '{targetUrl}',
+          device: '{device}'
+        }
+      }
+    },
+    {
+      id: 'code-performance-audit',
+      name: 'Code Performance Audit',
+      type: 'mcp-tool',
+      description: 'Analyze code for performance issues',
+      config: {
+        toolId: 'code-analyzer',
+        parameters: {
+          analysisType: 'performance_audit',
+          codeContent: '{codeContent}',
+          language: '{language}',
+          framework: '{framework}'
+        }
+      }
+    },
+    {
+      id: 'optimization-strategy',
+      name: 'Generate Optimization Strategy',
+      type: 'agent-task',
+      description: 'Create comprehensive performance optimization plan',
+      config: {
+        agentId: 'senior-developer',
+        taskType: 'consultation',
+        prompt: 'performance-optimization-cot',
+        context: {
+          bundleAnalysis: '{bundleAnalysisResults}',
+          performanceProfile: '{performanceProfilingResults}',
+          codeAudit: '{codePerformanceAuditResults}',
+          targetMetrics: '{targetMetrics}'
+        }
+      },
+      dependencies: ['bundle-analysis', 'performance-profiling', 'code-performance-audit']
+    }
+  ],
+  triggers: [
+    {
+      type: 'manual',
+      config: {
+        requiredRole: ['developer', 'senior-developer', 'performance-engineer']
+      }
+    },
+    {
+      type: 'event',
+      config: {
+        eventType: 'performance-threshold-exceeded',
+        autoTrigger: true
+      }
+    }
+  ],
+  requiredContext: ['bundlePath', 'targetUrl', 'codeContent', 'language', 'framework'],
+  expectedOutputs: ['bundleAnalysisResults', 'performanceProfile', 'optimizationStrategy'],
+  estimatedDuration: 240000, // 4 minutes
+  costEstimate: 2.25
+};
+
+/**
  * All Available Workflows
  */
 export const WORKFLOW_DEFINITIONS: Record<string, WorkflowDefinition> = {
-  'client-financial-health-review': CLIENT_FINANCIAL_HEALTH_WORKFLOW
+  'client-financial-health-review': CLIENT_FINANCIAL_HEALTH_WORKFLOW,
+  'code-review-workflow': CODE_REVIEW_WORKFLOW,
+  'feature-development': FEATURE_DEVELOPMENT_WORKFLOW,
+  'performance-optimization': PERFORMANCE_OPTIMIZATION_WORKFLOW
 };
 
 /**

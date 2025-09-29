@@ -4,17 +4,17 @@ This document provides a comprehensive overview of the advanced AI capabilities 
 
 ## 🌟 Overview
 
-The Supercharged AI System introduces five core components that work together to provide intelligent, automated, and highly capable assistance for CPA workflows:
+The Supercharged AI System introduces five core components that work together to provide intelligent, automated, and highly capable assistance for both CPA workflows and software development:
 
-1. **AI Modes** - Context-aware operating modes
-2. **Agent Orchestration** - Specialized AI agents with collaboration
-3. **Chain-of-Thought Prompts** - Advanced reasoning templates
-4. **MCP Integration** - Tool integration and external data access
-5. **Workflow Automation** - Multi-step intelligent processes
+1. **AI Modes** - Context-aware operating modes for CPA and development workflows
+2. **Agent Orchestration** - Specialized AI agents with collaboration (CPA + Developer experts)
+3. **Chain-of-Thought Prompts** - Advanced reasoning templates for complex analysis
+4. **MCP Integration** - Tool integration for financial data AND development tools
+5. **Workflow Automation** - Multi-step intelligent processes for business and development
 
 ## 🧠 AI Modes (Context-Aware Operation)
 
-AI modes automatically adapt the assistant's behavior and capabilities based on the current context, season, and user activity.
+AI modes automatically adapt the assistant's behavior and capabilities based on the current context, season, user activity, and development tasks.
 
 ### Available Modes
 
@@ -25,6 +25,9 @@ AI modes automatically adapt the assistant's behavior and capabilities based on 
 | **Audit Mode** | 🔍 | Audit preparation and risk assessment | Manual |
 | **Client Portal** | 🌐 | Client-facing interactions | Client context |
 | **Year-End** | 📅 | Year-end closing and planning | Nov 1 - Jan 31 |
+| **Developer Mode** | 💻 | Advanced development assistance | Code file context |
+| **Code Review** | 🔍 | Code review and quality assurance | PR/commit context |
+| **DevOps Mode** | ⚙️ | Infrastructure and deployment | Deploy context |
 
 ### Usage Example
 ```typescript
@@ -56,6 +59,11 @@ Specialized AI agents handle different aspects of CPA work, with intelligent coo
 | **Client Relationship Manager** | Communication | Professional emails, meeting prep, relationship building | GPT-3.5 Turbo |
 | **Document Analyzer** | Document Processing | OCR, data extraction, categorization | GPT-4 Vision |
 | **Financial Analyst** | Financial Analysis | Ratio analysis, forecasting, benchmarking | GPT-4 |
+| **Senior Developer** | Full-Stack Development | Code generation, architecture design, debugging | GPT-4 |
+| **Code Reviewer** | Code Quality | Security analysis, performance review, best practices | GPT-4 |
+| **Testing Specialist** | Quality Assurance | Test automation, coverage analysis, QA strategies | GPT-4 |
+| **DevOps Engineer** | Infrastructure | CI/CD, deployment, monitoring, cost optimization | GPT-4 |
+| **UI/UX Designer** | Design Systems | Interface design, accessibility, user experience | GPT-4 |
 
 ### Usage Example
 ```typescript
@@ -88,6 +96,10 @@ Structured reasoning templates that guide AI through complex analytical processe
 | **Tax Optimization Strategy** | Tax Planning | 9 steps | Strategic tax planning with compliance |
 | **Business Advisory Consultation** | Business Advisory | 8 steps | Strategic business consulting |
 | **Client Communication** | Communication | 7 steps | Professional communication with EQ |
+| **Code Generation** | Development | 8 steps | Systematic code generation with architecture |
+| **Code Review Analysis** | Code Quality | 8 steps | Comprehensive code review with security |
+| **Debugging Analysis** | Development | 8 steps | Systematic debugging and problem resolution |
+| **Performance Optimization** | Performance | 8 steps | Strategic performance analysis and improvement |
 
 ### Features
 - ✅ Step-by-step reasoning process
@@ -129,6 +141,13 @@ Model Context Protocol integration enables AI agents to interact with external t
 | **Industry Benchmarks** | Data Source | Comparative industry data | API Key |
 | **Document OCR** | Document Processor | Text and data extraction | API Key |
 | **Email Communication** | Communication | Professional email automation | API Key |
+| **Code Analyzer** | Calculator | Code quality, complexity, security analysis | None |
+| **Git Integration** | External API | Repository analysis and insights | API Key |
+| **Test Runner** | Calculator | Test execution and coverage analysis | None |
+| **Bundle Analyzer** | Calculator | JavaScript bundle optimization | None |
+| **TypeScript Checker** | Calculator | Type validation and improvements | None |
+| **Performance Profiler** | Calculator | Application performance analysis | None |
+| **Docker Tools** | External API | Container optimization and security | None |
 
 ### Usage Example
 ```typescript
@@ -156,6 +175,9 @@ Complex multi-step processes that combine agents, tools, and reasoning into auto
 |----------|----------|----------|------|-------|
 | **Client Financial Health Review** | Financial Analysis | 5 min | $2.50 | 7 steps |
 | **Tax Optimization Analysis** | Tax Planning | 8 min | $4.25 | 6 steps |
+| **Code Review Workflow** | Development | 3 min | $1.75 | 5 steps |
+| **Feature Development** | Development | 7 min | $3.50 | 5 steps |
+| **Performance Optimization** | Performance | 4 min | $2.25 | 4 steps |
 
 ### Workflow Features
 - ✅ Dependency management

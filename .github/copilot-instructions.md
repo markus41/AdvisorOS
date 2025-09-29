@@ -31,6 +31,9 @@ This workspace contains a comprehensive CPA Advisory Platform with advanced AI c
 - **Audit Mode**: Audit preparation and risk assessment
 - **Client Portal Mode**: Client-facing self-service
 - **Year-End Mode**: Year-end closing and planning
+- **Developer Mode**: Advanced development assistance with code generation and debugging
+- **Code Review Mode**: Comprehensive code review with security and performance analysis
+- **DevOps Mode**: Infrastructure management, CI/CD, and deployment optimization
 
 ### 🤖 AI Agents (Specialized Expertise)
 - **Senior CPA Advisor**: Primary business advisory agent
@@ -38,16 +41,45 @@ This workspace contains a comprehensive CPA Advisory Platform with advanced AI c
 - **Client Relationship Manager**: Communication and relationship building
 - **Document Analyzer**: Document processing and data extraction
 - **Financial Analyst**: Financial data analysis and modeling
+- **Senior Developer**: Full-stack development and architecture expertise
+- **Code Reviewer**: Code quality, security, and performance specialist
+- **Testing Specialist**: Test automation and quality assurance
+- **DevOps Engineer**: Infrastructure and deployment specialist
+- **UI/UX Designer**: User interface and experience optimization
 
 ### 🧩 Chain-of-Thought Prompts (Advanced Reasoning)
 - **Financial Health Analysis**: Comprehensive financial assessment
 - **Tax Optimization Strategy**: Strategic tax planning with compliance
 - **Business Advisory Consultation**: Strategic business consulting
 - **Client Communication**: Professional communication with emotional intelligence
+- **Code Generation**: Systematic code generation with architecture planning
+- **Code Review Analysis**: Comprehensive code review with security and performance
+- **Debugging Analysis**: Systematic debugging with root cause analysis
+- **Performance Optimization**: Strategic performance analysis and improvement
 
 ### 🔧 MCP Tools (External Integrations)
 - **QuickBooks Integration**: Access financial data and reports
 - **Financial Calculator**: Advanced financial calculations and ratios
+- **Tax Research**: Current tax laws and compliance requirements
+- **Industry Benchmarks**: Comparative industry data
+- **Document OCR**: Automated document processing
+- **Email Communication**: Professional email automation
+- **Code Analyzer**: Code quality, complexity, and security analysis
+- **Git Integration**: Repository analysis and development insights
+- **Test Runner**: Automated testing and coverage analysis
+- **Bundle Analyzer**: JavaScript bundle optimization
+- **TypeScript Checker**: Type validation and improvements
+- **Performance Profiler**: Application performance analysis
+- **Docker Tools**: Container optimization and security scanning
+
+### 🔄 AI Workflows (Automated Processes)
+- **Client Financial Health Review**: Complete financial assessment
+- **Tax Optimization Analysis**: Comprehensive tax planning
+- **Document Processing Pipeline**: Automated document analysis
+- **Client Onboarding**: Streamlined client setup
+- **Code Review Workflow**: Multi-agent code review with security and performance
+- **Feature Development**: End-to-end feature development assistance
+- **Performance Optimization**: Comprehensive performance analysis and improvement
 - **Tax Research**: Current tax laws and compliance requirements
 - **Industry Benchmarks**: Comparative industry data
 - **Document OCR**: Automated document processing
@@ -128,6 +160,16 @@ This workspace contains a comprehensive CPA Advisory Platform with advanced AI c
 - **Cost Optimization**: Monitor token usage and optimize prompt efficiency
 - **Performance**: Use caching and streaming for better user experience
 
+### Developer-Focused AI Guidelines
+- **Code Quality First**: Use code review agents for all generated code
+- **Security by Default**: Always run security scans on generated code
+- **Performance Conscious**: Profile and optimize code from the start
+- **Test-Driven**: Generate comprehensive tests alongside code
+- **Documentation**: Include clear documentation and usage examples
+- **Type Safety**: Ensure strong TypeScript typing throughout
+- **Accessibility**: Follow WCAG guidelines for UI components
+- **Best Practices**: Adhere to established patterns and conventions
+
 ### AI Code Examples
 
 #### Using the Supercharged AI System
@@ -161,12 +203,79 @@ modeManager.autoDetectMode(); // Intelligent mode detection
 modeManager.switchToMode('tax-season'); // Explicit mode switch
 ```
 
-#### Using AI Agents
+#### Using Developer Mode and Agents
 ```typescript
+// Switch to developer mode for code-related tasks
+import { createAIModeManager } from '@/lib/ai/modes';
+
+const modeManager = createAIModeManager(context);
+modeManager.switchToMode('developer-mode');
+
+// Use specialized developer agents
 import { createAgentOrchestrator } from '@/lib/ai/agents/orchestrator';
 
 const orchestrator = createAgentOrchestrator();
-const result = await orchestrator.executeTask(task, currentMode);
+
+// Code generation with senior developer
+const codeTask = {
+  id: 'generate-component',
+  agentId: 'senior-developer',
+  type: 'generation',
+  input: { requirements: 'Create a data table component' },
+  context: { framework: 'React', language: 'TypeScript' },
+  requiredCapabilities: ['code-generation', 'architecture-design']
+};
+
+const result = await orchestrator.executeTask(codeTask, currentMode);
+
+// Code review with specialized reviewer
+const reviewTask = {
+  id: 'review-code',
+  agentId: 'code-reviewer',
+  type: 'review',
+  input: { codeContent: generatedCode },
+  context: { securityFocus: true, performanceAudit: true },
+  requiredCapabilities: ['code-quality-analysis', 'security-vulnerability-detection']
+};
+
+const reviewResult = await orchestrator.executeTask(reviewTask, currentMode);
+```
+
+#### Using Developer Tools and Workflows
+```typescript
+// Execute code review workflow
+const workflowResult = await ai.executeWorkflow(
+  'code-review-workflow',
+  {
+    codeContent: sourceCode,
+    language: 'typescript',
+    framework: 'nextjs'
+  }
+);
+
+// Performance optimization analysis
+const perfResult = await ai.executeWorkflow(
+  'performance-optimization',
+  {
+    bundlePath: './dist',
+    targetUrl: 'https://app.example.com',
+    codeContent: componentCode,
+    language: 'typescript',
+    framework: 'react'
+  }
+);
+
+// Use individual developer tools
+const bundleAnalysis = await ai.executeTool('bundle-analyzer', {
+  bundlePath: './dist',
+  analysisType: 'size_analysis'
+});
+
+const securityScan = await ai.executeTool('code-analyzer', {
+  analysisType: 'security_scan',
+  codeContent: sourceCode,
+  language: 'typescript'
+});
 ```
 
 ## Database Models

@@ -428,13 +428,425 @@ Show your reasoning for communication choices and explain how the message addres
 };
 
 /**
+ * Code Generation with Architecture Planning
+ */
+export const CODE_GENERATION_COT: ChainOfThoughtPrompt = {
+  id: 'code-generation-cot',
+  name: 'Code Generation (Chain-of-Thought)',
+  description: 'Systematic code generation with architecture planning and best practices',
+  category: 'development',
+  reasoningSteps: [
+    'Analyze requirements and understand the problem context',
+    'Design the component/feature architecture and data flow',
+    'Identify required dependencies and integrations',
+    'Plan the file structure and component organization',
+    'Consider security, performance, and accessibility requirements',
+    'Generate clean, maintainable code following best practices',
+    'Include comprehensive error handling and edge cases',
+    'Add appropriate tests and documentation'
+  ],
+  systemPrompt: `You are a Senior Developer creating high-quality code with systematic planning. Your approach includes:
+
+1. Understanding the full context and requirements
+2. Designing proper architecture before coding
+3. Following established patterns and best practices
+4. Writing secure, performant, and accessible code
+5. Including comprehensive error handling
+6. Adding appropriate tests and documentation
+
+Consider TypeScript types, React patterns, Next.js conventions, and modern development practices.`,
+  userTemplate: `Generate code with systematic planning and reasoning:
+
+## Requirements
+{requirements}
+
+## Technical Context
+- Framework: {framework}
+- Language: {language}
+- Existing Architecture: {architecture}
+- Dependencies: {dependencies}
+
+## Constraints & Considerations
+{constraints}
+
+## Integration Points
+{integrations}
+
+Please provide:
+1. Architectural analysis and design decisions
+2. Complete implementation with reasoning for each part
+3. Error handling and edge case considerations
+4. Testing strategy and example tests
+5. Documentation and usage examples
+
+Show your reasoning process for design decisions and explain how the solution addresses the requirements.`,
+  variables: [
+    'requirements',
+    'framework',
+    'language',
+    'architecture',
+    'dependencies',
+    'constraints',
+    'integrations'
+  ],
+  examples: [
+    {
+      input: {
+        requirements: 'Create a reusable data table component with sorting, filtering, and pagination',
+        framework: 'Next.js 14',
+        language: 'TypeScript',
+        architecture: 'Component-based with custom hooks'
+      },
+      reasoning: [
+        'Analyze data table requirements: sorting, filtering, pagination',
+        'Design component API with proper TypeScript generics',
+        'Plan state management with custom hooks for reusability',
+        'Consider accessibility with proper ARIA labels and keyboard navigation',
+        'Implement performance optimizations like virtualization for large datasets',
+        'Add comprehensive error boundaries and loading states'
+      ],
+      output: 'Complete data table implementation with hooks, types, and tests...'
+    }
+  ],
+  confidenceFactors: [
+    'Clarity and completeness of requirements',
+    'Understanding of existing architecture',
+    'Availability of similar patterns in codebase',
+    'Complexity of integration requirements',
+    'Performance and security considerations'
+  ],
+  qualityChecks: [
+    'Code follows established patterns and conventions',
+    'TypeScript types are comprehensive and accurate',
+    'Error handling covers all edge cases',
+    'Performance considerations are addressed',
+    'Accessibility requirements are met',
+    'Tests provide adequate coverage',
+    'Documentation is clear and complete'
+  ]
+};
+
+/**
+ * Code Review and Quality Analysis
+ */
+export const CODE_REVIEW_COT: ChainOfThoughtPrompt = {
+  id: 'code-review-cot',
+  name: 'Code Review Analysis (Chain-of-Thought)',
+  description: 'Comprehensive code review with security, performance, and quality analysis',
+  category: 'code-review',
+  reasoningSteps: [
+    'Understand the code purpose and context',
+    'Analyze code structure and organization',
+    'Review security vulnerabilities and potential exploits',
+    'Assess performance implications and optimization opportunities',
+    'Check accessibility compliance and best practices',
+    'Validate TypeScript types and error handling',
+    'Review test coverage and quality',
+    'Provide actionable improvement recommendations'
+  ],
+  systemPrompt: `You are a meticulous Code Reviewer conducting comprehensive analysis. Your review covers:
+
+1. Security vulnerabilities and OWASP compliance
+2. Performance optimization opportunities
+3. Code quality and maintainability
+4. Accessibility compliance (WCAG)
+5. TypeScript type safety
+6. Error handling and edge cases
+7. Test coverage and quality
+8. Best practices adherence
+
+Provide specific, actionable feedback with examples and recommendations.`,
+  userTemplate: `Conduct comprehensive code review with detailed analysis:
+
+## Code to Review
+{codeContent}
+
+## Context Information
+- Purpose: {purpose}
+- Framework: {framework}
+- Target Environment: {environment}
+- Performance Requirements: {performanceRequirements}
+- Security Requirements: {securityRequirements}
+
+## Review Focus Areas
+{focusAreas}
+
+## Existing Issues (if any)
+{knownIssues}
+
+Please provide:
+1. Security vulnerability analysis with specific risks
+2. Performance assessment and optimization recommendations
+3. Code quality evaluation with improvement suggestions
+4. Accessibility compliance review
+5. TypeScript type safety validation
+6. Test coverage and quality assessment
+7. Overall recommendations prioritized by impact
+
+Show your reasoning for each finding and provide specific examples of improvements.`,
+  variables: [
+    'codeContent',
+    'purpose',
+    'framework',
+    'environment',
+    'performanceRequirements',
+    'securityRequirements',
+    'focusAreas',
+    'knownIssues'
+  ],
+  examples: [
+    {
+      input: {
+        codeContent: 'React component with user authentication logic',
+        purpose: 'User login and session management',
+        framework: 'Next.js with NextAuth',
+        securityRequirements: 'OWASP compliance, secure session handling'
+      },
+      reasoning: [
+        'Analyze authentication flow for security vulnerabilities',
+        'Check for proper input validation and sanitization',
+        'Review session management and token handling',
+        'Assess XSS and CSRF protection measures',
+        'Evaluate error handling to prevent information leakage',
+        'Check TypeScript types for authentication data'
+      ],
+      output: 'Comprehensive security review with specific vulnerability findings and fixes...'
+    }
+  ],
+  confidenceFactors: [
+    'Completeness of code provided for review',
+    'Understanding of security requirements',
+    'Knowledge of framework-specific vulnerabilities',
+    'Access to performance benchmarks',
+    'Clarity of functional requirements'
+  ],
+  qualityChecks: [
+    'All security risks properly identified and categorized',
+    'Performance recommendations are measurable and actionable',
+    'Code quality suggestions follow established best practices',
+    'Accessibility issues are identified with specific fixes',
+    'TypeScript improvements enhance type safety',
+    'Test recommendations improve coverage and quality'
+  ]
+};
+
+/**
+ * Debugging and Problem Resolution
+ */
+export const DEBUGGING_COT: ChainOfThoughtPrompt = {
+  id: 'debugging-cot',
+  name: 'Debugging Analysis (Chain-of-Thought)',
+  description: 'Systematic debugging approach with root cause analysis and resolution',
+  category: 'debugging',
+  reasoningSteps: [
+    'Understand the problem symptoms and error context',
+    'Analyze error messages, stack traces, and logs',
+    'Identify potential root causes and contributing factors',
+    'Examine related code areas and dependencies',
+    'Consider environment and configuration issues',
+    'Develop hypotheses and testing strategies',
+    'Provide step-by-step debugging approach',
+    'Suggest preventive measures and monitoring'
+  ],
+  systemPrompt: `You are a debugging expert with systematic problem-solving skills. Your approach includes:
+
+1. Careful analysis of symptoms and error context
+2. Methodical examination of stack traces and logs
+3. Root cause analysis considering all possible factors
+4. Hypothesis-driven debugging strategies
+5. Environment and dependency considerations
+6. Preventive measures and monitoring setup
+
+Provide clear, actionable debugging steps and long-term solutions.`,
+  userTemplate: `Analyze and debug this issue systematically:
+
+## Problem Description
+{problemDescription}
+
+## Error Messages/Stack Traces
+{errorDetails}
+
+## Environment Information
+{environmentInfo}
+
+## Steps to Reproduce
+{reproductionSteps}
+
+## Recent Changes
+{recentChanges}
+
+## Additional Context
+{additionalContext}
+
+Please provide:
+1. Analysis of error messages and stack traces
+2. Identification of potential root causes
+3. Step-by-step debugging methodology
+4. Specific areas of code to investigate
+5. Environment and configuration checks
+6. Immediate fixes and workarounds
+7. Long-term prevention strategies
+8. Monitoring and alerting recommendations
+
+Show your reasoning process for each hypothesis and debugging step.`,
+  variables: [
+    'problemDescription',
+    'errorDetails',
+    'environmentInfo',
+    'reproductionSteps',
+    'recentChanges',
+    'additionalContext'
+  ],
+  examples: [
+    {
+      input: {
+        problemDescription: 'React application crashes on user login',
+        errorDetails: 'TypeError: Cannot read property id of undefined',
+        environmentInfo: 'Next.js 14, Node.js 18, Production environment',
+        recentChanges: 'Updated authentication library'
+      },
+      reasoning: [
+        'Analyze TypeError to identify null/undefined object access',
+        'Examine authentication flow changes in recent update',
+        'Check user object structure and API response format',
+        'Investigate timing issues with async authentication',
+        'Review error boundaries and fallback handling',
+        'Consider race conditions in component mounting'
+      ],
+      output: 'Systematic debugging plan with specific investigation steps and fixes...'
+    }
+  ],
+  confidenceFactors: [
+    'Quality and completeness of error information',
+    'Understanding of the application architecture',
+    'Access to relevant logs and monitoring data',
+    'Knowledge of recent changes and deployments',
+    'Reproducibility of the issue'
+  ],
+  qualityChecks: [
+    'Root cause analysis is thorough and logical',
+    'Debugging steps are specific and actionable',
+    'Solutions address both immediate and long-term needs',
+    'Prevention strategies are practical and implementable',
+    'Monitoring recommendations help detect similar issues'
+  ]
+};
+
+/**
+ * Performance Optimization Strategy
+ */
+export const PERFORMANCE_OPTIMIZATION_COT: ChainOfThoughtPrompt = {
+  id: 'performance-optimization-cot',
+  name: 'Performance Optimization (Chain-of-Thought)',
+  description: 'Systematic performance analysis and optimization strategy',
+  category: 'performance',
+  reasoningSteps: [
+    'Analyze current performance metrics and bottlenecks',
+    'Identify critical performance paths and user journeys',
+    'Examine bundle size, loading times, and runtime performance',
+    'Review database queries and API efficiency',
+    'Assess caching strategies and optimization opportunities',
+    'Consider code splitting and lazy loading opportunities',
+    'Evaluate third-party dependencies and their impact',
+    'Develop prioritized optimization roadmap with measurable goals'
+  ],
+  systemPrompt: `You are a Performance Optimization Specialist focused on delivering fast, efficient applications. Your analysis includes:
+
+1. Comprehensive performance metrics analysis
+2. Critical rendering path optimization
+3. Bundle size and code splitting strategies
+4. Database and API performance optimization
+5. Caching implementation and strategies
+6. Third-party dependency optimization
+7. Monitoring and measurement setup
+
+Provide specific, measurable optimization recommendations with expected impact.`,
+  userTemplate: `Analyze performance and create optimization strategy:
+
+## Current Performance Metrics
+{performanceMetrics}
+
+## Application Architecture
+{architectureOverview}
+
+## Key User Journeys
+{userJourneys}
+
+## Performance Goals
+{performanceGoals}
+
+## Current Bottlenecks (if known)
+{knownBottlenecks}
+
+## Technical Constraints
+{constraints}
+
+Please provide:
+1. Performance audit findings with specific metrics
+2. Critical path analysis and optimization priorities
+3. Bundle optimization and code splitting strategy
+4. Database and API optimization recommendations
+5. Caching strategy implementation plan
+6. Third-party dependency audit and alternatives
+7. Monitoring and measurement implementation
+8. Phased optimization roadmap with expected improvements
+
+Show your reasoning for prioritization and expected performance gains.`,
+  variables: [
+    'performanceMetrics',
+    'architectureOverview',
+    'userJourneys',
+    'performanceGoals',
+    'knownBottlenecks',
+    'constraints'
+  ],
+  examples: [
+    {
+      input: {
+        performanceMetrics: 'LCP: 4.5s, FID: 300ms, CLS: 0.25',
+        architectureOverview: 'Next.js SPA with large bundle',
+        performanceGoals: 'LCP < 2.5s, FID < 100ms, CLS < 0.1',
+        knownBottlenecks: 'Large JavaScript bundle, unoptimized images'
+      },
+      reasoning: [
+        'Analyze Core Web Vitals against target metrics',
+        'Identify bundle size impact on LCP and loading performance',
+        'Examine image optimization opportunities for LCP improvement',
+        'Consider code splitting to reduce initial bundle size',
+        'Review component lazy loading for non-critical features',
+        'Assess caching strategies for repeat visits'
+      ],
+      output: 'Comprehensive optimization plan with specific techniques and expected metrics...'
+    }
+  ],
+  confidenceFactors: [
+    'Quality and accuracy of performance metrics',
+    'Understanding of user behavior and critical paths',
+    'Access to performance monitoring tools',
+    'Knowledge of technical architecture',
+    'Clarity of performance goals and constraints'
+  ],
+  qualityChecks: [
+    'Optimization recommendations are specific and measurable',
+    'Priorities align with business impact and user experience',
+    'Implementation plan is realistic and phased',
+    'Monitoring strategy enables continuous optimization',
+    'Performance goals are achievable with proposed changes'
+  ]
+};
+
+/**
  * All Chain-of-Thought Prompts
  */
 export const COT_PROMPTS: Record<string, ChainOfThoughtPrompt> = {
   'financial-health-cot': FINANCIAL_HEALTH_COT,
   'tax-optimization-cot': TAX_OPTIMIZATION_COT,
   'business-advisory-cot': BUSINESS_ADVISORY_COT,
-  'client-communication-cot': CLIENT_COMMUNICATION_COT
+  'client-communication-cot': CLIENT_COMMUNICATION_COT,
+  'code-generation-cot': CODE_GENERATION_COT,
+  'code-review-cot': CODE_REVIEW_COT,
+  'debugging-cot': DEBUGGING_COT,
+  'performance-optimization-cot': PERFORMANCE_OPTIMIZATION_COT
 };
 
 /**

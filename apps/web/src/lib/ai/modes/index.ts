@@ -119,11 +119,146 @@ export const TAX_SEASON_MODE: AIModeConfig = {
 };
 
 /**
+ * Developer Mode - Code development and technical assistance
+ */
+export const DEVELOPER_MODE: AIModeConfig = {
+  id: 'developer-mode',
+  name: 'Developer Mode',
+  description: 'Advanced development assistance with code generation, debugging, and technical guidance',
+  icon: '💻',
+  primaryAgent: 'senior-developer',
+  supportingAgents: ['code-reviewer', 'testing-specialist', 'devops-engineer', 'ui-designer'],
+  contextPrompts: [
+    'code-generation',
+    'debugging-assistance',
+    'architecture-review',
+    'performance-optimization'
+  ],
+  quickActions: [
+    'generate-component',
+    'review-code-quality',
+    'optimize-performance',
+    'write-tests',
+    'debug-issue',
+    'refactor-code',
+    'setup-deployment',
+    'analyze-bundle-size'
+  ],
+  toolsEnabled: [
+    'code-analyzer',
+    'test-runner',
+    'bundle-analyzer',
+    'linter',
+    'typescript-checker',
+    'git-integration',
+    'npm-manager',
+    'docker-tools'
+  ],
+  workflows: [
+    'code-review-workflow',
+    'feature-development',
+    'bug-fixing-process',
+    'deployment-pipeline',
+    'testing-automation'
+  ],
+  priority: 'high',
+  autoActivation: {
+    triggers: ['code-file-open', 'git-commit', 'test-failure', 'build-error'],
+    conditions: {
+      fileTypes: ['.ts', '.tsx', '.js', '.jsx', '.vue', '.svelte'],
+      context: 'development'
+    }
+  }
+};
+
+/**
+ * Code Review Mode - Specialized for code review and quality assurance
+ */
+export const CODE_REVIEW_MODE: AIModeConfig = {
+  id: 'code-review',
+  name: 'Code Review',
+  description: 'Comprehensive code review with security, performance, and best practices analysis',
+  icon: '🔍',
+  primaryAgent: 'code-reviewer',
+  supportingAgents: ['security-analyst', 'performance-specialist'],
+  contextPrompts: [
+    'code-quality-analysis',
+    'security-review',
+    'performance-assessment',
+    'best-practices-check'
+  ],
+  quickActions: [
+    'analyze-security-vulnerabilities',
+    'check-performance-issues',
+    'validate-typescript-types',
+    'review-accessibility',
+    'audit-dependencies',
+    'check-test-coverage'
+  ],
+  toolsEnabled: [
+    'security-scanner',
+    'performance-profiler',
+    'accessibility-checker',
+    'dependency-auditor',
+    'coverage-analyzer'
+  ],
+  workflows: [
+    'comprehensive-code-review',
+    'security-audit',
+    'performance-analysis'
+  ],
+  priority: 'high'
+};
+
+/**
+ * DevOps Mode - Infrastructure, deployment, and operations assistance
+ */
+export const DEVOPS_MODE: AIModeConfig = {
+  id: 'devops-mode',
+  name: 'DevOps & Infrastructure',
+  description: 'Infrastructure management, CI/CD, and deployment optimization',
+  icon: '⚙️',
+  primaryAgent: 'devops-engineer',
+  supportingAgents: ['infrastructure-architect', 'monitoring-specialist'],
+  contextPrompts: [
+    'infrastructure-design',
+    'deployment-strategy',
+    'monitoring-setup',
+    'cost-optimization'
+  ],
+  quickActions: [
+    'optimize-build-pipeline',
+    'setup-monitoring',
+    'configure-deployment',
+    'analyze-infrastructure-costs',
+    'troubleshoot-deployment',
+    'scale-resources'
+  ],
+  toolsEnabled: [
+    'docker-tools',
+    'kubernetes-manager',
+    'ci-cd-pipeline',
+    'monitoring-tools',
+    'cost-analyzer',
+    'terraform-integration'
+  ],
+  workflows: [
+    'deployment-automation',
+    'infrastructure-provisioning',
+    'monitoring-setup'
+  ],
+  priority: 'medium'
+};
+
+/**
  * All available AI modes
  */
 export const AI_MODES: Record<string, AIModeConfig> = {
   'cpa-professional': CPA_MODE,
   'tax-season': TAX_SEASON_MODE,
+  'developer-mode': DEVELOPER_MODE,
+  'code-review': CODE_REVIEW_MODE,
+  'devops-mode': DEVOPS_MODE,
 };
 
 /**
