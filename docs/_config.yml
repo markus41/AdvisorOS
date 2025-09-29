@@ -1,10 +1,20 @@
 title: AdvisorOS Documentation
 description: Implementation, adoption, and operations playbook for AdvisorOS.
 remote_theme: just-the-docs/just-the-docs
+theme: just-the-docs
 search_enabled: true
 color_scheme: dark
 enable_copy_code_button: true
 heading_anchors: true
+
+url: https://markusahling.github.io
+baseurl: /AdvisorOS
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
 
 aux_links:
   "AdvisorOS on GitHub": "https://github.com/MarkusAhling/AdvisorOS"
@@ -12,6 +22,9 @@ aux_links:
 nav_external_links:
   - title: Product Overview (PDF)
     url: https://github.com/MarkusAhling/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md
+    open_in_new_tab: true
+  - title: AdvisorOS Knowledge Wiki
+    url: https://github.com/MarkusAhling/AdvisorOS/wiki
     open_in_new_tab: true
 
 callouts:

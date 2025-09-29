@@ -1,0 +1,39 @@
+name: Docs Build Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs-build.yml'
+      - 'README.md'
+      - 'wiki/**'
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    name: Verify Jekyll site builds
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: docs
+
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Build documentation site
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build --destination _site --strict_front_matter
+
+      - name: Doctor site configuration
+        run: bundle exec jekyll doctor

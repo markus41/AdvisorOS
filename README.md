@@ -1,6 +1,18 @@
 # CPA Advisory Platform MVP
 
-A comprehensive multi-tenant SaaS platform built for CPAs to manage clients, sync with QuickBooks, and provide financial advisory services.
+AdvisorOS is a production-ready, multi-tenant SaaS platform that unifies client management, workflow automation, and revenue intelligence for modern CPA firms.
+
+## Executive Summary
+
+- **Mission:** Give CPA teams a single operating system that merges QuickBooks data, automated compliance workflows, and advisory insights so they can scale beyond traditional bookkeeping.
+- **Core Outcomes:** Streamlined client onboarding, proactive revenue analytics, secure document collaboration, and audit-ready controls baked into every release.
+- **How to Explore:** Start with the live documentation portal, branch into the curated wiki for process snapshots, then dive into the repo for implementation detail.
+
+## Documentation & Knowledge Base
+
+- **Live Docs (GitHub Pages):** [https://markusahling.github.io/AdvisorOS/](https://markusahling.github.io/AdvisorOS/) – Built with the Just-the-Docs theme and continuously validated in CI to guarantee a clean deploy.
+- **Knowledge Wiki:** [AdvisorOS Overview](https://github.com/MarkusAhling/AdvisorOS/wiki/Overview) – Mirrors the executive summary and links back to the docs portal so stakeholders never have to browse raw markdown files.
+- **Source Repository:** [GitHub](https://github.com/MarkusAhling/AdvisorOS) – Use structured PRs and the docs build workflow to keep the public site green.
 
 ## 🏗️ Architecture
 
