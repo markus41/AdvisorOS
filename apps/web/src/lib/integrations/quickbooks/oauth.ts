@@ -1,6 +1,7 @@
 import { randomBytes, createHmac } from 'crypto';
-import { prisma } from '@/server/db';
+import { prisma, redis } from '@/server/db';
 import { decrypt, encrypt } from '@/lib/encryption';
+import { SecurityEvent } from '@/server/security/security-events';
 
 export interface QuickBooksOAuthConfig {
   clientId: string;
@@ -8,6 +9,15 @@ export interface QuickBooksOAuthConfig {
   redirectUri: string;
   baseUrl: string; // 'https://sandbox-quickbooks.api.intuit.com' or 'https://quickbooks.api.intuit.com'
   discoveryDocumentUrl: string;
+  retryConfig?: RetryConfig;
+}
+
+export interface RetryConfig {
+  maxRetries: number;
+  baseDelay: number;
+  maxDelay: number;
+  backoffMultiplier: number;
+  retryableErrors: string[];
 }
 
 export interface QuickBooksTokens {
@@ -21,27 +31,70 @@ export interface QuickBooksAuthState {
   organizationId: string;
   state: string;
   redirectUrl?: string;
+  createdAt: Date;
+  attemptCount?: number;
+  lastAttemptAt?: Date;
+  connectionId?: string; // For multi-connection support
+}
+
+export interface ConnectionMetadata {
+  connectionId: string;
+  organizationId: string;
+  connectionName?: string;
+  isDefault: boolean;
+  createdAt: Date;
+  lastUsedAt: Date;
+  status: 'active' | 'expired' | 'revoked' | 'error';
+  errorDetails?: string;
 }
 
 export class QuickBooksOAuthService {
   private config: QuickBooksOAuthConfig;
+  private readonly defaultRetryConfig: RetryConfig = {
+    maxRetries: 3,
+    baseDelay: 1000,
+    maxDelay: 30000,
+    backoffMultiplier: 2,
+    retryableErrors: ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN']
+  };
 
   constructor(config: QuickBooksOAuthConfig) {
-    this.config = config;
+    this.config = {
+      ...config,
+      retryConfig: { ...this.defaultRetryConfig, ...config.retryConfig }
+    };
   }
 
   /**
-   * Generate OAuth authorization URL with proper scopes
+   * Generate OAuth authorization URL with proper scopes and connection management
    */
-  generateAuthUrl(organizationId: string, redirectUrl?: string): { url: string; state: string } {
+  async generateAuthUrl(
+    organizationId: string,
+    options: {
+      redirectUrl?: string;
+      connectionName?: string;
+      isAdditionalConnection?: boolean;
+    } = {}
+  ): Promise<{ url: string; state: string; connectionId: string }> {
     const state = this.generateState();
+    const connectionId = this.generateConnectionId();
     const scope = 'com.intuit.quickbooks.accounting';
 
-    // Store state for verification
-    this.storeAuthState({
+    // Store state for verification with enhanced metadata
+    await this.storeAuthState({
       organizationId,
       state,
-      redirectUrl
+      redirectUrl: options.redirectUrl,
+      createdAt: new Date(),
+      connectionId
+    });
+
+    // Log OAuth attempt for security monitoring
+    await this.logSecurityEvent(organizationId, 'oauth_attempt', {
+      connectionId,
+      connectionName: options.connectionName,
+      isAdditionalConnection: options.isAdditionalConnection,
+      redirectUrl: options.redirectUrl
     });
 
     const authUrl = new URL('https://appcenter.intuit.com/connect/oauth2');
@@ -54,7 +107,8 @@ export class QuickBooksOAuthService {
 
     return {
       url: authUrl.toString(),
-      state
+      state,
+      connectionId
     };
   }
 
