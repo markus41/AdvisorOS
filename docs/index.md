@@ -39,7 +39,7 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 <details open>
 <summary><strong>Executive Leadership</strong> — communicate the why</summary>
 
-- Core briefings: [Executive Quick Start](QUICK_START.md) · [Production Launch Executive Summary]({{ site.github.repository_url }}/blob/main/PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md)
+- Core briefings: [Executive Quick Start](QUICK_START.md) · [Production Launch Executive Summary](../PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md)
 - Metrics pairing: [Production Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md)
 - Enablement tool: [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md)
 - > [!TIP] Draft board decks by combining the executive summary with a live extract from the metrics framework.
