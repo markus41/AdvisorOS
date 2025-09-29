@@ -31,10 +31,15 @@
     "dev:connect": "docker-compose exec postgres psql -U cpa_user -d cpa_platform"
   },
   "devDependencies": {
-    "prettier": "^3.0.0",
-    "turbo": "^2.0.0",
+    "@types/bull": "^4.10.4",
+    "@types/ws": "^8.18.1",
+    "bull": "^4.16.5",
+    "dotenv": "^16.3.1",
     "pg": "^8.11.3",
-    "dotenv": "^16.3.1"
+    "prettier": "^3.0.0",
+    "simple-statistics": "^7.8.8",
+    "turbo": "^2.0.0",
+    "ws": "^8.18.3"
   },
   "engines": {
     "node": ">=18.17.0"

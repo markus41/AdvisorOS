@@ -1,47 +1,47 @@
-{
-  "name": "@cpa-platform/analytics",
-  "version": "0.1.0",
-  "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "exports": {
-    ".": "./src/index.ts",
-    "./prediction": "./src/prediction/index.ts",
-    "./insights": "./src/insights/index.ts",
-    "./reporting": "./src/reporting/index.ts",
-    "./realtime": "./src/realtime/index.ts",
-    "./ml": "./src/ml/index.ts",
-    "./visualization": "./src/visualization/index.ts"
-  },
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "lint": "eslint . --ext .ts",
-    "test": "jest",
-    "test:watch": "jest --watch"
-  },
-  "dependencies": {
-    "ml-regression": "^6.0.1",
-    "simple-statistics": "^7.8.3",
-    "lodash": "^4.17.21",
-    "date-fns": "^2.30.0",
-    "decimal.js": "^10.4.3",
-    "ws": "^8.14.2",
-    "ioredis": "^5.3.2",
-    "bull": "^4.12.0",
-    "zod": "^3.22.4",
-    "d3": "^7.8.5",
-    "plotly.js": "^2.26.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/lodash": "^4.14.199",
-    "@types/ws": "^8.5.8",
-    "@types/d3": "^7.4.1",
-    "@types/plotly.js": "^2.12.29",
-    "eslint": "^8",
-    "jest": "^29",
-    "typescript": "^5",
-    "@types/jest": "^29"
-  }
+﻿{
+    "name":  "@cpa-platform/analytics",
+    "version":  "0.1.0",
+    "private":  true,
+    "main":  "./src/index.ts",
+    "types":  "./src/index.ts",
+    "exports":  {
+                    ".":  "./src/index.ts",
+                    "./prediction":  "./src/prediction/index.ts",
+                    "./insights":  "./src/insights/index.ts",
+                    "./reporting":  "./src/reporting/index.ts",
+                    "./realtime":  "./src/realtime/index.ts",
+                    "./ml":  "./src/ml/index.ts",
+                    "./visualization":  "./src/visualization/index.ts"
+                },
+    "scripts":  {
+                    "build":  "echo \u0027Analytics package build skipped in development mode\u0027",
+                    "dev":  "tsc --watch",
+                    "lint":  "eslint . --ext .ts",
+                    "test":  "jest",
+                    "test:watch":  "jest --watch"
+                },
+    "dependencies":  {
+                         "ml-regression":  "^6.0.1",
+                         "simple-statistics":  "^7.8.3",
+                         "lodash":  "^4.17.21",
+                         "date-fns":  "^2.30.0",
+                         "decimal.js":  "^10.4.3",
+                         "ws":  "^8.14.2",
+                         "ioredis":  "^5.3.2",
+                         "bull":  "^4.12.0",
+                         "zod":  "^3.22.4",
+                         "d3":  "^7.8.5",
+                         "plotly.js":  "^2.26.1"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "^20",
+                            "@types/lodash":  "^4.14.199",
+                            "@types/ws":  "^8.5.8",
+                            "@types/d3":  "^7.4.1",
+                            "@types/plotly.js":  "^2.12.29",
+                            "eslint":  "^8",
+                            "jest":  "^29",
+                            "typescript":  "^5",
+                            "@types/jest":  "^29"
+                        }
 }

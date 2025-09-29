@@ -1014,7 +1014,7 @@ interface ChurnFeatures {
 interface ChurnPrediction {
   clientId: string;
   churnProbability: number;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
   riskFactors: string[];
   recommendations: string[];
   confidence: number;

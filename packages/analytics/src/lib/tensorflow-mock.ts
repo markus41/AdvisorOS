@@ -7,12 +7,21 @@
 export interface MockTensor {
   dispose(): void;
   data(): Promise<number[]>;
+  dataSync(): Float32Array | Int32Array | Uint8Array;
+}
+
+// Mock history interface
+export interface MockHistory {
+  history: Record<string, number[]>;
 }
 
 // Mock model interface
 export interface MockLayersModel {
   predict(input: MockTensor): MockTensor;
   dispose(): void;
+  add(layer: any): void;
+  compile(config: any): void;
+  fit(x: MockTensor, y: MockTensor, config?: any): Promise<MockHistory>;
 }
 
 // Mock tensor implementation
@@ -26,6 +35,10 @@ class TensorImpl implements MockTensor {
   async data(): Promise<number[]> {
     return this._data;
   }
+
+  dataSync(): Float32Array {
+    return new Float32Array(this._data);
+  }
 }
 
 // Mock model implementation
@@ -37,6 +50,23 @@ class LayersModelImpl implements MockLayersModel {
 
   dispose(): void {
     // No-op for mock
+  }
+
+  add(layer: any): void {
+    // No-op for mock
+  }
+
+  compile(config: any): void {
+    // No-op for mock
+  }
+
+  fit(x: MockTensor, y: MockTensor, config?: any): Promise<MockHistory> {
+    return Promise.resolve({
+      history: {
+        loss: [0.5, 0.3, 0.1],
+        accuracy: [0.7, 0.8, 0.9]
+      }
+    });
   }
 }
 

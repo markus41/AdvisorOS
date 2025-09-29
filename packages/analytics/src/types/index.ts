@@ -4,6 +4,39 @@
 
 import { Decimal } from 'decimal.js';
 
+// Anomaly Detection Types
+export interface AnomalyDetectionConfig {
+  algorithm: 'statistical' | 'isolation_forest' | 'rule_based' | 'ensemble';
+  sensitivity: 'low' | 'medium' | 'high';
+  lookbackDays: number;
+  minDataPoints: number;
+  thresholdMultiplier: number;
+}
+
+export interface DetectedAnomaly {
+  id: string;
+  type: 'revenue' | 'expense' | 'transaction' | 'pattern' | 'seasonal';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  value: number;
+  expectedValue: number;
+  deviation: number;
+  deviationPercent: number;
+  confidence: number;
+  timestamp: Date;
+  description: string;
+  context: AnomalyContext;
+  recommendations: string[];
+  suggestedActions?: string[];
+}
+
+export interface AnomalyContext {
+  dataSource: string;
+  period: string;
+  affectedMetrics: string[];
+  relatedEvents: string[];
+  historicalComparison: boolean;
+}
+
 // Financial Data Types
 export interface FinancialData {
   id: string;
