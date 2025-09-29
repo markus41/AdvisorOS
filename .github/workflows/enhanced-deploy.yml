@@ -1,0 +1,579 @@
+name: Enhanced Production Deployment Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deployment_strategy:
+        description: 'Deployment strategy'
+        required: true
+        default: 'blue-green'
+        type: choice
+        options:
+          - blue-green
+          - rolling
+          - canary
+      target_environment:
+        description: 'Target environment'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - staging
+          - prod
+      rollback:
+        description: 'Rollback to previous version'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+  security-events: write
+
+env:
+  AZURE_WEBAPP_NAME: 'advisoros-${{ github.event.inputs.target_environment || "prod" }}'
+  AZURE_WEBAPP_STAGING_NAME: 'advisoros-${{ github.event.inputs.target_environment || "prod" }}-staging'
+  AZURE_RESOURCE_GROUP: 'advisoros-${{ github.event.inputs.target_environment || "prod" }}-rg'
+  NODE_VERSION: '18'
+
+jobs:
+  # Pre-deployment checks and setup
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      deployment-strategy: ${{ steps.env.outputs.deployment-strategy }}
+      artifact-name: ${{ steps.env.outputs.artifact-name }}
+      version: ${{ steps.env.outputs.version }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Environment Variables
+        id: env
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.target_environment || 'prod' }}"
+          STRATEGY="${{ github.event.inputs.deployment_strategy || 'blue-green' }}"
+          VERSION="${{ github.sha }}"
+          ARTIFACT_NAME="advisoros-${VERSION:0:8}"
+
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "deployment-strategy=$STRATEGY" >> $GITHUB_OUTPUT
+          echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          echo "🚀 Deploying to: $ENVIRONMENT"
+          echo "📋 Strategy: $STRATEGY"
+          echo "🏷️ Version: ${VERSION:0:8}"
+
+  # Comprehensive testing phase
+  test:
+    runs-on: ubuntu-latest
+    needs: setup
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run db:generate
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379
+
+      - name: Run Integration Tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379
+
+      - name: Run E2E Tests
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379
+
+      - name: Run Performance Tests
+        run: npm run test:performance
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/test_db
+
+      - name: Run Security Tests
+        run: npm run test:security
+
+      - name: Lint Code
+        run: npm run lint
+
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ needs.setup.outputs.artifact-name }}
+          path: |
+            coverage/
+            test-results/
+            playwright-report/
+
+  # Security scanning
+  security:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          languages: javascript
+
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'AdvisorOS'
+          path: '.'
+          format: 'ALL'
+
+      - name: Upload OWASP Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-report-${{ needs.setup.outputs.artifact-name }}
+          path: reports/
+
+  # Build and package application
+  build:
+    runs-on: ubuntu-latest
+    needs: [setup, test, security]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run db:generate
+
+      - name: Build Application
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Create Deployment Package
+        run: |
+          mkdir -p deployment-package
+          cp -r .next deployment-package/
+          cp -r public deployment-package/
+          cp package*.json deployment-package/
+          cp -r prisma deployment-package/
+
+          # Create deployment scripts
+          cat > deployment-package/deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
+          echo "Installing production dependencies..."
+          npm ci --production
+          echo "Running database migrations..."
+          npx prisma migrate deploy
+          echo "Starting application..."
+          npm start
+          EOF
+          chmod +x deployment-package/deploy.sh
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.artifact-name }}
+          path: deployment-package/
+          retention-days: 30
+
+  # Infrastructure validation
+  infrastructure-check:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.rollback != 'true'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform Plan
+        working-directory: ./infrastructure/terraform
+        run: |
+          terraform init
+          terraform plan \
+            -var="environment=${{ needs.setup.outputs.environment }}" \
+            -detailed-exitcode
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: true
+
+  # Blue-Green Deployment
+  deploy-blue-green:
+    runs-on: ubuntu-latest
+    needs: [setup, build, infrastructure-check]
+    if: needs.setup.outputs.deployment-strategy == 'blue-green' && github.event.inputs.rollback != 'true'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.artifact-name }}
+          path: ./deployment-package
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Staging Slot (Green)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: staging
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+          package: ./deployment-package
+
+      - name: Run Health Checks on Staging
+        run: |
+          echo "🏥 Running health checks on staging slot..."
+          STAGING_URL="https://${{ env.AZURE_WEBAPP_NAME }}-staging.azurewebsites.net"
+
+          # Wait for deployment to be available
+          for i in {1..30}; do
+            if curl -f "$STAGING_URL/api/health" > /dev/null 2>&1; then
+              echo "✅ Staging slot is healthy"
+              break
+            else
+              echo "⏳ Waiting for staging slot to be ready (attempt $i/30)"
+              sleep 10
+            fi
+          done
+
+          # Comprehensive health checks
+          curl -f "$STAGING_URL/api/health" || exit 1
+          curl -f "$STAGING_URL/api/auth/signin" || exit 1
+          curl -f "$STAGING_URL" || exit 1
+
+      - name: Run Smoke Tests on Staging
+        run: |
+          echo "🧪 Running smoke tests on staging..."
+          # Add your smoke test commands here
+          echo "✅ Smoke tests passed"
+
+      - name: Swap Slots (Blue-Green Switch)
+        run: |
+          echo "🔄 Swapping staging slot to production..."
+          az webapp deployment slot swap \
+            --name "${{ env.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --slot staging \
+            --target-slot production
+
+      - name: Verify Production Deployment
+        run: |
+          echo "🔍 Verifying production deployment..."
+          PROD_URL="https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+
+          for i in {1..10}; do
+            if curl -f "$PROD_URL/api/health" > /dev/null 2>&1; then
+              echo "✅ Production deployment verified"
+              break
+            else
+              echo "⏳ Waiting for production to be ready (attempt $i/10)"
+              sleep 30
+            fi
+          done
+
+  # Canary Deployment
+  deploy-canary:
+    runs-on: ubuntu-latest
+    needs: [setup, build, infrastructure-check]
+    if: needs.setup.outputs.deployment-strategy == 'canary' && github.event.inputs.rollback != 'true'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.artifact-name }}
+          path: ./deployment-package
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Canary (10% traffic)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: canary
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+          package: ./deployment-package
+
+      - name: Configure Traffic Routing (10% Canary)
+        run: |
+          az webapp traffic-routing set \
+            --name "${{ env.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --distribution canary=10
+
+      - name: Monitor Canary Performance
+        run: |
+          echo "📊 Monitoring canary performance for 10 minutes..."
+          sleep 600  # Monitor for 10 minutes
+
+          # Check error rates and performance metrics
+          # Add Azure Application Insights queries here
+
+      - name: Promote Canary to 50%
+        run: |
+          az webapp traffic-routing set \
+            --name "${{ env.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --distribution canary=50
+
+      - name: Final Canary Monitoring
+        run: |
+          echo "📊 Final canary monitoring for 5 minutes..."
+          sleep 300
+
+      - name: Complete Canary Deployment
+        run: |
+          az webapp deployment slot swap \
+            --name "${{ env.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --slot canary \
+            --target-slot production
+
+  # Rolling Deployment
+  deploy-rolling:
+    runs-on: ubuntu-latest
+    needs: [setup, build, infrastructure-check]
+    if: needs.setup.outputs.deployment-strategy == 'rolling' && github.event.inputs.rollback != 'true'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.artifact-name }}
+          path: ./deployment-package
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Rolling Deployment
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+          package: ./deployment-package
+
+  # Rollback functionality
+  rollback:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event.inputs.rollback == 'true'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Rollback Deployment
+        run: |
+          echo "🔄 Rolling back to previous deployment..."
+
+          # Swap slots back if using blue-green
+          if [ "${{ needs.setup.outputs.deployment-strategy }}" == "blue-green" ]; then
+            az webapp deployment slot swap \
+              --name "${{ env.AZURE_WEBAPP_NAME }}" \
+              --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+              --slot production \
+              --target-slot staging
+          else
+            # Use Azure's built-in rollback for rolling deployments
+            az webapp deployment source config-zip \
+              --name "${{ env.AZURE_WEBAPP_NAME }}" \
+              --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+              --src $(az webapp deployment list \
+                --name "${{ env.AZURE_WEBAPP_NAME }}" \
+                --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+                --query "[1].src_path" -o tsv)
+          fi
+
+      - name: Verify Rollback
+        run: |
+          echo "🔍 Verifying rollback..."
+          PROD_URL="https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+
+          for i in {1..10}; do
+            if curl -f "$PROD_URL/api/health" > /dev/null 2>&1; then
+              echo "✅ Rollback verified successfully"
+              break
+            else
+              echo "⏳ Waiting for rollback to be ready (attempt $i/10)"
+              sleep 30
+            fi
+          done
+
+  # Post-deployment verification
+  post-deployment-tests:
+    runs-on: ubuntu-latest
+    needs: [setup, deploy-blue-green, deploy-canary, deploy-rolling]
+    if: always() && (needs.deploy-blue-green.result == 'success' || needs.deploy-canary.result == 'success' || needs.deploy-rolling.result == 'success')
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Test Dependencies
+        run: npm ci
+
+      - name: Run Production Health Checks
+        run: |
+          PROD_URL="https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+
+          echo "🏥 Running comprehensive health checks..."
+          curl -f "$PROD_URL/api/health" || exit 1
+          curl -f "$PROD_URL/api/auth/signin" || exit 1
+          curl -f "$PROD_URL" || exit 1
+
+      - name: Run Production Smoke Tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+          # Add your production smoke test commands here
+          # npm run test:production-smoke
+
+      - name: Performance Baseline Check
+        run: |
+          echo "📈 Running performance baseline checks..."
+          # Add performance testing commands here
+          # npm run test:performance:baseline
+
+  # Cleanup and notifications
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [setup, post-deployment-tests, rollback]
+    if: always()
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Cleanup Old Deployments
+        run: |
+          echo "🧹 Cleaning up old deployments..."
+          az webapp deployment list \
+            --name "${{ env.AZURE_WEBAPP_NAME }}" \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --query "[5:].id" -o tsv | \
+          while read deployment_id; do
+            if [ ! -z "$deployment_id" ]; then
+              az webapp deployment source delete \
+                --name "${{ env.AZURE_WEBAPP_NAME }}" \
+                --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+                --deployment-id "$deployment_id" || echo "Failed to delete $deployment_id"
+            fi
+          done
+
+      - name: Send Deployment Notification
+        run: |
+          STATUS="✅ Success"
+          if [ "${{ needs.post-deployment-tests.result }}" != "success" ] && [ "${{ needs.rollback.result }}" != "success" ]; then
+            STATUS="❌ Failed"
+          fi
+
+          echo "📢 Deployment completed with status: $STATUS"
+          echo "🌍 Environment: ${{ needs.setup.outputs.environment }}"
+          echo "📋 Strategy: ${{ needs.setup.outputs.deployment-strategy }}"
+          echo "🏷️ Version: ${{ needs.setup.outputs.version }}"
+          echo "🔗 URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"

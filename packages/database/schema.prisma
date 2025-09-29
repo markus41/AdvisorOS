@@ -16,9 +16,26 @@ model Organization {
   subdomain        String    @unique
   subscriptionTier String    @default("trial")
   stripeCustomerId String?
+  // Enhanced organization settings
+  settings         Json?     // Organization-wide settings
+  features         Json?     // Enabled features
+  limits           Json?     // Usage limits
+  timezone         String    @default("UTC")
+  locale           String    @default("en-US")
+  // Security settings
+  passwordPolicy   Json?     // Password requirements
+  sessionTimeout   Int       @default(3600) // Session timeout in seconds
+  mfaRequired      Boolean   @default(false)
+  ipWhitelist      String[]  // Allowed IP addresses
+  // Data retention
+  dataRetentionDays Int      @default(2555) // 7 years default
+  // Status tracking
+  isActive         Boolean   @default(true)
   deletedAt        DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  createdBy        String?
+  updatedBy        String?
 
   // Relations
   users                    User[]
@@ -43,7 +60,14 @@ model Organization {
   workflowExecutions       WorkflowExecution[]
   taskExecutions           TaskExecution[]
   taskQueueItems           TaskQueueItem[]
+  apiKeys                  ApiKey[]
+  userSessions             UserSession[]
 
+  @@index([subdomain])
+  @@index([isActive])
+  @@index([subscriptionTier])
+  @@index([createdAt])
+  @@index([updatedAt])
   @@map("organizations")
 }
 
@@ -1043,4 +1067,211 @@ model TaskQueueItem {
   @@index([processingLockId])
   @@index([lockExpiresAt])
   @@map("task_queue_items")
+}
+
+// Enhanced security and audit models
+model UserSession {
+  id             String       @id @default(cuid())
+  sessionToken   String       @unique
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  ipAddress      String?
+  userAgent      String?      @db.Text
+  location       Json?        // Geo location data
+  deviceInfo     Json?        // Device fingerprint
+  isActive       Boolean      @default(true)
+  lastAccessAt   DateTime     @default(now())
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  revokedBy      String?
+  revokedReason  String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([sessionToken])
+  @@index([isActive])
+  @@index([expiresAt])
+  @@index([lastAccessAt])
+  @@map("user_sessions")
+}
+
+model ApiKey {
+  id             String       @id @default(cuid())
+  name           String       // Human-readable name
+  keyHash        String       @unique // Hashed API key
+  keyPrefix      String       // First 8 chars for identification
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy      String
+  creator        User         @relation("ApiKeyCreator", fields: [createdBy], references: [id])
+  permissions    Json         // API permissions
+  scopes         String[]     // API scopes
+  isActive       Boolean      @default(true)
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  rateLimit      Int?         // Requests per minute
+  ipWhitelist    String[]     // Allowed IP addresses
+  metadata       Json?        // Additional metadata
+  usageCount     Int          @default(0)
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  usageLogs      ApiKeyUsage[]
+
+  @@index([organizationId])
+  @@index([createdBy])
+  @@index([keyHash])
+  @@index([keyPrefix])
+  @@index([isActive])
+  @@index([expiresAt])
+  @@map("api_keys")
+}
+
+model ApiKeyUsage {
+  id           String   @id @default(cuid())
+  apiKeyId     String
+  apiKey       ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  endpoint     String
+  method       String   // GET, POST, PUT, DELETE
+  ipAddress    String?
+  userAgent    String?  @db.Text
+  statusCode   Int
+  responseTime Int      // Response time in milliseconds
+  requestSize  Int?     // Request size in bytes
+  responseSize Int?     // Response size in bytes
+  error        String?  @db.Text
+  metadata     Json?    // Additional request metadata
+  timestamp    DateTime @default(now())
+
+  @@index([apiKeyId])
+  @@index([endpoint])
+  @@index([timestamp])
+  @@index([statusCode])
+  @@map("api_key_usage")
+}
+
+model SecurityEvent {
+  id             String       @id @default(cuid())
+  eventType      String       // "suspicious_login", "rate_limit_exceeded", "unauthorized_access", etc.
+  severity       String       // "low", "medium", "high", "critical"
+  description    String       @db.Text
+  ipAddress      String?
+  userAgent      String?      @db.Text
+  userId         String?
+  user           User?        @relation(fields: [userId], references: [id])
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  resourceType   String?      // "user", "client", "document", etc.
+  resourceId     String?
+  riskScore      Int?         // 0-100 risk score
+  resolved       Boolean      @default(false)
+  resolvedAt     DateTime?
+  resolvedBy     String?
+  resolver       User?        @relation("SecurityEventResolver", fields: [resolvedBy], references: [id])
+  metadata       Json?        // Additional event data
+  createdAt      DateTime     @default(now())
+
+  @@index([eventType])
+  @@index([severity])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([resolved])
+  @@index([createdAt])
+  @@index([riskScore])
+  @@map("security_events")
+}
+
+model DataExport {
+  id             String       @id @default(cuid())
+  requestedBy    String
+  requester      User         @relation(fields: [requestedBy], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  exportType     String       // "client_data", "financial_data", "all_data", etc.
+  status         String       @default("pending") // "pending", "processing", "completed", "failed", "expired"
+  parameters     Json?        // Export parameters (date range, filters, etc.)
+  fileUrl        String?      // URL to download exported file
+  fileName       String?
+  fileSize       BigInt?
+  recordCount    Int?         // Number of records exported
+  reason         String?      @db.Text // Reason for export request
+  approvedBy     String?
+  approver       User?        @relation("DataExportApprover", fields: [approvedBy], references: [id])
+  approvedAt     DateTime?
+  completedAt    DateTime?
+  expiresAt      DateTime?    // When the download link expires
+  downloadCount  Int          @default(0)
+  lastDownloadAt DateTime?
+  error          String?      @db.Text
+  metadata       Json?        // Additional export metadata
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([requestedBy])
+  @@index([organizationId])
+  @@index([status])
+  @@index([exportType])
+  @@index([expiresAt])
+  @@index([createdAt])
+  @@map("data_exports")
+}
+
+model ComplianceEvent {
+  id             String       @id @default(cuid())
+  eventType      String       // "gdpr_request", "data_breach", "audit_access", etc.
+  description    String       @db.Text
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?        @relation(fields: [userId], references: [id])
+  resourceType   String?      // Type of resource affected
+  resourceId     String?      // ID of affected resource
+  dataTypes      String[]     // Types of data involved
+  severity       String       // "low", "medium", "high"
+  status         String       @default("open") // "open", "investigating", "resolved", "closed"
+  dueDate        DateTime?    // Compliance deadline
+  assignedTo     String?
+  assignee       User?        @relation("ComplianceEventAssignee", fields: [assignedTo], references: [id])
+  resolution     String?      @db.Text
+  resolvedAt     DateTime?
+  evidence       Json?        // Supporting evidence/documentation
+  notifiedParties Json?       // Who was notified (regulators, customers, etc.)
+  metadata       Json?        // Additional compliance data
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([eventType])
+  @@index([organizationId])
+  @@index([severity])
+  @@index([status])
+  @@index([dueDate])
+  @@index([assignedTo])
+  @@index([createdAt])
+  @@map("compliance_events")
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  role         String     // "owner", "admin", "manager", "cpa", "staff", etc.
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  granted      Boolean    @default(true)
+  conditions   Json?      // Conditional permissions (time-based, resource-based)
+  grantedBy    String?
+  grantedAt    DateTime   @default(now())
+  revokedBy    String?
+  revokedAt    DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([role, permissionId])
+  @@index([role])
+  @@index([permissionId])
+  @@map("role_permissions")
 }
