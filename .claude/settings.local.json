@@ -36,7 +36,9 @@
       "Bash(docker:*)",
       "Bash(netstat:*)",
       "Bash(where postgres)",
-      "Bash(xargs sed:*)"
+      "Bash(xargs sed:*)",
+      "Bash(node:*)",
+      "Bash(node test-integrations.js)"
     ],
     "deny": [],
     "ask": []

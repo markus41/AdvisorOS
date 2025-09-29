@@ -29,8 +29,40 @@ async function testDatabaseConnection() {
     process.exit(1);
   }
 
+  // Check if DATABASE_URL contains placeholder values
+  if (process.env.DATABASE_URL.includes('[YOUR-PASSWORD]') || process.env.DATABASE_URL.includes('[PROJECT-REF]')) {
+    console.log('❌ DATABASE_URL contains placeholder values');
+    console.log('   Current: postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres');
+    console.log('');
+    console.log('🔧 To fix this:');
+    console.log('   1. Go to your Supabase project dashboard');
+    console.log('   2. Navigate to Settings → Database');
+    console.log('   3. Copy the connection string from "Connection string" section');
+    console.log('   4. Update DATABASE_URL in your .env file');
+    console.log('');
+    console.log('   Example format:');
+    console.log('   DATABASE_URL="postgresql://postgres:YOUR_ACTUAL_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres"');
+    process.exit(1);
+  }
+
   console.log('✅ Environment file found');
   console.log(`📍 Database URL: ${process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@')}`);
+
+  // Validate URL format before creating client
+  let databaseUrl;
+  try {
+    databaseUrl = new URL(process.env.DATABASE_URL);
+    if (!databaseUrl.hostname || !databaseUrl.username || !databaseUrl.password) {
+      throw new Error('Invalid URL components');
+    }
+  } catch (error) {
+    console.log('❌ Invalid DATABASE_URL format');
+    console.log(`   Error: ${error.message}`);
+    console.log('');
+    console.log('💡 Expected format:');
+    console.log('   postgresql://username:password@hostname:port/database');
+    process.exit(1);
+  }
 
   // Test database connection
   const client = new Client({

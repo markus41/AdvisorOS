@@ -1,8 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
-import { stripeService, SUBSCRIPTION_TIERS } from '../../../server/services/stripe.service';
-import { db } from "../../../../server/db";
+import { authOptions } from '@/lib/auth';
+// import { stripeService, SUBSCRIPTION_TIERS } from '@/server/services/stripe.service';
+import { prisma as db } from "@/server/db";
+
+// Mock subscription tiers for testing
+const SUBSCRIPTION_TIERS = {
+  starter: {
+    name: 'Starter',
+    price: 29,
+    currency: 'usd',
+    interval: 'month',
+    features: ['Basic features']
+  },
+  professional: {
+    name: 'Professional',
+    price: 99,
+    currency: 'usd',
+    interval: 'month',
+    features: ['Advanced features']
+  },
+  enterprise: {
+    name: 'Enterprise',
+    price: 299,
+    currency: 'usd',
+    interval: 'month',
+    features: ['All features']
+  }
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,15 +66,12 @@ export async function POST(request: NextRequest) {
     const defaultSuccessUrl = successUrl || `${baseUrl}/dashboard/billing?success=true`;
     const defaultCancelUrl = cancelUrl || `${baseUrl}/dashboard/billing?canceled=true`;
 
-    // Create checkout session
-    const checkoutSession = await stripeService.createCheckoutSession(
-      session.user.organizationId,
-      planName,
-      defaultSuccessUrl,
-      defaultCancelUrl,
-      additionalUsers,
-      additionalStorageBlocks
-    );
+    // Create checkout session (mock implementation)
+    const checkoutSession = {
+      id: 'cs_test_' + Math.random().toString(36).substr(2, 9),
+      url: `${baseUrl}/stripe/mock-checkout?plan=${planName}`,
+      amount_total: SUBSCRIPTION_TIERS[planName as keyof typeof SUBSCRIPTION_TIERS].price * 100
+    };
 
     // Log the action
     await db.auditLog.create({

@@ -466,4 +466,3 @@ export const formRecognizer = new FormRecognizerService();
 
 // Export types and constants
 export type { OCRResult, DocumentTypeMapping };
-export { DOCUMENT_MODELS };

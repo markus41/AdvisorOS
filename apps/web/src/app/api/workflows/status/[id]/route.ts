@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
-import { WorkflowService } from "@/server/services/workflow.service";
+import { prisma } from "@/server/db";
+// import { WorkflowService } from "@/server/services/workflow.service";
 
-const prisma = new PrismaClient();
-const workflowService = new WorkflowService(prisma);
+// const workflowService = new WorkflowService(prisma);
 
 export async function GET(
   request: NextRequest,
@@ -23,7 +22,29 @@ export async function GET(
       );
     }
 
-    const status = await workflowService.getWorkflowStatus(params.id, organizationId);
+    // Get workflow status (simplified)
+    const status = await prisma.workflowExecution.findFirst({
+      where: {
+        id: params.id,
+        organizationId
+      },
+      include: {
+        template: true,
+        steps: {
+          orderBy: { stepOrder: 'asc' }
+        }
+      }
+    });
+
+    if (!status) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Workflow not found"
+        },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

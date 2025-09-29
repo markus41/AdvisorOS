@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
-import { ReportService } from "@/server/services/report.service";
+import { prisma } from "@/server/db";
+// import { ReportService } from "@/server/services/report.service";
 
-const prisma = new PrismaClient();
-const reportService = new ReportService(prisma);
+// const reportService = new ReportService(prisma);
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,7 +26,52 @@ export async function GET(request: NextRequest) {
 
     if (reportId) {
       // Get specific report status
-      const report = await reportService.getReportStatus(reportId, organizationId);
+      const report = await prisma.report.findFirst({
+        where: {
+          id: reportId,
+          organizationId,
+          deletedAt: null
+        },
+        include: {
+          template: {
+            select: {
+              id: true,
+              name: true,
+              category: true
+            }
+          },
+          engagement: {
+            select: {
+              id: true,
+              name: true,
+              client: {
+                select: {
+                  id: true,
+                  businessName: true
+                }
+              }
+            }
+          },
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      });
+
+      if (!report) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Report not found"
+          },
+          { status: 404 }
+        );
+      }
+
       return NextResponse.json({
         success: true,
         data: report

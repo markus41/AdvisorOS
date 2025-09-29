@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
-import { WorkflowService } from "@/server/services/workflow.service";
+import { prisma } from "@/server/db";
+// import { WorkflowService } from "@/server/services/workflow.service";
 import { z } from "zod";
 
-const prisma = new PrismaClient();
-const workflowService = new WorkflowService(prisma);
+// const workflowService = new WorkflowService(prisma);
 
 const createWorkflowSchema = z.object({
   templateId: z.string(),
@@ -31,13 +30,22 @@ export async function POST(request: NextRequest) {
       variables: validatedData.variables
     };
 
-    const execution = await workflowService.createWorkflowFromTemplate(
-      validatedData.templateId,
-      validatedData.name,
-      context,
-      validatedData.scheduledFor ? new Date(validatedData.scheduledFor) : undefined,
-      validatedData.dueDate ? new Date(validatedData.dueDate) : undefined
-    );
+    // Create workflow execution (simplified implementation)
+    const execution = await prisma.workflowExecution.create({
+      data: {
+        workflowTemplateId: validatedData.templateId,
+        name: validatedData.name,
+        organizationId: validatedData.organizationId,
+        engagementId: validatedData.engagementId,
+        clientId: validatedData.clientId,
+        assignedToId: validatedData.assignedToId,
+        status: 'pending',
+        scheduledFor: validatedData.scheduledFor ? new Date(validatedData.scheduledFor) : null,
+        dueDate: validatedData.dueDate ? new Date(validatedData.dueDate) : null,
+        variables: validatedData.variables || {},
+        context: context
+      }
+    });
 
     return NextResponse.json({
       success: true,

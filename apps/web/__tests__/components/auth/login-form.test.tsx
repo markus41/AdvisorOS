@@ -34,8 +34,8 @@ const mockSearchParams = {
   get: jest.fn(),
 }
 
-const mockSignIn = signIn as jest.MockedFunction<typeof signIn>
-const mockToast = toast as jest.Mocked<typeof toast>
+const mockSignIn = signIn as jest.MockedFunction<typeof signIn>;
+const mockToast = toast as jest.Mocked<typeof toast>;
 
 describe('LoginForm', () => {
   beforeEach(() => {

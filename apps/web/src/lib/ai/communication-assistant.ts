@@ -1,6 +1,6 @@
 import { openaiClient, AIResponse } from './openai-client';
 import { communicationPrompts, formatPrompt } from './prompts';
-import { TextAnalyticsClient, AzureKeyCredential } from '@azure/cognitiveservices-textanalytics';
+// import { TextAnalyticsClient, AzureKeyCredential } from '@azure/cognitiveservices-textanalytics';
 
 export interface EmailContext {
   recipientType: 'client' | 'colleague' | 'vendor' | 'authority' | 'other';
@@ -111,7 +111,7 @@ export interface CommunicationTemplate {
 }
 
 class CommunicationAssistantService {
-  private textAnalyticsClient: TextAnalyticsClient | null = null;
+  // private textAnalyticsClient: TextAnalyticsClient | null = null;
   private isInitialized = false;
 
   constructor() {
@@ -124,10 +124,10 @@ class CommunicationAssistantService {
 
     if (endpoint && apiKey) {
       try {
-        this.textAnalyticsClient = new TextAnalyticsClient(
-          endpoint,
-          new AzureKeyCredential(apiKey)
-        );
+        // this.textAnalyticsClient = new TextAnalyticsClient(
+        //   endpoint,
+        //   new AzureKeyCredential(apiKey)
+        // );
         this.isInitialized = true;
       } catch (error) {
         console.error('Failed to initialize Text Analytics client:', error);
@@ -272,8 +272,8 @@ class CommunicationAssistantService {
       keyPhrases: [],
     };
 
-    // Try Azure Text Analytics first
-    if (this.textAnalyticsClient) {
+    // Try Azure Text Analytics first (disabled for now)
+    if (false && this.textAnalyticsClient) {
       try {
         const sentimentResult = await this.textAnalyticsClient.analyzeSentiment([text]);
         const keyPhrasesResult = await this.textAnalyticsClient.extractKeyPhrases([text]);

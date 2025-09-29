@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
-import { WorkflowService } from "@/server/services/workflow.service";
+import { prisma } from "@/server/db";
+// import { WorkflowService } from "@/server/services/workflow.service";
 import { z } from "zod";
 
-const prisma = new PrismaClient();
-const workflowService = new WorkflowService(prisma);
+// const workflowService = new WorkflowService(prisma);
 
 const executeWorkflowSchema = z.object({
   executionId: z.string(),
@@ -19,18 +18,31 @@ export async function POST(request: NextRequest) {
 
     let result;
 
+    // Simplified workflow actions
     switch (action) {
       case "start":
-        result = await workflowService.executeWorkflow(executionId, organizationId);
+        result = await prisma.workflowExecution.update({
+          where: { id: executionId, organizationId },
+          data: { status: 'running', startedAt: new Date() }
+        });
         break;
       case "pause":
-        result = await workflowService.pauseWorkflow(executionId, organizationId);
+        result = await prisma.workflowExecution.update({
+          where: { id: executionId, organizationId },
+          data: { status: 'paused' }
+        });
         break;
       case "resume":
-        result = await workflowService.resumeWorkflow(executionId, organizationId);
+        result = await prisma.workflowExecution.update({
+          where: { id: executionId, organizationId },
+          data: { status: 'running' }
+        });
         break;
       case "cancel":
-        result = await workflowService.cancelWorkflow(executionId, organizationId);
+        result = await prisma.workflowExecution.update({
+          where: { id: executionId, organizationId },
+          data: { status: 'cancelled', completedAt: new Date() }
+        });
         break;
     }
 

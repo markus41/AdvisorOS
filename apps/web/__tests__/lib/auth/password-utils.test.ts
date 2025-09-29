@@ -28,7 +28,7 @@ describe('Password Utils', () => {
     })
 
     it('should reject passwords without uppercase letters', () => {
-      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireUppercase: true }
+      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireUppercase: true };
       const result = validatePassword('lowercase123!', policy)
 
       expect(result.isValid).toBe(false)
@@ -36,7 +36,7 @@ describe('Password Utils', () => {
     })
 
     it('should reject passwords without lowercase letters', () => {
-      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireLowercase: true }
+      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireLowercase: true };
       const result = validatePassword('UPPERCASE123!', policy)
 
       expect(result.isValid).toBe(false)
@@ -44,7 +44,7 @@ describe('Password Utils', () => {
     })
 
     it('should reject passwords without numbers', () => {
-      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireNumbers: true }
+      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireNumbers: true };
       const result = validatePassword('NoNumbers!Here', policy)
 
       expect(result.isValid).toBe(false)
@@ -52,7 +52,7 @@ describe('Password Utils', () => {
     })
 
     it('should reject passwords without symbols', () => {
-      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireSymbols: true }
+      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, requireSymbols: true };
       const result = validatePassword('NoSymbolsHere123', policy)
 
       expect(result.isValid).toBe(false)
@@ -120,7 +120,7 @@ describe('Password Utils', () => {
     })
 
     it('should enforce maximum length when specified', () => {
-      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, maxLength: 10 }
+      const policy: PasswordPolicy = { ...DEFAULT_PASSWORD_POLICY, maxLength: 10 };
       const result = validatePassword('ThisPasswordIsTooLong123!', policy)
 
       expect(result.isValid).toBe(false)

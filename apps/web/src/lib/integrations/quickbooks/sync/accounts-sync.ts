@@ -1,4 +1,4 @@
-import { prisma } from '@/packages/database';
+import { prisma } from '@/server/db';
 import { BaseSyncService, SyncResult, SyncOptions } from './base-sync';
 
 interface LocalAccount {

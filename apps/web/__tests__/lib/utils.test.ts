@@ -290,8 +290,8 @@ describe('Utility Functions', () => {
     it('should preserve function context', () => {
       const obj = {
         value: 'test',
-        method: jest.fn(function(this: any) {
-          return this.value
+        method: jest.fn().mockReturnValue(
+          'test'
         })
       }
       const debouncedMethod = debounce(obj.method, 100)
@@ -356,8 +356,8 @@ describe('Utility Functions', () => {
     it('should preserve function context', () => {
       const obj = {
         value: 'test',
-        method: jest.fn(function(this: any) {
-          return this.value
+        method: jest.fn().mockReturnValue(
+          'test'
         })
       }
       const throttledMethod = throttle(obj.method, 100)

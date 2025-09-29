@@ -49,10 +49,10 @@ jest.mock('@cpa-platform/database', () => ({
   },
 }))
 
-const mockPrisma = prisma as jest.Mocked<typeof prisma>
-const mockAuditService = AuditService as jest.Mocked<typeof AuditService>
-const mockNotificationService = NotificationService as jest.Mocked<typeof NotificationService>
-const mockQuickBooksService = QuickBooksService as jest.Mocked<typeof QuickBooksService>
+const mockPrisma = prisma as jest.Mocked<typeof prisma>;
+const mockAuditService = AuditService as jest.Mocked<typeof AuditService>;
+const mockNotificationService = NotificationService as jest.Mocked<typeof NotificationService>;
+const mockQuickBooksService = QuickBooksService as jest.Mocked<typeof QuickBooksService>;
 
 describe('ClientService', () => {
   const testOrgId = 'org-123'
@@ -227,7 +227,7 @@ describe('ClientService', () => {
     })
 
     it('should return client without relations when requested', async () => {
-      const mockClient = { id: testClientId, businessName: 'Test Client' }
+      const mockClient = { id: testClientId, businessName: 'Test Client' };
 
       mockPrisma.client.findFirst.mockResolvedValue(mockClient as any)
 
@@ -318,7 +318,7 @@ describe('ClientService', () => {
     })
 
     it('should throw error if business name already exists', async () => {
-      const existingClient = { id: 'existing-123', businessName: clientData.businessName }
+      const existingClient = { id: 'existing-123', businessName: clientData.businessName };
       mockPrisma.client.findFirst.mockResolvedValue(existingClient as any)
 
       await expect(
@@ -327,7 +327,7 @@ describe('ClientService', () => {
     })
 
     it('should throw error if tax ID already exists', async () => {
-      const clientDataWithTaxId = { ...clientData, taxId: '12-3456789' }
+      const clientDataWithTaxId = { ...clientData, taxId: '12-3456789' };
 
       mockPrisma.client.findFirst
         .mockResolvedValueOnce(null) // No existing business name
@@ -464,7 +464,7 @@ describe('ClientService', () => {
     })
 
     it('should throw error if client has active engagements', async () => {
-      const client = { id: testClientId, businessName: 'Test Client' }
+      const client = { id: testClientId, businessName: 'Test Client' };
 
       mockPrisma.client.findFirst.mockResolvedValue(client as any)
       mockPrisma.engagement.count.mockResolvedValue(2) // Active engagements
@@ -476,7 +476,7 @@ describe('ClientService', () => {
     })
 
     it('should throw error if client has unpaid invoices', async () => {
-      const client = { id: testClientId, businessName: 'Test Client' }
+      const client = { id: testClientId, businessName: 'Test Client' };
 
       mockPrisma.client.findFirst.mockResolvedValue(client as any)
       mockPrisma.engagement.count.mockResolvedValue(0)
@@ -557,8 +557,8 @@ describe('ClientService', () => {
   describe('bulkOperation', () => {
     it('should perform bulk delete operation', async () => {
       const clientIds = ['client-1', 'client-2']
-      const mockClient1 = { id: 'client-1', businessName: 'Client 1' }
-      const mockClient2 = { id: 'client-2', businessName: 'Client 2' }
+      const mockClient1 = { id: 'client-1', businessName: 'Client 1' };
+      const mockClient2 = { id: 'client-2', businessName: 'Client 2' };
 
       mockPrisma.client.findFirst
         .mockResolvedValueOnce(mockClient1 as any)

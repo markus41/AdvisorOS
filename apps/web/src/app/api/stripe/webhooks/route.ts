@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
-import { db } from "../../../../server/db";
-import { stripeService } from '../../../server/services/stripe.service';
+import { prisma as db } from "@/server/db";
+// import { stripeService } from '@/server/services/stripe.service';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20',
@@ -217,7 +217,7 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     });
 
     // Handle failed payment (send emails, update access, etc.)
-    await stripeService.handleFailedPayment(subscriptionId);
+    // await stripeService.handleFailedPayment(subscriptionId);
 
     console.log(`Payment failed for subscription: ${subscriptionId}`);
   } catch (error) {

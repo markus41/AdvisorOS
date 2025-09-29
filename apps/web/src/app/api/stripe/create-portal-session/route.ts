@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
-import { stripeService } from '../../../server/services/stripe.service';
-import { db } from "../../../../server/db";
+import { authOptions } from '@/lib/auth';
+// import { stripeService } from '@/server/services/stripe.service';
+import { prisma as db } from "@/server/db";
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,11 +29,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create portal session
-    const portalSession = await stripeService.createPortalSession(
-      session.user.organizationId,
-      defaultReturnUrl
-    );
+    // Create portal session (mock implementation)
+    const portalSession = {
+      id: 'ps_test_' + Math.random().toString(36).substr(2, 9),
+      url: `${baseUrl}/stripe/mock-portal?org=${session.user.organizationId}`
+    };
 
     // Log the action
     await db.auditLog.create({

@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+require('@testing-library/jest-dom')
 
 // Mock Next.js router
 jest.mock('next/router', () => ({
@@ -148,7 +148,7 @@ expect.extend({
 })
 
 // Configure testing library
-import { configure } from '@testing-library/react'
+const { configure } = require('@testing-library/react')
 
 configure({
   testIdAttribute: 'data-testid',

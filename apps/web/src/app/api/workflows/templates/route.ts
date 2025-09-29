@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
-import { WorkflowTemplatesService } from "@/server/services/workflow-templates.service";
+import { prisma } from "@/server/db";
+// import { WorkflowTemplatesService } from "@/server/services/workflow-templates.service";
 import { z } from "zod";
 
-const prisma = new PrismaClient();
-const templatesService = new WorkflowTemplatesService(prisma);
+// const templatesService = new WorkflowTemplatesService(prisma);
 
 const createTemplateSchema = z.object({
   name: z.string().min(1),
@@ -38,8 +37,22 @@ export async function GET(request: NextRequest) {
     }
 
     if (templateId) {
-      // Get specific template
-      const template = await templatesService.getTemplateById(templateId, organizationId);
+      // Get specific template (simplified)
+      const template = await prisma.workflowTemplate.findFirst({
+        where: {
+          id: templateId,
+          OR: [
+            { organizationId },
+            { isSystem: true }
+          ],
+          isActive: true
+        },
+        include: {
+          steps: {
+            orderBy: { stepOrder: 'asc' }
+          }
+        }
+      });
 
       if (!template) {
         return NextResponse.json(
@@ -56,8 +69,24 @@ export async function GET(request: NextRequest) {
         data: template
       });
     } else {
-      // Get all available templates
-      const templates = await templatesService.getAvailableTemplates(organizationId);
+      // Get all available templates (simplified)
+      const templates = await prisma.workflowTemplate.findMany({
+        where: {
+          OR: [
+            { organizationId },
+            { isSystem: true }
+          ],
+          isActive: true
+        },
+        include: {
+          steps: {
+            orderBy: { stepOrder: 'asc' }
+          }
+        },
+        orderBy: {
+          name: 'asc'
+        }
+      });
 
       return NextResponse.json({
         success: true,
@@ -82,8 +111,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = createTemplateSchema.parse(body);
 
-    const template = await templatesService.createCustomTemplate(
-      {
+    // Create custom template (simplified)
+    const template = await prisma.workflowTemplate.create({
+      data: {
         name: validatedData.name,
         description: validatedData.description,
         category: validatedData.category,
@@ -93,11 +123,13 @@ export async function POST(request: NextRequest) {
         steps: validatedData.steps,
         taskTemplates: validatedData.taskTemplates,
         requirements: validatedData.requirements,
-        settings: validatedData.settings
-      },
-      validatedData.organizationId,
-      validatedData.createdBy
-    );
+        settings: validatedData.settings,
+        organizationId: validatedData.organizationId,
+        createdBy: validatedData.createdBy,
+        isActive: true,
+        isSystem: false
+      }
+    });
 
     return NextResponse.json({
       success: true,

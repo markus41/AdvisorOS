@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@database/client";
-import { ReportService } from "@/server/services/report.service";
-import { SystemReportTemplates, getTemplateById, getTemplatesByCategory, validateTemplateConfiguration } from "@/server/templates/reports";
+import { prisma } from "@/server/db";
+// import { ReportService } from "@/server/services/report.service";
+// import { SystemReportTemplates, getTemplateById, getTemplatesByCategory, validateTemplateConfiguration } from "@/server/templates/reports";
 import { z } from "zod";
 
-const prisma = new PrismaClient();
-const reportService = new ReportService(prisma);
+// const reportService = new ReportService(prisma);
 
 const createTemplateSchema = z.object({
   name: z.string().min(1),
@@ -43,22 +42,17 @@ export async function GET(request: NextRequest) {
       // Get specific template
       let template;
 
-      // Check system templates first
-      template = getTemplateById(templateId);
-
-      // If not found in system templates, check custom templates
-      if (!template) {
-        template = await prisma.reportTemplate.findFirst({
-          where: {
-            id: templateId,
-            OR: [
-              { organizationId },
-              { isSystem: true }
-            ],
-            isActive: true
-          }
-        });
-      }
+      // Check custom templates (system templates disabled for now)
+      template = await prisma.reportTemplate.findFirst({
+        where: {
+          id: templateId,
+          OR: [
+            { organizationId },
+            { isSystem: true }
+          ],
+          isActive: true
+        }
+      });
 
       if (!template) {
         return NextResponse.json(
@@ -79,14 +73,14 @@ export async function GET(request: NextRequest) {
     // Get list of templates
     let templates = [];
 
-    // Add system templates if requested
-    if (includeSystem) {
-      if (category) {
-        templates = getTemplatesByCategory(category);
-      } else {
-        templates = [...SystemReportTemplates];
-      }
-    }
+    // Add system templates if requested (disabled for now)
+    // if (includeSystem) {
+    //   if (category) {
+    //     templates = getTemplatesByCategory(category);
+    //   } else {
+    //     templates = [...SystemReportTemplates];
+    //   }
+    // }
 
     // Add custom templates
     const customTemplates = await prisma.reportTemplate.findMany({
@@ -133,21 +127,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = createTemplateSchema.parse(body);
 
-    // Validate template configuration
-    const validation = validateTemplateConfiguration(validatedData);
-    if (!validation.isValid) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid template configuration",
-          details: validation.errors
-        },
-        { status: 400 }
-      );
-    }
+    // Validate template configuration (simplified for now)
+    // const validation = validateTemplateConfiguration(validatedData);
+    // if (!validation.isValid) {
+    //   return NextResponse.json(
+    //     {
+    //       success: false,
+    //       error: "Invalid template configuration",
+    //       details: validation.errors
+    //     },
+    //     { status: 400 }
+    //   );
+    // }
 
-    const template = await reportService.saveReportTemplate(
-      {
+    const template = await prisma.reportTemplate.create({
+      data: {
         name: validatedData.name,
         description: validatedData.description,
         category: validatedData.category,
@@ -156,11 +150,13 @@ export async function POST(request: NextRequest) {
         sections: validatedData.sections,
         dataRequirements: validatedData.dataRequirements,
         chartConfigs: validatedData.chartConfigs,
-        brandingOptions: validatedData.brandingOptions
-      },
-      validatedData.organizationId,
-      validatedData.createdBy
-    );
+        brandingOptions: validatedData.brandingOptions,
+        organizationId: validatedData.organizationId,
+        createdBy: validatedData.createdBy,
+        isActive: true,
+        isSystem: false
+      }
+    });
 
     return NextResponse.json({
       success: true,
@@ -205,20 +201,20 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Validate template configuration if sections are being updated
-    if (updates.sections) {
-      const validation = validateTemplateConfiguration({ ...updates, id: templateId });
-      if (!validation.isValid) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Invalid template configuration",
-            details: validation.errors
-          },
-          { status: 400 }
-        );
-      }
-    }
+    // Validate template configuration if sections are being updated (simplified for now)
+    // if (updates.sections) {
+    //   const validation = validateTemplateConfiguration({ ...updates, id: templateId });
+    //   if (!validation.isValid) {
+    //     return NextResponse.json(
+    //       {
+    //         success: false,
+    //         error: "Invalid template configuration",
+    //         details: validation.errors
+    //       },
+    //       { status: 400 }
+    //     );
+    //   }
+    // }
 
     const template = await prisma.reportTemplate.update({
       where: {

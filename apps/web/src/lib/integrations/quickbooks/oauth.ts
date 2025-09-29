@@ -1,5 +1,5 @@
 import { randomBytes, createHmac } from 'crypto';
-import { prisma } from '@/packages/database';
+import { prisma } from '@/server/db';
 import { decrypt, encrypt } from '@/lib/encryption';
 
 export interface QuickBooksOAuthConfig {
