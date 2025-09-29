@@ -1,0 +1,3692 @@
+{
+  "timestamp": "2025-09-29T23:38:38.090Z",
+  "status": "unhealthy",
+  "environment": "development",
+  "checks": {
+    "authenticationSecurity": {
+      "status": "fail",
+      "response_time_ms": 1,
+      "details": {
+        "authIssues": [
+          {
+            "file": "JWT Configuration",
+            "severity": "critical",
+            "description": "JWT secret not configured"
+          },
+          {
+            "file": "HTTPS Configuration",
+            "severity": "high",
+            "description": "HTTPS not enforced"
+          }
+        ],
+        "authImplemented": true,
+        "jwtConfigured": false,
+        "httpsConfigured": false,
+        "criticalIssues": 1
+      },
+      "message": "2 authentication security issues found"
+    },
+    "configurationSecurity": {
+      "status": "warn",
+      "response_time_ms": 4,
+      "details": {
+        "configIssues": [
+          {
+            "file": "./.env.example",
+            "severity": "critical",
+            "description": "Hardcoded secret detected in configuration"
+          },
+          {
+            "file": "./.env.example",
+            "severity": "critical",
+            "description": "Hardcoded secret detected in configuration"
+          },
+          {
+            "file": "./apps/web/next.config.js",
+            "severity": "critical",
+            "description": "Hardcoded secret detected in configuration"
+          },
+          {
+            "file": "./apps/web/next.config.js",
+            "severity": "medium",
+            "description": "React strict mode not enabled"
+          }
+        ],
+        "totalIssues": 4,
+        "filesChecked": 4
+      },
+      "message": "4 configuration security issues found"
+    },
+    "codeSecurity": {
+      "status": "fail",
+      "response_time_ms": 279,
+      "details": {
+        "securityIssues": {
+          "critical": [
+            {
+              "file": "apps/web/src/app/portal/login/page.tsx",
+              "line": 85,
+              "category": "sensitiveData",
+              "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+              "match": "password = 'Password is required'",
+              "severity": "critical",
+              "description": "Hardcoded sensitive data detected"
+            },
+            {
+              "file": "apps/web/src/app/portal/settings/page.tsx",
+              "line": 230,
+              "category": "sensitiveData",
+              "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+              "match": "Password = 'Current password is required'",
+              "severity": "critical",
+              "description": "Hardcoded sensitive data detected"
+            },
+            {
+              "file": "apps/web/src/app/portal/settings/page.tsx",
+              "line": 234,
+              "category": "sensitiveData",
+              "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+              "match": "Password = 'New password is required'",
+              "severity": "critical",
+              "description": "Hardcoded sensitive data detected"
+            },
+            {
+              "file": "apps/web/src/app/portal/settings/page.tsx",
+              "line": 236,
+              "category": "sensitiveData",
+              "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+              "match": "Password = 'Password must be at least 8 characters'",
+              "severity": "critical",
+              "description": "Hardcoded sensitive data detected"
+            },
+            {
+              "file": "apps/web/src/app/portal/settings/page.tsx",
+              "line": 240,
+              "category": "sensitiveData",
+              "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+              "match": "Password = 'Passwords do not match'",
+              "severity": "critical",
+              "description": "Hardcoded sensitive data detected"
+            },
+            {
+              "file": "apps/web/src/components/clients/client-search.tsx",
+              "line": 292,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${encodeURIComponent(debouncedQuery)}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/components/ui/empty-state.tsx",
+              "line": 209,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-service-wrapper.ts",
+              "line": 310,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query + JSON.stringify(filters), model)",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-service-wrapper.ts",
+              "line": 318,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "Query + system prompt",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/mcp/client.ts",
+              "line": 1034,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 513,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.businessType}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 515,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.question}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 516,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.regulations.join(', ')}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 517,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.context.currentPractices || 'Not specified'}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 518,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.context.concernedAreas?.join(', ') || 'General compliance'}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 802,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.jurisdiction}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/azure/cognitive-search.ts",
+              "line": 327,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/connection-pool.ts",
+              "line": 162,
+              "category": "sensitiveData",
+              "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+              "match": "password = '[REDACTED]'",
+              "severity": "critical",
+              "description": "Hardcoded sensitive data detected"
+            },
+            {
+              "file": "apps/web/src/lib/database/connection-pool.ts",
+              "line": 379,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${e.query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/query-optimization.ts",
+              "line": 364,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.model}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/query-optimization.ts",
+              "line": 489,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/query-optimization.ts",
+              "line": 504,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${indexQuery}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/query-optimization.ts",
+              "line": 506,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${indexQuery}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/query-optimization.ts",
+              "line": 526,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${dropQuery}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/database/query-optimization.ts",
+              "line": 528,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${dropQuery}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 173,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${queryString ? `?${queryString}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 244,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${encodedQuery}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 114,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query += ` WHERE Metadata.LastUpdatedTime >= '${dateStr}'`",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 117,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query += ` MAXRESULTS ${maxResults} STARTPOSITION ${startPosition}`",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 137,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query += ` WHERE Metadata.LastUpdatedTime >= '${dateStr}'`",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 140,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query += ` MAXRESULTS ${maxResults} STARTPOSITION ${startPosition}`",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 152,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query += ` WHERE Metadata.LastUpdatedTime >= '${dateStr}'`",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+              "line": 155,
+              "category": "sqlInjection",
+              "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+              "match": "query += ` MAXRESULTS ${maxResults} STARTPOSITION ${startPosition}`",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/server/services/db-monitor.service.ts",
+              "line": 192,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${queryName}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+              "line": 320,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${queryKey}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+              "line": 333,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${queryKey}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+              "line": 402,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.split(' ')[5]}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+              "line": 569,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${query.sql}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "packages/database/monitoring/performance-monitor.ts",
+              "line": 221,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${this.alertConfig.slowQueryThreshold}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "packages/database/monitoring/performance-monitor.ts",
+              "line": 502,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${metrics.queryPerformance.slowQueryCount}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "packages/database/monitoring/performance-monitor.ts",
+              "line": 513,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${metrics.queryPerformance.cacheHitRatio.toFixed(1)}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "packages/database/monitoring/performance-monitor.ts",
+              "line": 524,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${metrics.queryPerformance.averageQueryTime.toFixed(0)}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "packages/database/monitoring/performance-monitor.ts",
+              "line": 785,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${metrics.queryPerformance.queriesPerSecond.toFixed(1)}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "scripts/production-monitoring-setup.js",
+              "line": 272,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${alertConfig.query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            },
+            {
+              "file": "scripts/production-monitoring-setup.js",
+              "line": 273,
+              "category": "sqlInjection",
+              "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+              "match": "${alertConfig.query}",
+              "severity": "critical",
+              "description": "Potential SQL injection vulnerability"
+            }
+          ],
+          "high": [
+            {
+              "file": "apps/web/src/components/ai/SmartSearch.tsx",
+              "line": 196,
+              "category": "xss",
+              "pattern": "/innerHTML\\s*=\\s*[^;]+/gi",
+              "match": "InnerHTML={{ __html: highlightedText }} />",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/components/ai/SmartSearch.tsx",
+              "line": 196,
+              "category": "xss",
+              "pattern": "/dangerouslySetInnerHTML/gi",
+              "match": "dangerouslySetInnerHTML",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/components/messaging/TeamMessaging.tsx",
+              "line": 730,
+              "category": "xss",
+              "pattern": "/innerHTML\\s*=\\s*[^;]+/gi",
+              "match": "InnerHTML={{ __html: formatMentions(message.content) }}",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/components/messaging/TeamMessaging.tsx",
+              "line": 730,
+              "category": "xss",
+              "pattern": "/dangerouslySetInnerHTML/gi",
+              "match": "dangerouslySetInnerHTML",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/components/seo/structured-data.tsx",
+              "line": 14,
+              "category": "xss",
+              "pattern": "/innerHTML\\s*=\\s*[^;]+/gi",
+              "match": "InnerHTML={{",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/components/seo/structured-data.tsx",
+              "line": 14,
+              "category": "xss",
+              "pattern": "/dangerouslySetInnerHTML/gi",
+              "match": "dangerouslySetInnerHTML",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/ai/mcp/client.ts",
+              "line": 98,
+              "category": "xss",
+              "pattern": "/eval\\s*\\(/gi",
+              "match": "eval (",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/data-transformation-pipeline.ts",
+              "line": 1191,
+              "category": "xss",
+              "pattern": "/eval\\s*\\(/gi",
+              "match": "eval(",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            },
+            {
+              "file": "scripts/maintenance/security-scan.js",
+              "line": 57,
+              "category": "xss",
+              "pattern": "/dangerouslySetInnerHTML/gi",
+              "match": "dangerouslySetInnerHTML",
+              "severity": "high",
+              "description": "Potential XSS vulnerability"
+            }
+          ],
+          "medium": [
+            {
+              "file": "apps/web/src/app/api/auth/2fa/route.ts",
+              "line": 101,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/documents/enhanced/route.ts",
+              "line": 157,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/review/route.ts",
+              "line": 63,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 60,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 397,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 443,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 470,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 472,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 483,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 470,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/ocr/train/route.ts",
+              "line": 472,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/stripe/create-checkout-session/route.ts",
+              "line": 71,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/stripe/create-portal-session/route.ts",
+              "line": 34,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/stripe/create-subscription/route.ts",
+              "line": 65,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/stripe/create-subscription/route.ts",
+              "line": 69,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/stripe/create-subscription/route.ts",
+              "line": 125,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/api/stripe/create-subscription/route.ts",
+              "line": 174,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/app/contact/page.tsx",
+              "line": 152,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 152,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 169,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 185,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 202,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 385,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 426,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 436,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 443,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 444,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 856,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/analytics/RealTimeAnalyticsDashboard.tsx",
+              "line": 436,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/documents/document-upload.tsx",
+              "line": 146,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/documents/document-upload.tsx",
+              "line": 161,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/documents/document-upload.tsx",
+              "line": 255,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/feature-discovery/DiscoveryEngine.tsx",
+              "line": 285,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/DocumentManager.tsx",
+              "line": 310,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/DocumentUpload.tsx",
+              "line": 80,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/DocumentUpload.tsx",
+              "line": 102,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/analytics/ConversionTracker.tsx",
+              "line": 902,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/analytics/ConversionTracker.tsx",
+              "line": 903,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/analytics/ConversionTracker.tsx",
+              "line": 902,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/analytics/ConversionTracker.tsx",
+              "line": 903,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/communication/EnhancedMessageCenter.tsx",
+              "line": 495,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 199,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 206,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 207,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 212,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 233,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 235,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 269,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 282,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 353,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 206,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 212,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/components/portal/documents/SmartDocumentUpload.tsx",
+              "line": 233,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/advisory-copilot.ts",
+              "line": 605,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-monitoring-safety.ts",
+              "line": 268,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-monitoring-safety.ts",
+              "line": 486,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-monitoring-safety.ts",
+              "line": 585,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-monitoring-safety.ts",
+              "line": 1400,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/ai-orchestrator.ts",
+              "line": 1268,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/communication-assistant.ts",
+              "line": 489,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/document-intelligence-enhanced.ts",
+              "line": 175,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/document-intelligence.ts",
+              "line": 130,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/financial-insights.ts",
+              "line": 212,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/governance-framework.ts",
+              "line": 395,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/governance-framework.ts",
+              "line": 682,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/mcp/client.ts",
+              "line": 1697,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 315,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 415,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 503,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 596,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 673,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+              "line": 813,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/openai-client.ts",
+              "line": 157,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/openai-client.ts",
+              "line": 258,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/tax-assistant.ts",
+              "line": 407,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/workflow-optimization-engine.ts",
+              "line": 436,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ai/workflows/engine.ts",
+              "line": 502,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 260,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 261,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 262,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 265,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 270,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 274,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 260,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 261,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 262,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 265,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/password-utils.ts",
+              "line": 270,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/token-utils.ts",
+              "line": 40,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/auth/token-utils.ts",
+              "line": 40,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 258,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 331,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 373,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 407,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 1389,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 1390,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+              "line": 1391,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/automation-orchestrator.ts",
+              "line": 218,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/automation-orchestrator.ts",
+              "line": 254,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/automation-orchestrator.ts",
+              "line": 320,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/automation-orchestrator.ts",
+              "line": 1020,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/automation-orchestrator.ts",
+              "line": 1021,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/automation-orchestrator.ts",
+              "line": 1022,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/client-communication-automation.ts",
+              "line": 239,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/client-communication-automation.ts",
+              "line": 279,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/client-communication-automation.ts",
+              "line": 435,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/client-communication-automation.ts",
+              "line": 469,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/client-communication-automation.ts",
+              "line": 1031,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/document-workflow-automation.ts",
+              "line": 211,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/document-workflow-automation.ts",
+              "line": 265,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/document-workflow-automation.ts",
+              "line": 332,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/document-workflow-automation.ts",
+              "line": 537,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/financial-data-automation.ts",
+              "line": 213,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/financial-data-automation.ts",
+              "line": 253,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/financial-data-automation.ts",
+              "line": 316,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/financial-data-automation.ts",
+              "line": 1094,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/intelligent-document-processor.ts",
+              "line": 301,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/intelligent-document-processor.ts",
+              "line": 336,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/intelligent-document-processor.ts",
+              "line": 1286,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+              "line": 239,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+              "line": 277,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+              "line": 1063,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+              "line": 1247,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+              "line": 1256,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+              "line": 1063,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/azure/cognitive-search.ts",
+              "line": 488,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/billing/invoice-service.ts",
+              "line": 520,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/billing/payment-service.ts",
+              "line": 456,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/business-analytics/advanced-analytics-engine.ts",
+              "line": 961,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/cfo-dashboard/strategic-dashboard-engine.ts",
+              "line": 893,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/cfo-dashboard/strategic-dashboard-engine.ts",
+              "line": 897,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/intervention-engine.ts",
+              "line": 646,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/intervention-engine.ts",
+              "line": 650,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/lifecycle-management.ts",
+              "line": 1210,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/retention-campaigns.ts",
+              "line": 1251,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/retention-campaigns.ts",
+              "line": 1255,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/satisfaction-monitoring.ts",
+              "line": 997,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/satisfaction-monitoring.ts",
+              "line": 1001,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/client-success/satisfaction-monitoring.ts",
+              "line": 1005,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/collaboration/document-collaboration.ts",
+              "line": 721,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/collaboration/document-collaboration.ts",
+              "line": 818,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/collaboration/document-collaboration.ts",
+              "line": 989,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/conversion-optimization/ab-testing.ts",
+              "line": 342,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/conversion-optimization/conversion-tracking.ts",
+              "line": 515,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/conversion-optimization/conversion-tracking.ts",
+              "line": 519,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/database/connection-pool.ts",
+              "line": 227,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/feature-analytics/ab-testing-engine.ts",
+              "line": 479,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/fpa/financial-planning-engine.ts",
+              "line": 726,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/fpa/financial-planning-engine.ts",
+              "line": 730,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/advanced-sync-engine.ts",
+              "line": 792,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/enhanced-quickbooks-integration.ts",
+              "line": 873,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/enhanced-webhook-processor.ts",
+              "line": 900,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/integration-diagnostics.ts",
+              "line": 1492,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/integration-diagnostics.ts",
+              "line": 1496,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/integrations/quickbooks/integration-diagnostics.ts",
+              "line": 1500,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/monitoring/alerting-system.ts",
+              "line": 629,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ocr/enhanced-ocr-service.ts",
+              "line": 338,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/ocr/enhanced-ocr-service.ts",
+              "line": 972,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/performance/lazy-loading.ts",
+              "line": 92,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 153,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 154,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 155,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 156,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 157,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 336,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/scaling/horizontal-scaling.ts",
+              "line": 157,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/services/quickbooks-service.ts",
+              "line": 204,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/services/quickbooks-service.ts",
+              "line": 205,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/services/quickbooks-service.ts",
+              "line": 204,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/services/quickbooks-service.ts",
+              "line": 205,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/strategic-planning/planning-toolkit.ts",
+              "line": 1029,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/strategic-planning/planning-toolkit.ts",
+              "line": 1033,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/strategic-planning/planning-toolkit.ts",
+              "line": 1037,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/strategic-planning/planning-toolkit.ts",
+              "line": 1041,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/strategic-planning/planning-toolkit.ts",
+              "line": 1045,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 386,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 539,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 719,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 720,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 721,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 722,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 723,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 724,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 719,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 720,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 721,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 722,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 723,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/testing/load-testing.ts",
+              "line": 724,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/utils.ts",
+              "line": 42,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/utils.ts",
+              "line": 42,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/workflow/cpa-workflow-optimization-suite.ts",
+              "line": 522,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/workflow/workflow-engine.ts",
+              "line": 233,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/workflow/workflow-engine.ts",
+              "line": 322,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/workflows/nodes/action-nodes.ts",
+              "line": 387,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/lib/workflows/nodes/action-nodes.ts",
+              "line": 387,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-communication.service.ts",
+              "line": 413,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-communication.service.ts",
+              "line": 738,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-communication.service.ts",
+              "line": 755,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-communication.service.ts",
+              "line": 778,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 928,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 948,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 968,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 988,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 1008,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 1028,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ai-insights.service.ts",
+              "line": 1050,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/anomaly-detection.service.ts",
+              "line": 668,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/api-analytics.service.ts",
+              "line": 494,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/api-analytics.service.ts",
+              "line": 501,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/excel.service.ts",
+              "line": 457,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/excel.service.ts",
+              "line": 458,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/excel.service.ts",
+              "line": 457,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/excel.service.ts",
+              "line": 458,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/financial-forecasting.service.ts",
+              "line": 504,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ocr.service.ts",
+              "line": 120,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/ocr.service.ts",
+              "line": 125,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/performance-monitoring.service.ts",
+              "line": 244,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-business-continuity.service.ts",
+              "line": 1016,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-business-continuity.service.ts",
+              "line": 1029,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-business-continuity.service.ts",
+              "line": 1031,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-business-continuity.service.ts",
+              "line": 1040,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-business-continuity.service.ts",
+              "line": 1029,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-client-communication.service.ts",
+              "line": 358,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-orchestrator.service.ts",
+              "line": 385,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+              "line": 577,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-workflow-automation.service.ts",
+              "line": 181,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "apps/web/src/server/services/tax-season-workflow-automation.service.ts",
+              "line": 329,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/insights/index.js",
+              "line": 833,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/insights/index.ts",
+              "line": 651,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/lib/tensorflow-mock.js",
+              "line": 70,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/lib/tensorflow-mock.ts",
+              "line": 48,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 772,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 776,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 780,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 784,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 846,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 878,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 903,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 911,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 944,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 945,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 963,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.js",
+              "line": 981,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 665,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 670,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 675,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 680,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 750,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 787,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 817,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 826,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 860,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 861,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 881,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/ml/index.ts",
+              "line": 901,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/prediction/index.js",
+              "line": 520,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/prediction/index.ts",
+              "line": 418,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/realtime/index.js",
+              "line": 253,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/realtime/index.js",
+              "line": 768,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/realtime/index.ts",
+              "line": 176,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/realtime/index.ts",
+              "line": 568,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/reporting/index.js",
+              "line": 900,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/reporting/index.js",
+              "line": 903,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/reporting/index.ts",
+              "line": 813,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/reporting/index.ts",
+              "line": 817,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/utils/index.js",
+              "line": 149,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/utils/index.ts",
+              "line": 112,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/visualization/index.js",
+              "line": 757,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/src/visualization/index.ts",
+              "line": 624,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/tests/analytics.test.ts",
+              "line": 547,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/tests/analytics.test.ts",
+              "line": 780,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/analytics/tests/analytics.test.ts",
+              "line": 910,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 183,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 287,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 577,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 583,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 183,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 287,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 577,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/database/seed/comprehensive-seed.ts",
+              "line": 583,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.floor\\(Math\\.random/gi",
+              "match": "Math.floor(Math.random",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/ui/src/AccessibilityHelper.tsx",
+              "line": 332,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "packages/ui/src/WorkflowDesigner.tsx",
+              "line": 155,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "scripts/production-data-migration.js",
+              "line": 821,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "scripts/production-data-migration.js",
+              "line": 827,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "scripts/production-monitoring-setup.js",
+              "line": 578,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            },
+            {
+              "file": "scripts/production-monitoring-setup.js",
+              "line": 615,
+              "category": "insecureRandomness",
+              "pattern": "/Math\\.random\\(\\)/gi",
+              "match": "Math.random()",
+              "severity": "medium",
+              "description": "Insecure random number generation"
+            }
+          ],
+          "low": []
+        },
+        "totalIssues": 341,
+        "criticalIssues": 45,
+        "filesScanned": 0
+      },
+      "message": "341 security issues found (45 critical)"
+    },
+    "packageVulnerabilities": {
+      "status": "pass",
+      "response_time_ms": 1432,
+      "details": {
+        "auditResults": {
+          "error": "Command failed: npm audit --json\n"
+        },
+        "vulnerabilityCount": 0,
+        "hasAuditCapability": false
+      },
+      "message": "No package vulnerabilities found"
+    }
+  },
+  "vulnerabilities": [
+    {
+      "file": "apps/web/src/app/portal/login/page.tsx",
+      "line": 85,
+      "category": "sensitiveData",
+      "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+      "match": "password = 'Password is required'",
+      "severity": "critical",
+      "description": "Hardcoded sensitive data detected"
+    },
+    {
+      "file": "apps/web/src/app/portal/settings/page.tsx",
+      "line": 230,
+      "category": "sensitiveData",
+      "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+      "match": "Password = 'Current password is required'",
+      "severity": "critical",
+      "description": "Hardcoded sensitive data detected"
+    },
+    {
+      "file": "apps/web/src/app/portal/settings/page.tsx",
+      "line": 234,
+      "category": "sensitiveData",
+      "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+      "match": "Password = 'New password is required'",
+      "severity": "critical",
+      "description": "Hardcoded sensitive data detected"
+    },
+    {
+      "file": "apps/web/src/app/portal/settings/page.tsx",
+      "line": 236,
+      "category": "sensitiveData",
+      "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+      "match": "Password = 'Password must be at least 8 characters'",
+      "severity": "critical",
+      "description": "Hardcoded sensitive data detected"
+    },
+    {
+      "file": "apps/web/src/app/portal/settings/page.tsx",
+      "line": 240,
+      "category": "sensitiveData",
+      "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+      "match": "Password = 'Passwords do not match'",
+      "severity": "critical",
+      "description": "Hardcoded sensitive data detected"
+    },
+    {
+      "file": "apps/web/src/components/clients/client-search.tsx",
+      "line": 292,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${encodeURIComponent(debouncedQuery)}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/ui/empty-state.tsx",
+      "line": 209,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/ai-service-wrapper.ts",
+      "line": 310,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query + JSON.stringify(filters), model)",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/ai-service-wrapper.ts",
+      "line": 318,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "Query + system prompt",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/mcp/client.ts",
+      "line": 1034,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+      "line": 513,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.businessType}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+      "line": 515,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.question}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+      "line": 516,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.regulations.join(', ')}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+      "line": 517,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.context.currentPractices || 'Not specified'}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+      "line": 518,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.context.concernedAreas?.join(', ') || 'General compliance'}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/nlp-tax-accounting-engine.ts",
+      "line": 802,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.jurisdiction}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/azure/cognitive-search.ts",
+      "line": 327,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/connection-pool.ts",
+      "line": 162,
+      "category": "sensitiveData",
+      "pattern": "/password\\s*=\\s*['\"][^'\"]+['\"]/gi",
+      "match": "password = '[REDACTED]'",
+      "severity": "critical",
+      "description": "Hardcoded sensitive data detected"
+    },
+    {
+      "file": "apps/web/src/lib/database/connection-pool.ts",
+      "line": 379,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${e.query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/query-optimization.ts",
+      "line": 364,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.model}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/query-optimization.ts",
+      "line": 489,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/query-optimization.ts",
+      "line": 504,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${indexQuery}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/query-optimization.ts",
+      "line": 506,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${indexQuery}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/query-optimization.ts",
+      "line": 526,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${dropQuery}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/database/query-optimization.ts",
+      "line": 528,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${dropQuery}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 173,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${queryString ? `?${queryString}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 244,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${encodedQuery}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 114,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query += ` WHERE Metadata.LastUpdatedTime >= '${dateStr}'`",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 117,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query += ` MAXRESULTS ${maxResults} STARTPOSITION ${startPosition}`",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 137,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query += ` WHERE Metadata.LastUpdatedTime >= '${dateStr}'`",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 140,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query += ` MAXRESULTS ${maxResults} STARTPOSITION ${startPosition}`",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 152,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query += ` WHERE Metadata.LastUpdatedTime >= '${dateStr}'`",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/client.ts",
+      "line": 155,
+      "category": "sqlInjection",
+      "pattern": "/query\\s*\\+\\s*[^;]+/gi",
+      "match": "query += ` MAXRESULTS ${maxResults} STARTPOSITION ${startPosition}`",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/server/services/db-monitor.service.ts",
+      "line": 192,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${queryName}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+      "line": 320,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${queryKey}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+      "line": 333,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${queryKey}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+      "line": 402,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.split(' ')[5]}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/server/services/tax-season-performance-optimizer.service.ts",
+      "line": 569,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${query.sql}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "packages/database/monitoring/performance-monitor.ts",
+      "line": 221,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${this.alertConfig.slowQueryThreshold}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "packages/database/monitoring/performance-monitor.ts",
+      "line": 502,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${metrics.queryPerformance.slowQueryCount}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "packages/database/monitoring/performance-monitor.ts",
+      "line": 513,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${metrics.queryPerformance.cacheHitRatio.toFixed(1)}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "packages/database/monitoring/performance-monitor.ts",
+      "line": 524,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${metrics.queryPerformance.averageQueryTime.toFixed(0)}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "packages/database/monitoring/performance-monitor.ts",
+      "line": 785,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${metrics.queryPerformance.queriesPerSecond.toFixed(1)}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "scripts/production-monitoring-setup.js",
+      "line": 272,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${alertConfig.query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "scripts/production-monitoring-setup.js",
+      "line": 273,
+      "category": "sqlInjection",
+      "pattern": "/\\$\\{[^}]*query[^}]*\\}/gi",
+      "match": "${alertConfig.query}",
+      "severity": "critical",
+      "description": "Potential SQL injection vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/ai/SmartSearch.tsx",
+      "line": 196,
+      "category": "xss",
+      "pattern": "/innerHTML\\s*=\\s*[^;]+/gi",
+      "match": "InnerHTML={{ __html: highlightedText }} />",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/ai/SmartSearch.tsx",
+      "line": 196,
+      "category": "xss",
+      "pattern": "/dangerouslySetInnerHTML/gi",
+      "match": "dangerouslySetInnerHTML",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/messaging/TeamMessaging.tsx",
+      "line": 730,
+      "category": "xss",
+      "pattern": "/innerHTML\\s*=\\s*[^;]+/gi",
+      "match": "InnerHTML={{ __html: formatMentions(message.content) }}",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/messaging/TeamMessaging.tsx",
+      "line": 730,
+      "category": "xss",
+      "pattern": "/dangerouslySetInnerHTML/gi",
+      "match": "dangerouslySetInnerHTML",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/seo/structured-data.tsx",
+      "line": 14,
+      "category": "xss",
+      "pattern": "/innerHTML\\s*=\\s*[^;]+/gi",
+      "match": "InnerHTML={{",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/components/seo/structured-data.tsx",
+      "line": 14,
+      "category": "xss",
+      "pattern": "/dangerouslySetInnerHTML/gi",
+      "match": "dangerouslySetInnerHTML",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/ai/mcp/client.ts",
+      "line": 98,
+      "category": "xss",
+      "pattern": "/eval\\s*\\(/gi",
+      "match": "eval (",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "apps/web/src/lib/integrations/quickbooks/data-transformation-pipeline.ts",
+      "line": 1191,
+      "category": "xss",
+      "pattern": "/eval\\s*\\(/gi",
+      "match": "eval(",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "scripts/maintenance/security-scan.js",
+      "line": 57,
+      "category": "xss",
+      "pattern": "/dangerouslySetInnerHTML/gi",
+      "match": "dangerouslySetInnerHTML",
+      "severity": "high",
+      "description": "Potential XSS vulnerability"
+    },
+    {
+      "file": "./.env.example",
+      "severity": "critical",
+      "description": "Hardcoded secret detected in configuration"
+    },
+    {
+      "file": "./.env.example",
+      "severity": "critical",
+      "description": "Hardcoded secret detected in configuration"
+    },
+    {
+      "file": "./apps/web/next.config.js",
+      "severity": "critical",
+      "description": "Hardcoded secret detected in configuration"
+    },
+    {
+      "file": "./apps/web/next.config.js",
+      "severity": "medium",
+      "description": "React strict mode not enabled"
+    },
+    {
+      "file": "JWT Configuration",
+      "severity": "critical",
+      "description": "JWT secret not configured"
+    },
+    {
+      "file": "HTTPS Configuration",
+      "severity": "high",
+      "description": "HTTPS not enforced"
+    }
+  ],
+  "summary": {
+    "totalChecks": 4,
+    "passedChecks": 1,
+    "failedChecks": 2,
+    "totalVulnerabilities": 60,
+    "criticalVulnerabilities": 49,
+    "totalTime": 1432,
+    "overallStatus": "unhealthy"
+  },
+  "recommendations": [
+    "Address critical security vulnerabilities immediately",
+    "Review and fix failed security checks"
+  ]
+}

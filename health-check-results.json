@@ -1,0 +1,100 @@
+{
+  "timestamp": "2025-09-29T23:38:36.125Z",
+  "status": "healthy",
+  "environment": "development",
+  "checks": {
+    "system": {
+      "status": "pass",
+      "response_time_ms": 1,
+      "details": {
+        "memory": {
+          "rss": 46,
+          "heapTotal": 6,
+          "heapUsed": 5,
+          "external": 2
+        },
+        "loadAverage": [
+          0.09,
+          0.21,
+          0.33
+        ],
+        "uptime": 0.058901073,
+        "nodeVersion": "v20.19.5"
+      },
+      "message": "System resources healthy"
+    },
+    "filesystem": {
+      "status": "pass",
+      "response_time_ms": 14,
+      "details": {
+        "paths": [
+          {
+            "path": "./apps/web",
+            "exists": true,
+            "type": "directory",
+            "size": null
+          },
+          {
+            "path": "./packages",
+            "exists": true,
+            "type": "directory",
+            "size": null
+          },
+          {
+            "path": "./package.json",
+            "exists": true,
+            "type": "file",
+            "size": 1537
+          },
+          {
+            "path": "./apps/web/src/pages/api/health.ts",
+            "exists": true,
+            "type": "file",
+            "size": 9025
+          }
+        ],
+        "diskSpace": {
+          "total": "72G",
+          "used": "50G",
+          "available": "22G",
+          "usePercent": "70%"
+        }
+      },
+      "message": "All critical paths accessible"
+    },
+    "application": {
+      "status": "pass",
+      "response_time_ms": 1147,
+      "details": {
+        "healthApi": true,
+        "envTemplate": true,
+        "envConfig": false,
+        "typescript": true,
+        "tsValidation": {
+          "success": false,
+          "error": "Command failed: cd apps/web && npx tsc --noEmit --skipLibCheck src/pages/api/health.ts\n"
+        }
+      },
+      "message": "Application structure healthy"
+    },
+    "dependencies": {
+      "status": "pass",
+      "response_time_ms": 1958,
+      "details": {
+        "packageJson": true,
+        "nodeModules": true,
+        "outdatedPackages": {},
+        "vulnerabilities": null
+      },
+      "message": "Dependencies healthy"
+    }
+  },
+  "summary": {
+    "totalChecks": 4,
+    "passedChecks": 4,
+    "failedChecks": 0,
+    "totalTime": 1964,
+    "overallStatus": "healthy"
+  },
+  "recommendations": []
+}

@@ -1,0 +1,246 @@
+{
+  "timestamp": "2025-09-29T23:38:39.613Z",
+  "status": "healthy",
+  "environment": "development",
+  "checks": {
+    "developmentCosts": {
+      "status": "pass",
+      "response_time_ms": 0,
+      "details": {
+        "dependencies": {
+          "licenseCosts": 0,
+          "highMaintenance": 0,
+          "totalDependencies": 9
+        },
+        "cicd": 25,
+        "observability": 25,
+        "security": 25,
+        "totalMonthly": 75
+      },
+      "message": "Development costs reasonable: $75.00/month"
+    },
+    "scalingCosts": {
+      "status": "pass",
+      "response_time_ms": 2,
+      "details": {
+        "projections": [
+          {
+            "scenario": {
+              "name": "Current (MVP)",
+              "users": 100,
+              "scale": 1
+            },
+            "compute": 15,
+            "storage": 1.5,
+            "database": 20,
+            "services": 100,
+            "total": 136.5
+          },
+          {
+            "scenario": {
+              "name": "Growth (SMB)",
+              "users": 1000,
+              "scale": 3
+            },
+            "compute": 45,
+            "storage": 2.5,
+            "database": 20,
+            "services": 100,
+            "total": 167.5
+          },
+          {
+            "scenario": {
+              "name": "Scale (Enterprise)",
+              "users": 10000,
+              "scale": 10
+            },
+            "compute": 180,
+            "storage": 6,
+            "database": 80,
+            "services": 100,
+            "total": 366
+          },
+          {
+            "scenario": {
+              "name": "Large Scale",
+              "users": 100000,
+              "scale": 30
+            },
+            "compute": 1080,
+            "storage": 16,
+            "database": 200,
+            "services": 100,
+            "total": 1396
+          }
+        ],
+        "costEfficiency": [
+          {
+            "scenario": "Current (MVP)",
+            "costPerUser": 1.365,
+            "users": 100
+          },
+          {
+            "scenario": "Growth (SMB)",
+            "costPerUser": 0.1675,
+            "users": 1000
+          },
+          {
+            "scenario": "Scale (Enterprise)",
+            "costPerUser": 0.0366,
+            "users": 10000
+          },
+          {
+            "scenario": "Large Scale",
+            "costPerUser": 0.01396,
+            "users": 100000
+          }
+        ],
+        "maxProjectedCost": 1396
+      },
+      "message": "Scaling costs manageable across scenarios"
+    },
+    "costOptimization": {
+      "status": "pass",
+      "response_time_ms": 0,
+      "details": {
+        "optimizations": [
+          {
+            "description": "Right-size compute instances based on actual usage",
+            "savings": 30,
+            "effort": "Low",
+            "impact": "Medium"
+          },
+          {
+            "description": "Remove unused development dependencies and services",
+            "savings": 15,
+            "effort": "Low",
+            "impact": "Low"
+          },
+          {
+            "description": "Consider serverless functions for background tasks",
+            "savings": 25,
+            "effort": "Medium",
+            "impact": "Medium"
+          },
+          {
+            "description": "Use reserved instances for predictable workloads",
+            "savings": 40,
+            "effort": "Low",
+            "impact": "High"
+          },
+          {
+            "description": "Consolidate monitoring and logging services",
+            "savings": 20,
+            "effort": "Medium",
+            "impact": "Low"
+          }
+        ],
+        "potentialSavings": 130,
+        "totalOpportunities": 5
+      },
+      "message": "Found 5 cost optimization opportunities"
+    },
+    "infrastructureCosts": {
+      "status": "pass",
+      "response_time_ms": 11,
+      "details": {
+        "compute": {
+          "requirements": {
+            "tier": "medium",
+            "cores": 2,
+            "memory": 4,
+            "complexity": {
+              "totalFiles": 623
+            }
+          },
+          "cost": 45
+        },
+        "storage": {
+          "requirements": {
+            "totalGB": 31,
+            "backupGB": 16
+          },
+          "cost": 3.9000000000000004
+        },
+        "database": {
+          "requirements": {
+            "tier": "none",
+            "cost": 0
+          },
+          "cost": 0
+        },
+        "totalCost": 48.9
+      },
+      "message": "Infrastructure costs within budget: $48.90/month"
+    }
+  },
+  "costs": {
+    "infrastructure": 48.9,
+    "development": 75,
+    "monthly": 123.9,
+    "annual": 1486.8000000000002
+  },
+  "projections": [
+    {
+      "scenario": {
+        "name": "Current (MVP)",
+        "users": 100,
+        "scale": 1
+      },
+      "compute": 15,
+      "storage": 1.5,
+      "database": 20,
+      "services": 100,
+      "total": 136.5
+    },
+    {
+      "scenario": {
+        "name": "Growth (SMB)",
+        "users": 1000,
+        "scale": 3
+      },
+      "compute": 45,
+      "storage": 2.5,
+      "database": 20,
+      "services": 100,
+      "total": 167.5
+    },
+    {
+      "scenario": {
+        "name": "Scale (Enterprise)",
+        "users": 10000,
+        "scale": 10
+      },
+      "compute": 180,
+      "storage": 6,
+      "database": 80,
+      "services": 100,
+      "total": 366
+    },
+    {
+      "scenario": {
+        "name": "Large Scale",
+        "users": 100000,
+        "scale": 30
+      },
+      "compute": 1080,
+      "storage": 16,
+      "database": 200,
+      "services": 100,
+      "total": 1396
+    }
+  ],
+  "summary": {
+    "totalChecks": 4,
+    "passedChecks": 4,
+    "warningChecks": 0,
+    "failedChecks": 0,
+    "totalMonthlyCost": 123.9,
+    "potentialSavings": 130,
+    "totalTime": 11,
+    "overallStatus": "healthy"
+  },
+  "recommendations": [
+    "Implement cost optimizations to save $130.00/month"
+  ]
+}

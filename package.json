@@ -28,7 +28,14 @@
     "dev:studio": "node scripts/studio-cross-platform.js",
     "dev:backup": "node scripts/db-backup-cross-platform.js",
     "dev:restore": "node scripts/db-restore-cross-platform.js",
-    "dev:connect": "docker-compose exec postgres psql -U cpa_user -d cpa_platform"
+    "dev:connect": "docker-compose exec postgres psql -U cpa_user -d cpa_platform",
+    "maintenance:setup": "chmod +x scripts/make-maintenance-executable.sh && ./scripts/make-maintenance-executable.sh",
+    "maintenance:health": "node scripts/maintenance/health-check.js",
+    "maintenance:backup": "node scripts/maintenance/backup-verification.js",
+    "maintenance:security": "node scripts/maintenance/security-scan.js",
+    "maintenance:performance": "node scripts/maintenance/performance-analysis.js",
+    "maintenance:cost": "node scripts/maintenance/cost-analysis.js",
+    "maintenance:all": "node scripts/maintenance/maintenance-orchestrator.js"
   },
   "devDependencies": {
     "@types/bull": "^4.10.4",

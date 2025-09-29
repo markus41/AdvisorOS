@@ -1,0 +1,216 @@
+{
+  "timestamp": "2025-09-29T23:38:39.529Z",
+  "status": "healthy",
+  "environment": "development",
+  "checks": {
+    "systemPerformance": {
+      "status": "pass",
+      "response_time_ms": 1,
+      "details": {
+        "memory": {
+          "rss": 61,
+          "heapTotal": 16,
+          "heapUsed": 9,
+          "external": 2,
+          "arrayBuffers": 0
+        },
+        "loadAverage": [
+          0.16,
+          0.22,
+          0.33
+        ],
+        "processInfo": {
+          "pid": 3742,
+          "uptime": 3,
+          "nodeVersion": "v20.19.5",
+          "platform": "linux",
+          "arch": "x64"
+        },
+        "cpuInfo": {
+          "count": 4,
+          "model": "AMD EPYC 7763 64-Core Processor"
+        },
+        "networkInfo": 2
+      },
+      "message": "System performance within acceptable limits"
+    },
+    "buildPerformance": {
+      "status": "pass",
+      "response_time_ms": 1,
+      "details": {
+        "scripts": {
+          "build": "turbo build",
+          "dev": "turbo dev",
+          "lint": "turbo lint"
+        },
+        "typescript": true,
+        "nextjs": true,
+        "estimatedTime": 11800
+      },
+      "message": "Build configuration analyzed successfully"
+    },
+    "dependencyPerformance": {
+      "status": "pass",
+      "response_time_ms": 1,
+      "details": {
+        "dependencyCount": {
+          "production": 0,
+          "development": 9,
+          "total": 9
+        },
+        "heavyDependencies": [],
+        "nodeModulesSize": 16452,
+        "duplicates": [],
+        "totalDependencies": 9
+      },
+      "message": "Dependency performance looks good"
+    },
+    "codeQuality": {
+      "status": "warn",
+      "response_time_ms": 55,
+      "details": {
+        "totalFiles": 589,
+        "totalLines": 278052,
+        "complexFiles": 231,
+        "fileTypes": {
+          ".tsx": 218,
+          ".ts": 353,
+          ".css": 2,
+          ".js": 16
+        },
+        "largestFiles": [
+          {
+            "file": "apps/web/src/lib/ai/mcp/client.ts",
+            "lines": 1828
+          },
+          {
+            "file": "apps/web/src/lib/ai/tax-compliance-ai.ts",
+            "lines": 1667
+          },
+          {
+            "file": "apps/web/src/lib/integrations/quickbooks/integration-diagnostics.ts",
+            "lines": 1638
+          },
+          {
+            "file": "apps/web/src/lib/ai/ai-monitoring-safety.ts",
+            "lines": 1631
+          },
+          {
+            "file": "apps/web/src/lib/automation/financial-data-automation.ts",
+            "lines": 1610
+          },
+          {
+            "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+            "lines": 1592
+          },
+          {
+            "file": "apps/web/src/lib/services/client-service.ts",
+            "lines": 1591
+          },
+          {
+            "file": "apps/web/src/lib/ai/ai-orchestrator.ts",
+            "lines": 1555
+          },
+          {
+            "file": "apps/web/src/components/portal/communication/EnhancedMessageCenter.tsx",
+            "lines": 1516
+          },
+          {
+            "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+            "lines": 1510
+          }
+        ],
+        "averageFileSize": 472.0747028862479,
+        "performanceIssues": [
+          "231 files with >500 lines (consider refactoring)"
+        ]
+      },
+      "message": "Some code quality concerns detected"
+    }
+  },
+  "metrics": {
+    "memory": {
+      "rss": 61,
+      "heapTotal": 16,
+      "heapUsed": 9,
+      "external": 2,
+      "arrayBuffers": 0
+    },
+    "loadAverage": [
+      0.16,
+      0.22,
+      0.33
+    ],
+    "codeMetrics": {
+      "totalFiles": 589,
+      "totalLines": 278052,
+      "complexFiles": 231,
+      "fileTypes": {
+        ".tsx": 218,
+        ".ts": 353,
+        ".css": 2,
+        ".js": 16
+      },
+      "largestFiles": [
+        {
+          "file": "apps/web/src/lib/ai/mcp/client.ts",
+          "lines": 1828
+        },
+        {
+          "file": "apps/web/src/lib/ai/tax-compliance-ai.ts",
+          "lines": 1667
+        },
+        {
+          "file": "apps/web/src/lib/integrations/quickbooks/integration-diagnostics.ts",
+          "lines": 1638
+        },
+        {
+          "file": "apps/web/src/lib/ai/ai-monitoring-safety.ts",
+          "lines": 1631
+        },
+        {
+          "file": "apps/web/src/lib/automation/financial-data-automation.ts",
+          "lines": 1610
+        },
+        {
+          "file": "apps/web/src/lib/automation/smart-task-automation.ts",
+          "lines": 1592
+        },
+        {
+          "file": "apps/web/src/lib/services/client-service.ts",
+          "lines": 1591
+        },
+        {
+          "file": "apps/web/src/lib/ai/ai-orchestrator.ts",
+          "lines": 1555
+        },
+        {
+          "file": "apps/web/src/components/portal/communication/EnhancedMessageCenter.tsx",
+          "lines": 1516
+        },
+        {
+          "file": "apps/web/src/lib/automation/ai-process-optimizer.ts",
+          "lines": 1510
+        }
+      ],
+      "averageFileSize": 472.0747028862479
+    },
+    "dependencyCount": {
+      "production": 0,
+      "development": 9,
+      "total": 9
+    }
+  },
+  "summary": {
+    "totalChecks": 4,
+    "passedChecks": 3,
+    "warningChecks": 1,
+    "failedChecks": 0,
+    "totalTime": 58,
+    "overallStatus": "healthy"
+  },
+  "recommendations": [
+    "Refactor complex files for better maintainability",
+    "Address performance warnings to improve system efficiency"
+  ]
+}

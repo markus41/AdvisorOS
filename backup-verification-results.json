@@ -1,0 +1,164 @@
+{
+  "timestamp": "2025-09-29T23:38:39.523Z",
+  "status": "degraded",
+  "environment": "development",
+  "checks": {
+    "backupDirectories": {
+      "status": "fail",
+      "response_time_ms": 0,
+      "details": {
+        "found": [],
+        "missing": [
+          {
+            "path": "./backups",
+            "exists": false,
+            "error": "ENOENT: no such file or directory, stat './backups'"
+          },
+          {
+            "path": "./data/backups",
+            "exists": false,
+            "error": "ENOENT: no such file or directory, stat './data/backups'"
+          },
+          {
+            "path": "./scripts/backups",
+            "exists": false,
+            "error": "ENOENT: no such file or directory, stat './scripts/backups'"
+          },
+          {
+            "path": "./database/backups",
+            "exists": false,
+            "error": "ENOENT: no such file or directory, stat './database/backups'"
+          },
+          {
+            "path": "./tmp/backups",
+            "exists": false,
+            "error": "ENOENT: no such file or directory, stat './tmp/backups'"
+          }
+        ],
+        "totalFound": 0
+      },
+      "message": "No backup directories found"
+    },
+    "backupIntegrity": {
+      "status": "pass",
+      "response_time_ms": 4,
+      "details": {
+        "integrityChecks": [
+          {
+            "file": "advisoros-backup-2025-09-29T23-38-39-533Z.tar.gz",
+            "isValid": true,
+            "simulated": true,
+            "size": 1048576,
+            "message": "Backup simulation successful",
+            "recommendation": "Create actual backup system"
+          }
+        ],
+        "totalBackups": 1,
+        "validBackups": 1,
+        "invalidBackups": 0
+      },
+      "message": "1 valid backups found"
+    },
+    "criticalFiles": {
+      "status": "pass",
+      "response_time_ms": 75,
+      "details": {
+        "fileChecks": [
+          {
+            "path": "./package.json",
+            "exists": true,
+            "size": 1537,
+            "lastModified": "2025-09-29T23:23:41.224Z",
+            "hash": "d24abf4b35c0375a",
+            "needsBackup": true
+          },
+          {
+            "path": "./package-lock.json",
+            "exists": true,
+            "size": 1280794,
+            "lastModified": "2025-09-29T23:23:41.224Z",
+            "hash": "9d5d228eb93503b4",
+            "needsBackup": true
+          },
+          {
+            "path": "./apps/web/src/pages/api/health.ts",
+            "exists": true,
+            "size": 9025,
+            "lastModified": "2025-09-29T23:23:41.196Z",
+            "hash": "69b2e5620ace89a1",
+            "needsBackup": true
+          },
+          {
+            "path": "./apps/web/src/server/db.ts",
+            "exists": true,
+            "size": 10974,
+            "lastModified": "2025-09-29T23:23:41.197Z",
+            "hash": "75f0cf38f92cb095",
+            "needsBackup": true
+          },
+          {
+            "path": "./.env.example",
+            "exists": true,
+            "size": 1629,
+            "lastModified": "2025-09-29T23:23:41.139Z",
+            "hash": "7b5ffff67707e8c9",
+            "needsBackup": true
+          },
+          {
+            "path": "./apps/web/tsconfig.json",
+            "exists": true,
+            "size": 618,
+            "lastModified": "2025-09-29T23:23:41.205Z",
+            "hash": "b3c77263b3d269f8",
+            "needsBackup": true
+          }
+        ],
+        "missingFiles": [],
+        "backupPlan": {
+          "totalFiles": 6,
+          "totalSize": "1.24 MB",
+          "needsBackup": 6,
+          "estimatedTime": "2 seconds",
+          "priority": "high"
+        },
+        "totalFiles": 6,
+        "missingCount": 0
+      },
+      "message": "All 6 critical files found"
+    },
+    "gitBackups": {
+      "status": "pass",
+      "response_time_ms": 88,
+      "details": {
+        "isGitRepo": true,
+        "gitStatus": {
+          "uncommittedFiles": 3,
+          "isClean": false
+        },
+        "remoteInfo": [
+          {
+            "name": "origin",
+            "url": "https://github.com/markus41/AdvisorOS (fetch)"
+          },
+          {
+            "name": "origin",
+            "url": "https://github.com/markus41/AdvisorOS (push)"
+          }
+        ]
+      },
+      "message": "Git repository with remote backup configured"
+    }
+  },
+  "backups": [],
+  "summary": {
+    "totalChecks": 4,
+    "passedChecks": 3,
+    "failedChecks": 1,
+    "totalTime": 89,
+    "overallStatus": "degraded"
+  },
+  "recommendations": [
+    "Address failed backup checks immediately",
+    "Create backup directories and implement backup strategy"
+  ]
+}
