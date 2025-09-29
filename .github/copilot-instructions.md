@@ -880,4 +880,248 @@ claude --mcp-config .claude/working-config.json
 
 ---
 
+## 🚀 Supercharged AI Architecture
+
+AdvisorOS features a comprehensive, supercharged AI copilot system that transforms static assistants into intelligent, context-aware agents with advanced reasoning capabilities.
+
+```
+/apps/web/src/lib/ai/
+├── /modes               # Context-aware AI operating modes
+├── /agents              # Specialized AI agent orchestration  
+├── /prompts             # Chain-of-thought reasoning prompts
+├── /mcp                 # Model Context Protocol integration
+├── /workflows           # Automated multi-step AI workflows
+└── /supercharged.ts     # Unified AI orchestration system
+```
+
+## AI Capabilities
+
+### 🧠 AI Modes (Context-Aware Operation)
+
+**CPA Professional Modes:**
+- **CPA Professional Mode**: General advisory and client management
+- **Tax Season Mode**: Tax prep, compliance, deadline management (auto-activates Jan-Apr)
+- **Audit Mode**: Audit preparation and risk assessment
+- **Client Portal Mode**: Client-facing self-service
+- **Year-End Mode**: Year-end closing and planning (auto-activates Nov-Jan)
+
+**Developer-Focused Modes:**
+- **Developer Mode**: Advanced development assistance with code generation and debugging
+- **Code Review Mode**: Comprehensive code review with security and performance analysis
+- **DevOps Mode**: Infrastructure management, CI/CD, and deployment optimization
+
+### 🤖 AI Agents (Specialized Expertise)
+
+**CPA Domain Agents:**
+- **Senior CPA Advisor**: Primary business advisory agent with 20+ years expertise
+- **Tax Specialist**: Expert in tax matters and optimization
+- **Client Relationship Manager**: Communication and relationship building
+- **Document Analyzer**: Document processing and data extraction
+- **Financial Analyst**: Financial data analysis and modeling
+
+**Development Domain Agents:**
+- **Senior Developer**: Full-stack development and architecture expertise
+- **Code Reviewer**: Code quality, security, and performance specialist
+- **Testing Specialist**: Test automation and quality assurance
+- **DevOps Engineer**: Infrastructure and deployment specialist
+- **UI/UX Designer**: User interface and experience optimization
+
+### 🧩 Chain-of-Thought Prompts (Advanced Reasoning)
+
+**CPA Analysis Prompts:**
+- **Financial Health Analysis**: 7-step comprehensive assessment process
+- **Tax Optimization Strategy**: 9-step strategic tax planning with compliance
+- **Business Advisory Consultation**: 8-step strategic business consulting
+- **Client Communication**: 7-step professional communication with emotional intelligence
+
+**Developer Analysis Prompts:**
+- **Code Generation**: Systematic code generation with architecture planning
+- **Code Review Analysis**: Comprehensive code review with security and performance
+- **Debugging Analysis**: Systematic debugging with root cause analysis
+- **Performance Optimization**: Strategic performance analysis and improvement
+
+### 🔧 MCP Tools (External Integrations)
+
+**CPA Professional Tools:**
+- **QuickBooks Integration**: Access financial data and reports
+- **Financial Calculator**: Advanced financial calculations and ratios
+- **Tax Research**: Current tax laws and compliance requirements
+- **Industry Benchmarks**: Comparative industry data
+- **Document OCR**: Automated document processing
+- **Email Communication**: Professional email automation
+
+**Developer Tools:**
+- **Code Analyzer**: Code quality, complexity, and security analysis
+- **Git Integration**: Repository analysis and development insights
+- **Test Runner**: Automated testing and coverage analysis
+- **Bundle Analyzer**: JavaScript bundle optimization
+- **TypeScript Checker**: Type validation and improvements
+- **Performance Profiler**: Application performance analysis
+- **Docker Tools**: Container optimization and security scanning
+
+### 🔄 AI Workflows (Automated Processes)
+
+**CPA Workflows:**
+- **Client Financial Health Review**: Complete financial assessment (7 steps, 5 min, $2.50)
+- **Tax Optimization Analysis**: Comprehensive tax planning (6 steps, 8 min, $4.25)
+- **Document Processing Pipeline**: Automated document analysis
+- **Client Onboarding**: Streamlined client setup
+
+**Developer Workflows:**
+- **Code Review Workflow**: Multi-agent code review with security and performance (3 min, $1.75)
+- **Feature Development**: End-to-end feature development assistance (7 min, $3.50)
+- **Performance Optimization**: Comprehensive performance analysis and improvement (4 min, $2.25)
+
+## AI Development Guidelines
+
+### General Development
+- Use TypeScript strict mode throughout the project
+- Follow Next.js 15 App Router conventions
+- Implement proper error handling and loading states
+- Use tRPC for all API operations with multi-tenant validation
+- Follow multi-tenant patterns for data isolation
+- Implement proper authentication checks on all routes
+
+### AI Development Guidelines
+- **Mode-First Design**: Always consider which AI mode is appropriate
+- **Agent Specialization**: Use specific agents for specialized tasks
+- **Chain-of-Thought**: Implement structured reasoning for complex analysis
+- **Tool Integration**: Leverage MCP tools for external data and computations
+- **Workflow Orchestration**: Break complex processes into automated workflows
+- **Error Handling**: Implement retry logic and graceful fallbacks
+- **Cost Optimization**: Monitor token usage and optimize prompt efficiency
+- **Performance**: Use caching and streaming for better user experience
+
+### Developer-Focused AI Guidelines
+- **Code Quality First**: Use code review agents for all generated code
+- **Security by Default**: Always run security scans on generated code
+- **Performance Conscious**: Profile and optimize code from the start
+- **Test-Driven**: Generate comprehensive tests alongside code
+- **Documentation**: Include clear documentation and usage examples
+- **Type Safety**: Ensure strong TypeScript typing throughout
+- **Accessibility**: Follow WCAG guidelines for UI components
+- **Best Practices**: Adhere to established patterns and conventions
+
+### AI Code Examples
+
+#### Using the Supercharged AI System
+```typescript
+import { createSuperchargedAI } from '@/lib/ai/supercharged';
+
+const ai = createSuperchargedAI({
+  userId: 'user123',
+  organizationId: 'org456',
+  temporalContext: { season: 'tax', urgency: 'high' }
+});
+
+// Process natural language requests
+const result = await ai.processRequest(
+  "Analyze client financial health and provide recommendations"
+);
+
+// Execute specific workflows
+const workflowResult = await ai.executeWorkflow(
+  'client-financial-health-review',
+  { clientId: 'client789', industry: 'manufacturing' }
+);
+```
+
+#### Using AI Modes
+```typescript
+import { createAIModeManager, AI_MODES } from '@/lib/ai/modes';
+
+const modeManager = createAIModeManager(context);
+modeManager.autoDetectMode(); // Intelligent mode detection
+modeManager.switchToMode('tax-season'); // Explicit mode switch
+```
+
+#### Using Developer Mode and Agents
+```typescript
+// Switch to developer mode for code-related tasks
+import { createAIModeManager } from '@/lib/ai/modes';
+
+const modeManager = createAIModeManager(context);
+modeManager.switchToMode('developer-mode');
+
+// Use specialized developer agents
+import { createAgentOrchestrator } from '@/lib/ai/agents/orchestrator';
+
+const orchestrator = createAgentOrchestrator();
+
+// Code generation with senior developer
+const codeTask = {
+  id: 'generate-component',
+  agentId: 'senior-developer',
+  type: 'generation',
+  input: { requirements: 'Create a data table component' },
+  context: { framework: 'React', language: 'TypeScript' },
+  requiredCapabilities: ['code-generation', 'architecture-design']
+};
+
+const result = await orchestrator.executeTask(codeTask, currentMode);
+
+// Code review with specialized reviewer
+const reviewTask = {
+  id: 'review-code',
+  agentId: 'code-reviewer',
+  type: 'review',
+  input: { codeContent: generatedCode },
+  context: { securityFocus: true, performanceAudit: true },
+  requiredCapabilities: ['code-quality-analysis', 'security-vulnerability-detection']
+};
+
+const reviewResult = await orchestrator.executeTask(reviewTask, currentMode);
+```
+
+#### Using Developer Tools and Workflows
+```typescript
+// Execute code review workflow
+const workflowResult = await ai.executeWorkflow(
+  'code-review-workflow',
+  {
+    codeContent: sourceCode,
+    language: 'typescript',
+    framework: 'nextjs'
+  }
+);
+
+// Performance optimization analysis
+const perfResult = await ai.executeWorkflow(
+  'performance-optimization',
+  {
+    bundlePath: './dist',
+    targetUrl: 'https://app.example.com',
+    codeContent: componentCode,
+    language: 'typescript',
+    framework: 'react'
+  }
+);
+
+// Use individual developer tools
+const bundleAnalysis = await ai.executeTool('bundle-analyzer', {
+  bundlePath: './dist',
+  analysisType: 'size_analysis'
+});
+
+const securityScan = await ai.executeTool('code-analyzer', {
+  analysisType: 'security_scan',
+  codeContent: sourceCode,
+  language: 'typescript'
+});
+```
+
+## Usage Patterns
+
+When working on AI features:
+1. **Identify the appropriate AI mode** for the context
+2. **Select specialized agents** based on task requirements
+3. **Use chain-of-thought prompts** for complex reasoning
+4. **Integrate MCP tools** for external data and computations
+5. **Create workflows** for multi-step automated processes
+6. **Monitor performance** and optimize for cost and speed
+
+The AI system is designed to be intelligent, context-aware, and highly capable while maintaining professional standards and cost efficiency. All AI operations must follow the same multi-tenant patterns as the rest of the platform.
+
 **🎯 Remember: AdvisorOS is a production CPA platform where security, compliance, and performance are paramount. Every code change must consider multi-tenant implications and professional CPA requirements.**
+
+
