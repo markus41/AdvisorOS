@@ -5,6 +5,10 @@ nav_order: 2
 mermaid: true
 ---
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Product Capabilities  
+> Adjacent tracks: [Executive Quick Start](QUICK_START.md) · [Implementation Runbook](README_USER.md) · [Architecture Deep Dive](ARCHITECTURE.md)
+
 # Product Capability Map
 
 > [!SUMMARY]

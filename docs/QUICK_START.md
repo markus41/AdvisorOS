@@ -4,6 +4,10 @@ title: Executive Quick Start
 nav_order: 4
 ---
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Executive Quick Start  
+> Adjacent tracks: [Product Capabilities](FEATURES.md) · [Implementation Runbook](README_USER.md) · [Developer Setup](DEVELOPER_SETUP_ENHANCED.md)
+
 # Quick Start Guide
 
 ## Table of Contents

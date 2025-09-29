@@ -1,13 +1,6 @@
----
-layout: default
-title: Overview
-nav_order: 1
-mermaid: true
----
-
 # AdvisorOS Documentation
 
-AdvisorOS is the operating system for modern CPA firms. Use this site as the single briefing room for product narrative, implementation playbooks, and day-to-day operations. Everything here links directly to the living documents in this repo so you are always reading the source of truth.
+AdvisorOS is the operating system for modern CPA firms. Use this portal as the single briefing room for product narrative, implementation playbooks, and day-to-day operations. Everything here links directly to the living documents in this repository so you are always reading the source of truth.
 
 > [!TIP]
 > Pin this page in your browser. The tiles and dashboards below reflect the documents we update most often during rollouts, production support, and stakeholder briefings.
@@ -39,9 +32,9 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 <details open>
 <summary><strong>Executive Leadership</strong> — communicate the why</summary>
 
-- Core briefings: [Executive Quick Start](QUICK_START.md) · [Production Launch Executive Summary]({{ site.github.repository_url }}/blob/main/PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md)
-- Metrics pairing: [Production Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md)
-- Enablement tool: [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md)
+- Core briefings: [Executive Quick Start](QUICK_START.md) · [Production Launch Executive Summary](../PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md)
+- Metrics pairing: [Production Success Metrics Framework](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md)
+- Enablement tool: [Revenue Intelligence System](../REVENUE_INTELLIGENCE_SYSTEM.md)
 - > [!TIP] Draft board decks by combining the executive summary with a live extract from the metrics framework.
 
 </details>
@@ -50,7 +43,7 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 <summary><strong>Implementation & Client Success</strong> — deliver the how</summary>
 
 - Anchor guide: [Implementation Runbook](README_USER.md)
-- Playbooks: [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) · [Operations Runbook](operations/RUNBOOK.md)
+- Playbooks: [Client Success System](../CLIENT_SUCCESS_SYSTEM.md) · [Operations Runbook](operations/RUNBOOK.md)
 - Troubleshooting trio: [FAQ & Troubleshooting](FAQ_TROUBLESHOOTING.md) · [Troubleshooting Index](TROUBLESHOOTING.md) · [QuickBooks Setup](QUICKBOOKS_SETUP.md)
 - > [!NOTE] Promote these links in kickoff emails so every team starts from the same source of truth.
 
@@ -61,7 +54,7 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 
 - Deep dives: [Product Capabilities](FEATURES.md) · [Architecture Deep Dive](ARCHITECTURE.md)
 - System references: [Architecture Diagram Archive](architecture/README.md) · [API Reference](API_REFERENCE.md)
-- Compliance pairing: [Comprehensive Security Audit]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) · [Security Vulnerability Remediation Guide]({{ site.github.repository_url }}/blob/main/SECURITY_VULNERABILITY_REMEDIATION_GUIDE.md)
+- Compliance pairing: [Comprehensive Security Audit](../COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) · [Security Vulnerability Remediation Guide](../SECURITY_VULNERABILITY_REMEDIATION_GUIDE.md)
 - > [!IMPORTANT] Always cite the architecture deep dive in infrastructure change requests to keep diagrams and IaC aligned.
 
 </details>
@@ -80,8 +73,8 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 <summary><strong>Operations & Compliance</strong> — protect the runway</summary>
 
 - Command center: [Operations Index](operations/index.md) · [Incident Response Playbook](operations/incident-response.md)
-- Governance: [Compliance Oversight](compliance/README.md) · [Security Compliance Report]({{ site.github.repository_url }}/blob/main/SECURITY_COMPLIANCE_REPORT.md)
-- Business continuity: [Production Rollback Procedures]({{ site.github.repository_url }}/blob/main/PRODUCTION_ROLLBACK_PROCEDURES.md) · [Post-Launch Support Optimization]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md)
+- Governance: [Compliance Oversight](compliance/README.md) · [Security Compliance Report](../SECURITY_COMPLIANCE_REPORT.md)
+- Business continuity: [Production Rollback Procedures](../PRODUCTION_ROLLBACK_PROCEDURES.md) · [Post-Launch Support Optimization](../POST_LAUNCH_SUPPORT_OPTIMIZATION.md)
 - > [!WARNING] Keep the rollback plan bookmarked—treat it like production code.
 
 </details>
@@ -89,9 +82,9 @@ AdvisorOS is the operating system for modern CPA firms. Use this site as the sin
 ## Release Radar
 
 > [!INFO]
-> - **Launch blueprint** → Follow the staged plan in [ADVISOROS_PRODUCTION_LAUNCH_PLAN.md]({{ site.github.repository_url }}/blob/main/ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) with the rollback checklist on standby.
-> - **Client success signals** → Track adoption KPIs in [CLIENT_SUCCESS_SYSTEM.md]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) and surface wins in stakeholder decks.
-> - **Security commitments** → Reconfirm hardening measures outlined in [COMPREHENSIVE_SECURITY_AUDIT_REPORT.md]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) before every major release.
+> - **Launch blueprint** → Follow the staged plan in [ADVISOROS_PRODUCTION_LAUNCH_PLAN.md](../ADVISOROS_PRODUCTION_LAUNCH_PLAN.md) with the rollback checklist on standby.
+> - **Client success signals** → Track adoption KPIs in [CLIENT_SUCCESS_SYSTEM.md](../CLIENT_SUCCESS_SYSTEM.md) and surface wins in stakeholder decks.
+> - **Security commitments** → Reconfirm hardening measures outlined in [COMPREHENSIVE_SECURITY_AUDIT_REPORT.md](../COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) before every major release.
 > - **Go-live validation** → Use [PRODUCTION_READINESS_CHECKLIST.md](PRODUCTION_READINESS_CHECKLIST.md) as the final gate before flipping any production switch.
 
 ## Architecture Systems Map
@@ -136,7 +129,7 @@ graph TD
   Fabric --> DB
 ```
 
-Dive deeper with the full [architecture deep dive](ARCHITECTURE.md) and deployment automation in the [Azure blueprint]({{ site.github.repository_url }}/blob/main/infrastructure/main.bicep).
+Dive deeper with the full [architecture deep dive](ARCHITECTURE.md) and deployment automation in the [Azure blueprint](../infrastructure/main.bicep).
 
 ## Automation Scorecard
 
@@ -148,18 +141,18 @@ pie title AdvisorOS Automation Coverage
   "Manual interventions" : 12
 ```
 
-Ground these numbers with the measurement model in the [Production Success Metrics Framework]({{ site.github.repository_url }}/blob/main/PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md). Replace the placeholder values with your latest telemetry export before external reviews.
+Ground these numbers with the measurement model in the [Production Success Metrics Framework](../PRODUCTION_SUCCESS_METRICS_FRAMEWORK.md). Replace the placeholder values with your latest telemetry export before external reviews.
 
 ## Spotlight Bundles
 
 Executive weekly briefing
-: Combine [Executive Quick Start](QUICK_START.md), [Production Launch Executive Summary]({{ site.github.repository_url }}/blob/main/PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md), and the [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md) to keep leadership aligned.
+: Combine [Executive Quick Start](QUICK_START.md), [Production Launch Executive Summary](../PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md), and the [Revenue Intelligence System](../REVENUE_INTELLIGENCE_SYSTEM.md) to keep leadership aligned.
 
 Implementation day zero
 : Pair the [Implementation Runbook](README_USER.md) with the [Deployment Blueprint](DEPLOYMENT.md) and [Operations Runbook](operations/RUNBOOK.md) for a seamless handoff from sales to delivery.
 
 Incident command activation
-: Use [Operations Command Center](operations/index.md), [Incident Response Playbook](operations/incident-response.md), and [Production Rollback Procedures]({{ site.github.repository_url }}/blob/main/PRODUCTION_ROLLBACK_PROCEDURES.md) together to triage issues.
+: Use [Operations Command Center](operations/index.md), [Incident Response Playbook](operations/incident-response.md), and [Production Rollback Procedures](../PRODUCTION_ROLLBACK_PROCEDURES.md) together to triage issues.
 
 ## Search & Navigation Shortcuts
 
@@ -184,7 +177,7 @@ Incident command activation
 
 ![Client workspace showing secure document exchange and collaboration timeline](https://dummyimage.com/1200x720/1e293b/f8fafc&text=Client+Workspace+Screenshot)
 
-Swap in real screenshots from `docs/assets/screenshots/` so prospects see the actual experience. Include caption callouts referencing client outcomes from [CLIENT_SUCCESS_SYSTEM.md]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md).
+Swap in real screenshots from `docs/assets/screenshots/` so prospects see the actual experience. Include caption callouts referencing client outcomes from [CLIENT_SUCCESS_SYSTEM.md](../CLIENT_SUCCESS_SYSTEM.md).
 
 ## Operating Rhythm
 
@@ -203,13 +196,13 @@ gantt
     Automation Expansion          :         c2, 2025-03-28, 2025-04-30
 ```
 
-Use this as the backbone for stakeholder updates. The granular workstream detail lives in [PRODUCTION_ROLLBACK_PROCEDURES.md]({{ site.github.repository_url }}/blob/main/PRODUCTION_ROLLBACK_PROCEDURES.md) and [POST_LAUNCH_SUPPORT_OPTIMIZATION.md]({{ site.github.repository_url }}/blob/main/POST_LAUNCH_SUPPORT_OPTIMIZATION.md).
+Use this as the backbone for stakeholder updates. The granular workstream detail lives in [PRODUCTION_ROLLBACK_PROCEDURES.md](../PRODUCTION_ROLLBACK_PROCEDURES.md) and [POST_LAUNCH_SUPPORT_OPTIMIZATION.md](../POST_LAUNCH_SUPPORT_OPTIMIZATION.md).
 
 ## Proof Points & Talking Tracks
 
-- Pull win stories and quotes from the [Client Success System]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md) for every sales cycle.
-- Reference the [Market Intelligence Analysis]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) when product marketing asks for competitive positioning.
-- Highlight the [Revenue Intelligence System]({{ site.github.repository_url }}/blob/main/REVENUE_INTELLIGENCE_SYSTEM.md) when CFOs push for financial insights beyond compliance work.
+- Pull win stories and quotes from the [Client Success System](../CLIENT_SUCCESS_SYSTEM.md) for every sales cycle.
+- Reference the [Market Intelligence Analysis](../COMPREHENSIVE_MARKET_INTELLIGENCE_ANALYSIS.md) when product marketing asks for competitive positioning.
+- Highlight the [Revenue Intelligence System](../REVENUE_INTELLIGENCE_SYSTEM.md) when CFOs push for financial insights beyond compliance work.
 
 ## Contribution Workflow
 

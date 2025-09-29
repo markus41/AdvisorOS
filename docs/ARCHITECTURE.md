@@ -4,6 +4,10 @@ title: Architecture Deep Dive
 nav_order: 3
 ---
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Architecture Deep Dive  
+> Adjacent tracks: [Product Capabilities](FEATURES.md) · [Developer Setup](DEVELOPER_SETUP_ENHANCED.md) · [Operations Command Center](operations/index.md)
+
 # Architecture Overview
 
 ## Table of Contents

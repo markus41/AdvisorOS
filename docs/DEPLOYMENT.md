@@ -6,6 +6,10 @@ nav_order: 35
 
 # Deployment Guide
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Deployment Blueprint
+> Adjacent tracks: [Architecture Deep Dive](ARCHITECTURE.md) · [Developer Environment Setup](DEVELOPER_SETUP_ENHANCED.md) · [Operations Command Center](operations/index.md)
+
 ## Table of Contents
 
 1. [Overview](#overview)

@@ -5,6 +5,10 @@ nav_order: 20
 mermaid: true
 ---
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Implementation Runbook  
+> Adjacent tracks: [Executive Quick Start](QUICK_START.md) · [Product Capabilities](FEATURES.md) · [Operations Command Center](operations/index.md)
+
 # Implementation Runbook
 
 > [!SUMMARY]

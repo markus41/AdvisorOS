@@ -6,6 +6,10 @@ nav_order: 40
 
 # AdvisorOS Administrator Guide
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Administrator Guide
+> Adjacent tracks: [Implementation Runbook](README_USER.md) · [Operations Command Center](operations/index.md) · [Security Audit Report](../COMPREHENSIVE_SECURITY_AUDIT_REPORT.md)
+
 ## Table of Contents
 
 1. [System Administration Overview](#system-administration-overview)

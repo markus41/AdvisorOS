@@ -2,6 +2,25 @@
 
 A comprehensive multi-tenant SaaS platform built for CPAs to manage clients, sync with QuickBooks, and provide financial advisory services.
 
+> [!IMPORTANT]
+> ### Documentation Portal
+> Launch the curated hub that powers every rollout, enablement sprint, and support ritual.
+>
+> | Mode | Launch Link | Use it when... |
+> | --- | --- | --- |
+> | :file_folder: GitHub-native hub | [docs/README.md](docs/README.md) | Reviewing documentation directly inside pull requests or the GitHub file viewer. |
+> | :compass: In-repo microsite | [docs/index.md](docs/index.md) | Navigating with search, breadcrumbs, and diagrams while working locally. |
+> | :globe_with_meridians: Published site | [https://markusahling.github.io/AdvisorOS/](https://markusahling.github.io/AdvisorOS/) | Sharing the public-friendly GitHub Pages experience with stakeholders. |
+>
+> <details>
+> <summary><strong>Accelerate your first visit</strong></summary>
+>
+> - Tap <kbd>.</kbd> to open the web editor with the docs tree pre-expanded.
+> - Bookmark the portal you prefer so incident commanders and GTM leaders never hunt for links.
+> - Cross-reference rollouts with the [Production Launch Executive Summary](PRODUCTION_LAUNCH_EXECUTIVE_SUMMARY.md) before every stakeholder meeting.
+>
+> </details>
+
 ## 🏗️ Architecture
 
 This project uses a **Turborepo** monorepo structure with:
