@@ -8,7 +8,7 @@ nav_order: 1
 # Incident Response Playbook
 
 > [!WARNING]
-> Invoke this playbook the moment client-facing impact is detected. Do not wait for full confirmation—containment always beats speculation.
+> Invoke this playbook the moment client-facing impact is detected. Do not wait for full confirmation - containment always beats speculation.
 
 ## Severity Matrix
 
@@ -55,7 +55,7 @@ Tracker: {Incident doc link}
 
 **Client (Email)**
 ```
-Subject: AdvisorOS Incident Update – {Summary}
+Subject: AdvisorOS Incident Update ï¿½ {Summary}
 
 We are actively addressing an issue impacting {impact description}. Our team initiated mitigation at {time}. Expect the next update by {time}. Track progress here: {status page or shared doc}.
 

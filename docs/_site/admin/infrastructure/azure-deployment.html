@@ -1,0 +1,559 @@
+<!DOCTYPE html> <html lang="en-US"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <link rel="stylesheet" href="/AdvisorOS/assets/css/just-the-docs-default.css"> <link rel="stylesheet" href="/AdvisorOS/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet"> <style id="jtd-nav-activation"> .site-nav > ul.nav-list:first-child > li:not(:nth-child(42)) > a, .site-nav > ul.nav-list:first-child > li > ul > li a { background-image: none; } .site-nav > ul.nav-list:not(:first-child) a, .site-nav li.external a { background-image: none; } .site-nav > ul.nav-list:first-child > li:nth-child(42) > a { font-weight: 600; text-decoration: none; }.site-nav > ul.nav-list:first-child > li:nth-child(42) > button svg { transform: rotate(-90deg); }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(42) > ul.nav-list { display: block; } </style> <script src="/AdvisorOS/assets/js/vendor/lunr.min.js"></script> <script src="/AdvisorOS/assets/js/just-the-docs.js"></script> <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Begin Jekyll SEO tag v2.8.0 --> <title>Azure Deployment Guide for AdvisorOS | AdvisorOS Documentation</title> <meta name="generator" content="Jekyll v3.10.0" /> <meta property="og:title" content="Azure Deployment Guide for AdvisorOS" /> <meta property="og:locale" content="en_US" /> <meta name="description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <meta property="og:description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <link rel="canonical" href="https://markus41.github.io/AdvisorOS/admin/infrastructure/azure-deployment.html" /> <meta property="og:url" content="https://markus41.github.io/AdvisorOS/admin/infrastructure/azure-deployment.html" /> <meta property="og:site_name" content="AdvisorOS Documentation" /> <meta property="og:type" content="website" /> <meta name="twitter:card" content="summary" /> <meta property="twitter:title" content="Azure Deployment Guide for AdvisorOS" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"WebPage","description":"Implementation, adoption, and operations playbook for AdvisorOS.","headline":"Azure Deployment Guide for AdvisorOS","url":"https://markus41.github.io/AdvisorOS/admin/infrastructure/azure-deployment.html"}</script> <!-- End Jekyll SEO tag --> </head> <body> <a class="skip-to-main" href="#main-content">Skip to main content</a> <svg xmlns="http://www.w3.org/2000/svg" class="d-none"> <symbol id="svg-link" viewBox="0 0 24 24"> <title>Link</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path> </svg> </symbol> <symbol id="svg-menu" viewBox="0 0 24 24"> <title>Menu</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"> <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line> </svg> </symbol> <symbol id="svg-arrow-right" viewBox="0 0 24 24"> <title>Expand</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"> <polyline points="9 18 15 12 9 6"></polyline> </svg> </symbol> <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE --> <symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"> <title id="svg-external-link-title">(external link)</title> <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line> </symbol> <symbol id="svg-doc" viewBox="0 0 24 24"> <title>Document</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"> <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline> </svg> </symbol> <symbol id="svg-search" viewBox="0 0 24 24"> <title>Search</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg> </symbol> <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md --> <symbol id="svg-copy" viewBox="0 0 16 16"> <title>Copy</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/> <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/> </svg> </symbol> <symbol id="svg-copied" viewBox="0 0 16 16"> <title>Copied</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16"> <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/> </svg> </symbol> </svg> <div class="side-bar"> <div class="site-header" role="banner"> <a href="/AdvisorOS/" class="site-title lh-tight"> AdvisorOS Documentation </a> <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false"> <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg> </button> </div> <nav aria-label="Main" id="site-nav" class="site-nav"> <ul class="nav-list"><li class="nav-list-item"><a href="/AdvisorOS/wiki/" class="nav-list-link">AdvisorOS Wiki</a></li><li class="nav-list-item"><a href="/AdvisorOS/" class="nav-list-link">Overview</a></li><li class="nav-list-item"><a href="/AdvisorOS/business/" class="nav-list-link">Business Overview</a></li><li class="nav-list-item"><a href="/AdvisorOS/FEATURES.html" class="nav-list-link">Product Capabilities</a></li><li class="nav-list-item"><a href="/AdvisorOS/strategic/" class="nav-list-link">Strategic Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/QUICK_START.html" class="nav-list-link">Executive Quick Start</a></li><li class="nav-list-item"><a href="/AdvisorOS/README.html" class="nav-list-link">Documentation Home</a></li><li class="nav-list-item"><a href="/AdvisorOS/technical/" class="nav-list-link">Technical Hub</a></li><li class="nav-list-item"><a href="/AdvisorOS/integrations/" class="nav-list-link">Integrations Hub</a></li><li class="nav-list-item"><a href="/AdvisorOS/security/" class="nav-list-link">Security & Compliance</a></li><li class="nav-list-item"><a href="/AdvisorOS/ARCHITECTURE.html" class="nav-list-link">Architecture</a></li><li class="nav-list-item"><a href="/AdvisorOS/API_REFERENCE.html" class="nav-list-link">API Reference</a></li><li class="nav-list-item"><a href="/AdvisorOS/USER_GUIDE_COMPREHENSIVE.html" class="nav-list-link">User Guide (Comprehensive)</a></li><li class="nav-list-item"><a href="/AdvisorOS/README_USER.html" class="nav-list-link">Implementation Runbook</a></li><li class="nav-list-item"><a href="/AdvisorOS/CLIENT_PORTAL_GUIDE.html" class="nav-list-link">Client Portal Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/DATABASE.html" class="nav-list-link">Database Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/DEVELOPER_SETUP_ENHANCED.html" class="nav-list-link">Developer Environment Setup</a></li><li class="nav-list-item"><a href="/AdvisorOS/DEPLOYMENT.html" class="nav-list-link">Deployment Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/ADMINISTRATOR_GUIDE.html" class="nav-list-link">Administrator Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/INTEGRATION_GUIDES.html" class="nav-list-link">Integration Guides</a></li><li class="nav-list-item"><a href="/AdvisorOS/QUICKBOOKS_SETUP.html" class="nav-list-link">QuickBooks Setup</a></li><li class="nav-list-item"><a href="/AdvisorOS/README_DEV.html" class="nav-list-link">Developer Setup</a></li><li class="nav-list-item"><a href="/AdvisorOS/TROUBLESHOOTING.html" class="nav-list-link">Troubleshooting</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Operations Command Center category" aria-pressed="false"> <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg> </button><a href="/AdvisorOS/operations/" class="nav-list-link">Operations Command Center</a><ul class="nav-list"><li class="nav-list-item"><a href="/AdvisorOS/operations/incident-response.html" class="nav-list-link">Incident Response Playbook</a></li><li class="nav-list-item"><a href="/AdvisorOS/operations/RUNBOOK.html" class="nav-list-link">Operations Runbook</a></li><li class="nav-list-item"><a href="/AdvisorOS/operations/DEPLOYMENT_GUIDE.html" class="nav-list-link">Production Deployment Guide</a></li></ul></li><li class="nav-list-item"><a href="/AdvisorOS/compliance/README.html" class="nav-list-link">Compliance Overview</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/001-multi-tenant-data-isolation.html" class="nav-list-link">ADR-001: Multi-Tenant Data Isolation Strategy</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/002-prisma-schema-design.html" class="nav-list-link">ADR-002: Prisma Schema Design and Relationships</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/003-nextjs-app-router-api-design.html" class="nav-list-link">ADR-003: Next.js App Router Structure and API Design</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/004-azure-infrastructure-scaling.html" class="nav-list-link">ADR-004: Azure Infrastructure Choices and Scaling Strategy</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/005-security-architecture-compliance.html" class="nav-list-link">ADR-005: Security Architecture and Compliance Framework</a></li><li class="nav-list-item"><a href="/AdvisorOS/api/" class="nav-list-link">AdvisorOS API Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/admin/" class="nav-list-link">AdvisorOS Administrator Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/ARCHITECTURE_AUDIT_SUMMARY.html" class="nav-list-link">AdvisorOS Architecture Audit Summary</a></li><li class="nav-list-item"><a href="/AdvisorOS/COST_OPTIMIZATION_STRATEGY.html" class="nav-list-link">AdvisorOS Cost Optimization Strategy</a></li><li class="nav-list-item"><a href="/AdvisorOS/developer/" class="nav-list-link">AdvisorOS Developer Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/FAQ_TROUBLESHOOTING.html" class="nav-list-link">AdvisorOS FAQ &amp; Troubleshooting Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/PRODUCTION_READINESS_CHECKLIST.html" class="nav-list-link">AdvisorOS Production Readiness Checklist</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/TECHNICAL_DEBT_ANALYSIS.html" class="nav-list-link">AdvisorOS Technical Debt Analysis and Improvement Roadmap</a></li><li class="nav-list-item"><a href="/AdvisorOS/templates/TECHNICAL_DOC_TEMPLATE.html" class="nav-list-link">AdvisorOS Technical Doc Template</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/" class="nav-list-link">AdvisorOS User Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/" class="nav-list-link">Architectural Decision Records (ADRs)</a></li><li class="nav-list-item"><a href="/AdvisorOS/admin/infrastructure/azure-deployment.html" class="nav-list-link">Azure Deployment Guide for AdvisorOS</a></li><li class="nav-list-item"><a href="/AdvisorOS/api-specs/endpoints.html" class="nav-list-link">CPA Platform API Specifications</a></li><li class="nav-list-item"><a href="/AdvisorOS/design-system/components.html" class="nav-list-link">CPA Platform Design System - Components</a></li><li class="nav-list-item"><a href="/AdvisorOS/api/routes/client.html" class="nav-list-link">Client Management API</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/cpa-firms/client-management.html" class="nav-list-link">Client Management Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/clients/client-portal-guide.html" class="nav-list-link">Client Portal User Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/cpa-firms/getting-started.html" class="nav-list-link">Getting Started with AdvisorOS</a></li><li class="nav-list-item"><a href="/AdvisorOS/compliance/soc2/overview.html" class="nav-list-link">SOC 2 Type II Compliance Overview</a></li></ul> <ul class="nav-list"><li class="nav-list-item external"> <a href="https://github.com/markus41/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md" class="nav-list-link external" > Product Overview (PDF) <svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title"><use xlink:href="#svg-external-link"></use></svg> </a> </li></ul> </nav> <footer class="site-footer"> This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll. </footer> </div> <div class="main" id="top"> <div id="main-header" class="main-header"> <div class="search" role="search"> <div class="search-input-wrap"> <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search AdvisorOS Documentation" aria-label="Search AdvisorOS Documentation" autocomplete="off"> <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label> </div> <div id="search-results" class="search-results"></div> </div> <nav aria-label="Auxiliary" class="aux-nav"> <ul class="aux-nav-list"> <li class="aux-nav-list-item"> <a href="https://github.com/markus41/AdvisorOS" class="site-button" > AdvisorOS on GitHub </a> </li> </ul> </nav> </div> <div class="main-content-wrap"> <div id="main-content" class="main-content"> <main> <h1 id="azure-deployment-guide-for-advisoros"> <a href="#azure-deployment-guide-for-advisoros" class="anchor-heading" aria-labelledby="azure-deployment-guide-for-advisoros"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Azure Deployment Guide for AdvisorOS </h1> <h2 id="overview"> <a href="#overview" class="anchor-heading" aria-labelledby="overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Overview </h2> <p>This guide provides step-by-step instructions for deploying AdvisorOS to Microsoft Azure. The deployment follows best practices for security, scalability, and compliance with CPA industry requirements.</p> <h2 id="prerequisites"> <a href="#prerequisites" class="anchor-heading" aria-labelledby="prerequisites"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Prerequisites </h2> <h3 id="azure-subscription-requirements"> <a href="#azure-subscription-requirements" class="anchor-heading" aria-labelledby="azure-subscription-requirements"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Azure Subscription Requirements </h3> <ul> <li><strong>Subscription Type</strong>: Standard or Premium Azure subscription</li> <li><strong>Permissions</strong>: Contributor or Owner role on the subscription</li> <li><strong>Resource Limits</strong>: Ensure sufficient quotas for required resources</li> <li><strong>Compliance</strong>: Subscription must support compliance requirements (SOC 2, GDPR)</li> </ul> <h3 id="tools-required"> <a href="#tools-required" class="anchor-heading" aria-labelledby="tools-required"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Tools Required </h3> <ul> <li><strong>Azure CLI</strong>: Version 2.50.0 or later</li> <li><strong>Azure PowerShell</strong>: Version 8.0 or later (optional)</li> <li><strong>Git</strong>: For code deployment</li> <li><strong>Node.js</strong>: Version 18 LTS or later</li> <li><strong>Docker</strong>: For containerized deployments (optional)</li> </ul> <h3 id="required-knowledge"> <a href="#required-knowledge" class="anchor-heading" aria-labelledby="required-knowledge"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Required Knowledge </h3> <ul> <li>Azure resource management</li> <li>Basic networking concepts</li> <li>PostgreSQL database administration</li> <li>SSL/TLS certificate management</li> </ul> <h2 id="architecture-overview"> <a href="#architecture-overview" class="anchor-heading" aria-labelledby="architecture-overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Architecture Overview </h2> <h3 id="core-azure-services-used"> <a href="#core-azure-services-used" class="anchor-heading" aria-labelledby="core-azure-services-used"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Core Azure Services Used </h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Production Environment Architecture:
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        Azure Subscription                       │
+├─────────────────────────────────────────────────────────────────┤
+│  Resource Group: rg-advisoros-prod                             │
+│                                                                 │
+│  ┌───────────────┐  ┌─────────────────┐  ┌─────────────────┐   │
+│  │ Azure Front   │  │ Azure Static    │  │ Azure           │   │
+│  │ Door Premium  │──│ Web Apps        │  │ Functions       │   │
+│  │               │  │ (Frontend)      │  │ (Backend API)   │   │
+│  └───────────────┘  └─────────────────┘  └─────────────────┘   │
+│          │                   │                   │             │
+│          │                   │                   │             │
+│  ┌───────────────┐  ┌─────────────────┐  ┌─────────────────┐   │
+│  │ Azure CDN     │  │ Azure Database  │  │ Azure Blob      │   │
+│  │               │  │ for PostgreSQL  │  │ Storage         │   │
+│  │               │  │                 │  │                 │   │
+│  └───────────────┘  └─────────────────┘  └─────────────────┘   │
+│                             │                                   │
+│          ┌─────────────────────────────────────┐               │
+│          │           Security Services          │               │
+│          │  ┌─────────────┐  ┌─────────────┐   │               │
+│          │  │ Azure Key   │  │ Azure AD    │   │               │
+│          │  │ Vault       │  │ B2C         │   │               │
+│          │  └─────────────┘  └─────────────┘   │               │
+│          └─────────────────────────────────────┘               │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre></div></div> <h2 id="deployment-steps"> <a href="#deployment-steps" class="anchor-heading" aria-labelledby="deployment-steps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Deployment Steps </h2> <h3 id="phase-1-infrastructure-setup"> <a href="#phase-1-infrastructure-setup" class="anchor-heading" aria-labelledby="phase-1-infrastructure-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 1: Infrastructure Setup </h3> <h4 id="11-create-resource-group"> <a href="#11-create-resource-group" class="anchor-heading" aria-labelledby="11-create-resource-group"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1.1 Create Resource Group </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set deployment variables</span>
+<span class="nv">SUBSCRIPTION_ID</span><span class="o">=</span><span class="s2">"your-subscription-id"</span>
+<span class="nv">LOCATION</span><span class="o">=</span><span class="s2">"East US 2"</span>
+<span class="nv">ENVIRONMENT</span><span class="o">=</span><span class="s2">"prod"</span>  <span class="c"># or "staging", "dev"</span>
+<span class="nv">RESOURCE_GROUP</span><span class="o">=</span><span class="s2">"rg-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="c"># Login to Azure</span>
+az login
+
+<span class="c"># Set subscription</span>
+az account <span class="nb">set</span> <span class="nt">--subscription</span> <span class="nv">$SUBSCRIPTION_ID</span>
+
+<span class="c"># Create resource group</span>
+az group create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--tags</span> <span class="nv">environment</span><span class="o">=</span><span class="nv">$ENVIRONMENT</span> <span class="nv">project</span><span class="o">=</span>advisoros
+</code></pre></div></div> <h4 id="12-create-virtual-network-optional-but-recommended"> <a href="#12-create-virtual-network-optional-but-recommended" class="anchor-heading" aria-labelledby="12-create-virtual-network-optional-but-recommended"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1.2 Create Virtual Network (Optional but Recommended) </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create virtual network for secure communication</span>
+az network vnet create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"vnet-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--address-prefix</span> 10.0.0.0/16 <span class="se">\</span>
+  <span class="nt">--subnet-name</span> <span class="s2">"subnet-app"</span> <span class="se">\</span>
+  <span class="nt">--subnet-prefix</span> 10.0.1.0/24
+
+<span class="c"># Create subnet for database</span>
+az network vnet subnet create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--vnet-name</span> <span class="s2">"vnet-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"subnet-db"</span> <span class="se">\</span>
+  <span class="nt">--address-prefix</span> 10.0.2.0/24 <span class="se">\</span>
+  <span class="nt">--service-endpoints</span> Microsoft.Storage Microsoft.Sql
+</code></pre></div></div> <h4 id="13-create-azure-key-vault"> <a href="#13-create-azure-key-vault" class="anchor-heading" aria-labelledby="13-create-azure-key-vault"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1.3 Create Azure Key Vault </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Key Vault for secrets management</span>
+az keyvault create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--sku</span> Premium <span class="se">\</span>
+  <span class="nt">--enable-soft-delete</span> <span class="nb">true</span> <span class="se">\</span>
+  <span class="nt">--retention-days</span> 90
+
+<span class="c"># Set access policy (replace with your user principal ID)</span>
+az keyvault set-policy <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--object-id</span> <span class="si">$(</span>az ad signed-in-user show <span class="nt">--query</span> objectId <span class="nt">-o</span> tsv<span class="si">)</span> <span class="se">\</span>
+  <span class="nt">--secret-permissions</span> get list <span class="nb">set </span>delete
+</code></pre></div></div> <h3 id="phase-2-database-deployment"> <a href="#phase-2-database-deployment" class="anchor-heading" aria-labelledby="phase-2-database-deployment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 2: Database Deployment </h3> <h4 id="21-create-postgresql-server"> <a href="#21-create-postgresql-server" class="anchor-heading" aria-labelledby="21-create-postgresql-server"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2.1 Create PostgreSQL Server </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Generate random password</span>
+<span class="nv">DB_PASSWORD</span><span class="o">=</span><span class="si">$(</span>openssl rand <span class="nt">-base64</span> 32<span class="si">)</span>
+
+<span class="c"># Create PostgreSQL flexible server</span>
+az postgres flexible-server create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--admin-user</span> advisoros_admin <span class="se">\</span>
+  <span class="nt">--admin-password</span> <span class="nv">$DB_PASSWORD</span> <span class="se">\</span>
+  <span class="nt">--sku-name</span> Standard_D2s_v3 <span class="se">\</span>
+  <span class="nt">--tier</span> GeneralPurpose <span class="se">\</span>
+  <span class="nt">--storage-size</span> 128 <span class="se">\</span>
+  <span class="nt">--version</span> 14 <span class="se">\</span>
+  <span class="nt">--high-availability</span> Enabled <span class="se">\</span>
+  <span class="nt">--zone</span> 1 <span class="se">\</span>
+  <span class="nt">--standby-zone</span> 2
+
+<span class="c"># Store password in Key Vault</span>
+az keyvault secret <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--vault-name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"database-password"</span> <span class="se">\</span>
+  <span class="nt">--value</span> <span class="nv">$DB_PASSWORD</span>
+</code></pre></div></div> <h4 id="22-configure-database-security"> <a href="#22-configure-database-security" class="anchor-heading" aria-labelledby="22-configure-database-security"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2.2 Configure Database Security </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure firewall rules (restrict to your services)</span>
+az postgres flexible-server firewall-rule create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--rule-name</span> <span class="s2">"AllowAzureServices"</span> <span class="se">\</span>
+  <span class="nt">--start-ip-address</span> 0.0.0.0 <span class="se">\</span>
+  <span class="nt">--end-ip-address</span> 0.0.0.0
+
+<span class="c"># Enable SSL enforcement</span>
+az postgres flexible-server parameter <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--server-name</span> <span class="s2">"psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> require_secure_transport <span class="se">\</span>
+  <span class="nt">--value</span> on
+</code></pre></div></div> <h4 id="23-create-database-and-user"> <a href="#23-create-database-and-user" class="anchor-heading" aria-labelledby="23-create-database-and-user"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2.3 Create Database and User </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Connect to database and create application database</span>
+<span class="nv">DB_HOST</span><span class="o">=</span><span class="s2">"psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">.postgres.database.azure.com"</span>
+
+<span class="c"># Create application database</span>
+psql <span class="s2">"host=</span><span class="k">${</span><span class="nv">DB_HOST</span><span class="k">}</span><span class="s2"> port=5432 dbname=postgres user=advisoros_admin sslmode=require"</span> <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh">
+CREATE DATABASE advisoros;
+CREATE USER advisoros_app WITH PASSWORD '</span><span class="si">$(</span>az keyvault secret show <span class="nt">--vault-name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="nt">--name</span> <span class="s2">"database-password"</span> <span class="nt">--query</span> value <span class="nt">-o</span> tsv<span class="si">)</span><span class="sh">';
+GRANT ALL PRIVILEGES ON DATABASE advisoros TO advisoros_app;
+</span><span class="se">\q</span><span class="sh">
+</span><span class="no">EOF
+</span></code></pre></div></div> <h3 id="phase-3-storage-setup"> <a href="#phase-3-storage-setup" class="anchor-heading" aria-labelledby="phase-3-storage-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 3: Storage Setup </h3> <h4 id="31-create-storage-account"> <a href="#31-create-storage-account" class="anchor-heading" aria-labelledby="31-create-storage-account"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3.1 Create Storage Account </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create storage account</span>
+az storage account create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--sku</span> Standard_GRS <span class="se">\</span>
+  <span class="nt">--kind</span> StorageV2 <span class="se">\</span>
+  <span class="nt">--access-tier</span> Hot <span class="se">\</span>
+  <span class="nt">--https-only</span> <span class="nb">true</span> <span class="se">\</span>
+  <span class="nt">--min-tls-version</span> TLS1_2
+
+<span class="c"># Get storage connection string</span>
+<span class="nv">STORAGE_CONNECTION_STRING</span><span class="o">=</span><span class="si">$(</span>az storage account show-connection-string <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--query</span> connectionString <span class="nt">-o</span> tsv<span class="si">)</span>
+
+<span class="c"># Store in Key Vault</span>
+az keyvault secret <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--vault-name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"storage-connection-string"</span> <span class="se">\</span>
+  <span class="nt">--value</span> <span class="s2">"</span><span class="nv">$STORAGE_CONNECTION_STRING</span><span class="s2">"</span>
+</code></pre></div></div> <h4 id="32-create-blob-containers"> <a href="#32-create-blob-containers" class="anchor-heading" aria-labelledby="32-create-blob-containers"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3.2 Create Blob Containers </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create containers for different types of content</span>
+az storage container create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"documents"</span> <span class="se">\</span>
+  <span class="nt">--connection-string</span> <span class="s2">"</span><span class="nv">$STORAGE_CONNECTION_STRING</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--public-access</span> off
+
+az storage container create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"images"</span> <span class="se">\</span>
+  <span class="nt">--connection-string</span> <span class="s2">"</span><span class="nv">$STORAGE_CONNECTION_STRING</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--public-access</span> off
+
+az storage container create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"backups"</span> <span class="se">\</span>
+  <span class="nt">--connection-string</span> <span class="s2">"</span><span class="nv">$STORAGE_CONNECTION_STRING</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--public-access</span> off
+</code></pre></div></div> <h3 id="phase-4-authentication-setup"> <a href="#phase-4-authentication-setup" class="anchor-heading" aria-labelledby="phase-4-authentication-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 4: Authentication Setup </h3> <h4 id="41-create-azure-ad-b2c-tenant"> <a href="#41-create-azure-ad-b2c-tenant" class="anchor-heading" aria-labelledby="41-create-azure-ad-b2c-tenant"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 4.1 Create Azure AD B2C Tenant </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Note: Azure AD B2C tenant creation requires Azure portal</span>
+<span class="c"># Follow these steps in the portal:</span>
+
+<span class="c"># 1. Navigate to Azure Portal</span>
+<span class="c"># 2. Search for "Azure AD B2C"</span>
+<span class="c"># 3. Click "Create"</span>
+<span class="c"># 4. Select "Create a new Azure AD B2C Tenant"</span>
+<span class="c"># 5. Provide organization name and domain name</span>
+<span class="c"># 6. Select country/region</span>
+<span class="c"># 7. Complete creation</span>
+
+<span class="c"># After creation, note the tenant domain (e.g., advisorosb2c.onmicrosoft.com)</span>
+<span class="nv">B2C_TENANT</span><span class="o">=</span><span class="s2">"advisorosb2c.onmicrosoft.com"</span>
+</code></pre></div></div> <h4 id="42-configure-b2c-application"> <a href="#42-configure-b2c-application" class="anchor-heading" aria-labelledby="42-configure-b2c-application"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 4.2 Configure B2C Application </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create application registration in B2C</span>
+<span class="c"># This must be done through Azure Portal:</span>
+
+<span class="c"># 1. Navigate to your B2C tenant</span>
+<span class="c"># 2. Go to "App registrations"</span>
+<span class="c"># 3. Click "New registration"</span>
+<span class="c"># 4. Provide name: "AdvisorOS Web App"</span>
+<span class="c"># 5. Set redirect URI: https://your-domain.com/api/auth/callback/azure-ad-b2c</span>
+<span class="c"># 6. Note the Application (client) ID</span>
+</code></pre></div></div> <h3 id="phase-5-backend-deployment"> <a href="#phase-5-backend-deployment" class="anchor-heading" aria-labelledby="phase-5-backend-deployment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 5: Backend Deployment </h3> <h4 id="51-create-azure-functions-app"> <a href="#51-create-azure-functions-app" class="anchor-heading" aria-labelledby="51-create-azure-functions-app"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 5.1 Create Azure Functions App </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Function App for backend API</span>
+az functionapp create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--storage-account</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--consumption-plan-location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--runtime</span> node <span class="se">\</span>
+  <span class="nt">--runtime-version</span> 18 <span class="se">\</span>
+  <span class="nt">--functions-version</span> 4 <span class="se">\</span>
+  <span class="nt">--https-only</span> <span class="nb">true</span>
+</code></pre></div></div> <h4 id="52-configure-function-app-settings"> <a href="#52-configure-function-app-settings" class="anchor-heading" aria-labelledby="52-configure-function-app-settings"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 5.2 Configure Function App Settings </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set application settings</span>
+az functionapp config appsettings <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--settings</span> <span class="se">\</span>
+    <span class="nv">NODE_ENV</span><span class="o">=</span>production <span class="se">\</span>
+    <span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"postgresql://advisoros_app:</span><span class="si">$(</span>az keyvault secret show <span class="nt">--vault-name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="nt">--name</span> <span class="s2">"database-password"</span> <span class="nt">--query</span> value <span class="nt">-o</span> tsv<span class="si">)</span><span class="s2">@psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">.postgres.database.azure.com:5432/advisoros?sslmode=require"</span> <span class="se">\</span>
+    <span class="nv">AZURE_STORAGE_CONNECTION_STRING</span><span class="o">=</span><span class="s2">"@Microsoft.KeyVault(SecretUri=https://kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">.vault.azure.net/secrets/storage-connection-string/)"</span> <span class="se">\</span>
+    <span class="nv">NEXTAUTH_SECRET</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>openssl rand <span class="nt">-base64</span> 32<span class="si">)</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nv">NEXTAUTH_URL</span><span class="o">=</span><span class="s2">"https://your-domain.com"</span>
+</code></pre></div></div> <h4 id="53-deploy-backend-code"> <a href="#53-deploy-backend-code" class="anchor-heading" aria-labelledby="53-deploy-backend-code"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 5.3 Deploy Backend Code </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Clone the repository</span>
+git clone https://github.com/your-org/advisoros.git
+<span class="nb">cd </span>advisoros
+
+<span class="c"># Install dependencies</span>
+npm <span class="nb">install</span>
+
+<span class="c"># Build the project</span>
+npm run build
+
+<span class="c"># Deploy to Function App</span>
+az functionapp deployment <span class="nb">source </span>config <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--repo-url</span> https://github.com/your-org/advisoros.git <span class="se">\</span>
+  <span class="nt">--branch</span> main <span class="se">\</span>
+  <span class="nt">--manual-integration</span>
+</code></pre></div></div> <h3 id="phase-6-frontend-deployment"> <a href="#phase-6-frontend-deployment" class="anchor-heading" aria-labelledby="phase-6-frontend-deployment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 6: Frontend Deployment </h3> <h4 id="61-create-static-web-app"> <a href="#61-create-static-web-app" class="anchor-heading" aria-labelledby="61-create-static-web-app"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 6.1 Create Static Web App </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Static Web App for frontend</span>
+az staticwebapp create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"swa-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--source</span> https://github.com/your-org/advisoros <span class="se">\</span>
+  <span class="nt">--branch</span> main <span class="se">\</span>
+  <span class="nt">--app-location</span> <span class="s2">"/apps/web"</span> <span class="se">\</span>
+  <span class="nt">--api-location</span> <span class="s2">"/api"</span> <span class="se">\</span>
+  <span class="nt">--output-location</span> <span class="s2">"out"</span>
+</code></pre></div></div> <h4 id="62-configure-custom-domain-production-only"> <a href="#62-configure-custom-domain-production-only" class="anchor-heading" aria-labelledby="62-configure-custom-domain-production-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 6.2 Configure Custom Domain (Production Only) </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add custom domain (requires domain verification)</span>
+az staticwebapp <span class="nb">hostname set</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"swa-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--hostname</span> <span class="s2">"app.yourdomain.com"</span>
+</code></pre></div></div> <h3 id="phase-7-cdn-and-front-door-setup"> <a href="#phase-7-cdn-and-front-door-setup" class="anchor-heading" aria-labelledby="phase-7-cdn-and-front-door-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 7: CDN and Front Door Setup </h3> <h4 id="71-create-azure-front-door"> <a href="#71-create-azure-front-door" class="anchor-heading" aria-labelledby="71-create-azure-front-door"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 7.1 Create Azure Front Door </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Front Door Premium for enhanced security and performance</span>
+az afd profile create <span class="se">\</span>
+  <span class="nt">--profile-name</span> <span class="s2">"afd-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--sku</span> Premium_AzureFrontDoor
+
+<span class="c"># Create endpoint</span>
+az afd endpoint create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--profile-name</span> <span class="s2">"afd-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--endpoint-name</span> <span class="s2">"advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--enabled-state</span> Enabled
+</code></pre></div></div> <h4 id="72-configure-waf-policy"> <a href="#72-configure-waf-policy" class="anchor-heading" aria-labelledby="72-configure-waf-policy"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 7.2 Configure WAF Policy </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create WAF policy</span>
+az network front-door waf-policy create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"wafAdvisorOS</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--sku</span> Premium_AzureFrontDoor <span class="se">\</span>
+  <span class="nt">--mode</span> Prevention
+
+<span class="c"># Enable managed rulesets</span>
+az network front-door waf-policy managed-rules add <span class="se">\</span>
+  <span class="nt">--policy-name</span> <span class="s2">"wafAdvisorOS</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--type</span> Microsoft_DefaultRuleSet <span class="se">\</span>
+  <span class="nt">--version</span> 2.1
+</code></pre></div></div> <h3 id="phase-8-monitoring-and-logging"> <a href="#phase-8-monitoring-and-logging" class="anchor-heading" aria-labelledby="phase-8-monitoring-and-logging"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 8: Monitoring and Logging </h3> <h4 id="81-create-application-insights"> <a href="#81-create-application-insights" class="anchor-heading" aria-labelledby="81-create-application-insights"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 8.1 Create Application Insights </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Application Insights</span>
+az monitor app-insights component create <span class="se">\</span>
+  <span class="nt">--app</span> <span class="s2">"ai-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--kind</span> web <span class="se">\</span>
+  <span class="nt">--retention-time</span> 90
+
+<span class="c"># Get instrumentation key</span>
+<span class="nv">APPINSIGHTS_KEY</span><span class="o">=</span><span class="si">$(</span>az monitor app-insights component show <span class="se">\</span>
+  <span class="nt">--app</span> <span class="s2">"ai-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--query</span> instrumentationKey <span class="nt">-o</span> tsv<span class="si">)</span>
+
+<span class="c"># Store in Key Vault</span>
+az keyvault secret <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--vault-name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"appinsights-instrumentation-key"</span> <span class="se">\</span>
+  <span class="nt">--value</span> <span class="s2">"</span><span class="nv">$APPINSIGHTS_KEY</span><span class="s2">"</span>
+</code></pre></div></div> <h4 id="82-configure-log-analytics"> <a href="#82-configure-log-analytics" class="anchor-heading" aria-labelledby="82-configure-log-analytics"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 8.2 Configure Log Analytics </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create Log Analytics workspace</span>
+az monitor log-analytics workspace create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--workspace-name</span> <span class="s2">"law-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--retention-time</span> 90
+
+<span class="c"># Link Application Insights to Log Analytics</span>
+<span class="nv">WORKSPACE_ID</span><span class="o">=</span><span class="si">$(</span>az monitor log-analytics workspace show <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--workspace-name</span> <span class="s2">"law-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--query</span> customerId <span class="nt">-o</span> tsv<span class="si">)</span>
+
+az monitor app-insights component linked-storage <span class="nb">link</span> <span class="se">\</span>
+  <span class="nt">--app</span> <span class="s2">"ai-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--storage-account</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div> <h3 id="phase-9-security-configuration"> <a href="#phase-9-security-configuration" class="anchor-heading" aria-labelledby="phase-9-security-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 9: Security Configuration </h3> <h4 id="91-configure-network-security-groups"> <a href="#91-configure-network-security-groups" class="anchor-heading" aria-labelledby="91-configure-network-security-groups"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 9.1 Configure Network Security Groups </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create NSG for application subnet</span>
+az network nsg create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"nsg-app-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="c"># Allow HTTPS traffic</span>
+az network nsg rule create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--nsg-name</span> <span class="s2">"nsg-app-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"AllowHTTPS"</span> <span class="se">\</span>
+  <span class="nt">--priority</span> 1000 <span class="se">\</span>
+  <span class="nt">--access</span> Allow <span class="se">\</span>
+  <span class="nt">--protocol</span> Tcp <span class="se">\</span>
+  <span class="nt">--direction</span> Inbound <span class="se">\</span>
+  <span class="nt">--destination-port-ranges</span> 443
+
+<span class="c"># Associate NSG with subnet</span>
+az network vnet subnet update <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--vnet-name</span> <span class="s2">"vnet-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"subnet-app"</span> <span class="se">\</span>
+  <span class="nt">--network-security-group</span> <span class="s2">"nsg-app-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div> <h4 id="92-enable-azure-security-center"> <a href="#92-enable-azure-security-center" class="anchor-heading" aria-labelledby="92-enable-azure-security-center"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 9.2 Enable Azure Security Center </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable Security Center standard tier</span>
+az security pricing create <span class="se">\</span>
+  <span class="nt">--name</span> VirtualMachines <span class="se">\</span>
+  <span class="nt">--tier</span> Standard
+
+az security pricing create <span class="se">\</span>
+  <span class="nt">--name</span> StorageAccounts <span class="se">\</span>
+  <span class="nt">--tier</span> Standard
+
+az security pricing create <span class="se">\</span>
+  <span class="nt">--name</span> SqlServers <span class="se">\</span>
+  <span class="nt">--tier</span> Standard
+</code></pre></div></div> <h3 id="phase-10-backup-configuration"> <a href="#phase-10-backup-configuration" class="anchor-heading" aria-labelledby="phase-10-backup-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Phase 10: Backup Configuration </h3> <h4 id="101-configure-database-backups"> <a href="#101-configure-database-backups" class="anchor-heading" aria-labelledby="101-configure-database-backups"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 10.1 Configure Database Backups </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable automated backups for PostgreSQL</span>
+az postgres flexible-server parameter <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--server-name</span> <span class="s2">"psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> backup_retention_days <span class="se">\</span>
+  <span class="nt">--value</span> 35
+
+<span class="c"># Configure geo-redundant backup</span>
+az postgres flexible-server backup retention <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--server-name</span> <span class="s2">"psql-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--backup-retention</span> 35 <span class="se">\</span>
+  <span class="nt">--geo-redundant-backup</span> Enabled
+</code></pre></div></div> <h4 id="102-configure-storage-backups"> <a href="#102-configure-storage-backups" class="anchor-heading" aria-labelledby="102-configure-storage-backups"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 10.2 Configure Storage Backups </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable soft delete for blob storage</span>
+az storage account blob-service-properties update <span class="se">\</span>
+  <span class="nt">--account-name</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--enable-delete-retention</span> <span class="nb">true</span> <span class="se">\</span>
+  <span class="nt">--delete-retention-days</span> 30
+
+<span class="c"># Enable versioning</span>
+az storage account blob-service-properties update <span class="se">\</span>
+  <span class="nt">--account-name</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--enable-versioning</span> <span class="nb">true</span>
+</code></pre></div></div> <h2 id="post-deployment-configuration"> <a href="#post-deployment-configuration" class="anchor-heading" aria-labelledby="post-deployment-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Post-Deployment Configuration </h2> <h3 id="1-ssl-certificate-setup"> <a href="#1-ssl-certificate-setup" class="anchor-heading" aria-labelledby="1-ssl-certificate-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. SSL Certificate Setup </h3> <h4 id="managed-certificates-recommended"> <a href="#managed-certificates-recommended" class="anchor-heading" aria-labelledby="managed-certificates-recommended"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Managed Certificates (Recommended) </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># For Static Web Apps, SSL is automatically managed</span>
+<span class="c"># For custom domains, certificates are automatically provisioned</span>
+
+<span class="c"># Verify SSL configuration</span>
+curl <span class="nt">-I</span> https://your-domain.com
+</code></pre></div></div> <h4 id="custom-certificates"> <a href="#custom-certificates" class="anchor-heading" aria-labelledby="custom-certificates"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Custom Certificates </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># If using custom certificates, upload to Key Vault</span>
+az keyvault certificate import <span class="se">\</span>
+  <span class="nt">--vault-name</span> <span class="s2">"kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"ssl-certificate"</span> <span class="se">\</span>
+  <span class="nt">--file</span> path/to/certificate.pfx <span class="se">\</span>
+  <span class="nt">--password</span> certificate-password
+</code></pre></div></div> <h3 id="2-dns-configuration"> <a href="#2-dns-configuration" class="anchor-heading" aria-labelledby="2-dns-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. DNS Configuration </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure DNS records for your domain</span>
+<span class="c"># CNAME record: app.yourdomain.com -&gt; your-static-web-app.azurestaticapps.net</span>
+<span class="c"># A record: yourdomain.com -&gt; Front Door IP</span>
+
+<span class="c"># Verify DNS propagation</span>
+nslookup app.yourdomain.com
+</code></pre></div></div> <h3 id="3-environment-variables"> <a href="#3-environment-variables" class="anchor-heading" aria-labelledby="3-environment-variables"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Environment Variables </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Update application settings with production values</span>
+az functionapp config appsettings <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--settings</span> <span class="se">\</span>
+    <span class="nv">ENVIRONMENT</span><span class="o">=</span><span class="nv">$ENVIRONMENT</span> <span class="se">\</span>
+    <span class="nv">API_BASE_URL</span><span class="o">=</span><span class="s2">"https://your-domain.com/api"</span> <span class="se">\</span>
+    <span class="nv">FRONTEND_URL</span><span class="o">=</span><span class="s2">"https://your-domain.com"</span> <span class="se">\</span>
+    <span class="nv">AZURE_AD_B2C_TENANT_NAME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$B2C_TENANT</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nv">AZURE_AD_B2C_CLIENT_ID</span><span class="o">=</span><span class="s2">"your-b2c-client-id"</span> <span class="se">\</span>
+    <span class="nv">APPLICATIONINSIGHTS_CONNECTION_STRING</span><span class="o">=</span><span class="s2">"@Microsoft.KeyVault(SecretUri=https://kv-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">.vault.azure.net/secrets/appinsights-instrumentation-key/)"</span>
+</code></pre></div></div> <h3 id="4-database-migration"> <a href="#4-database-migration" class="anchor-heading" aria-labelledby="4-database-migration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 4. Database Migration </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run database migrations</span>
+npx prisma migrate deploy
+
+<span class="c"># Seed initial data (if required)</span>
+npx prisma db seed
+</code></pre></div></div> <h2 id="validation-and-testing"> <a href="#validation-and-testing" class="anchor-heading" aria-labelledby="validation-and-testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Validation and Testing </h2> <h3 id="1-health-checks"> <a href="#1-health-checks" class="anchor-heading" aria-labelledby="1-health-checks"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Health Checks </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Test frontend availability</span>
+curl <span class="nt">-f</span> https://your-domain.com
+
+<span class="c"># Test API endpoints</span>
+curl <span class="nt">-f</span> https://your-domain.com/api/health
+
+<span class="c"># Test database connectivity</span>
+curl <span class="nt">-f</span> https://your-domain.com/api/health/database
+</code></pre></div></div> <h3 id="2-performance-testing"> <a href="#2-performance-testing" class="anchor-heading" aria-labelledby="2-performance-testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Performance Testing </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Use Azure Load Testing or external tools</span>
+<span class="c"># Test key user journeys:</span>
+<span class="c"># - User login/logout</span>
+<span class="c"># - Client data access</span>
+<span class="c"># - Document upload/download</span>
+<span class="c"># - Report generation</span>
+</code></pre></div></div> <h3 id="3-security-testing"> <a href="#3-security-testing" class="anchor-heading" aria-labelledby="3-security-testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Security Testing </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run security scans</span>
+<span class="c"># - OWASP ZAP scan</span>
+<span class="c"># - Azure Security Center recommendations</span>
+<span class="c"># - Network penetration testing</span>
+<span class="c"># - SSL Labs SSL test</span>
+</code></pre></div></div> <h2 id="monitoring-setup"> <a href="#monitoring-setup" class="anchor-heading" aria-labelledby="monitoring-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Monitoring Setup </h2> <h3 id="1-configure-alerts"> <a href="#1-configure-alerts" class="anchor-heading" aria-labelledby="1-configure-alerts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Configure Alerts </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create alert for high error rate</span>
+az monitor metrics alert create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"HighErrorRate"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--scopes</span> <span class="s2">"/subscriptions/</span><span class="nv">$SUBSCRIPTION_ID</span><span class="s2">/resourceGroups/</span><span class="nv">$RESOURCE_GROUP</span><span class="s2">/providers/Microsoft.Web/sites/func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--condition</span> <span class="s2">"count 'requests/failed' &gt; 10"</span> <span class="se">\</span>
+  <span class="nt">--window-size</span> 5m <span class="se">\</span>
+  <span class="nt">--evaluation-frequency</span> 1m
+
+<span class="c"># Create alert for high response time</span>
+az monitor metrics alert create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"HighResponseTime"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--scopes</span> <span class="s2">"/subscriptions/</span><span class="nv">$SUBSCRIPTION_ID</span><span class="s2">/resourceGroups/</span><span class="nv">$RESOURCE_GROUP</span><span class="s2">/providers/Microsoft.Web/sites/func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--condition</span> <span class="s2">"average 'requests/duration' &gt; 2000"</span> <span class="se">\</span>
+  <span class="nt">--window-size</span> 5m <span class="se">\</span>
+  <span class="nt">--evaluation-frequency</span> 1m
+</code></pre></div></div> <h3 id="2-configure-action-groups"> <a href="#2-configure-action-groups" class="anchor-heading" aria-labelledby="2-configure-action-groups"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Configure Action Groups </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create action group for notifications</span>
+az monitor action-group create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"AdvisorOSAlerts"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--short-name</span> <span class="s2">"AOSAlerts"</span> <span class="se">\</span>
+  <span class="nt">--email</span> admin admin@yourdomain.com <span class="se">\</span>
+  <span class="nt">--sms</span> 1 555-123-4567
+</code></pre></div></div> <h2 id="disaster-recovery-setup"> <a href="#disaster-recovery-setup" class="anchor-heading" aria-labelledby="disaster-recovery-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Disaster Recovery Setup </h2> <h3 id="1-multi-region-deployment"> <a href="#1-multi-region-deployment" class="anchor-heading" aria-labelledby="1-multi-region-deployment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Multi-Region Deployment </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create secondary region resources for disaster recovery</span>
+<span class="nv">SECONDARY_LOCATION</span><span class="o">=</span><span class="s2">"West US 2"</span>
+<span class="nv">SECONDARY_RESOURCE_GROUP</span><span class="o">=</span><span class="s2">"rg-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">-dr"</span>
+
+<span class="c"># Replicate key resources to secondary region</span>
+az group create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="nv">$SECONDARY_RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$SECONDARY_LOCATION</span><span class="s2">"</span>
+
+<span class="c"># Configure geo-replication for storage</span>
+az storage account create <span class="se">\</span>
+  <span class="nt">--name</span> <span class="s2">"stadvisoros</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">dr"</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$SECONDARY_RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--location</span> <span class="s2">"</span><span class="nv">$SECONDARY_LOCATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--sku</span> Standard_GRS
+</code></pre></div></div> <h3 id="2-backup-and-recovery-procedures"> <a href="#2-backup-and-recovery-procedures" class="anchor-heading" aria-labelledby="2-backup-and-recovery-procedures"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Backup and Recovery Procedures </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create backup script</span>
+<span class="nb">cat</span> <span class="o">&gt;</span> backup-script.sh <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">'
+#!/bin/bash
+# Daily backup script for AdvisorOS
+
+# Database backup
+pg_dump "postgresql://advisoros_app:password@psql-advisoros-prod.postgres.database.azure.com:5432/advisoros" | </span><span class="se">\</span><span class="sh">
+  az storage blob upload </span><span class="se">\</span><span class="sh">
+    --account-name stadvisorosprod </span><span class="se">\</span><span class="sh">
+    --container-name backups </span><span class="se">\</span><span class="sh">
+    --name "database-backup-</span><span class="si">$(</span><span class="nb">date</span> +%Y%m%d<span class="si">)</span><span class="sh">.sql" </span><span class="se">\</span><span class="sh">
+    --data @-
+
+# Configuration backup
+az keyvault secret backup --vault-name kv-advisoros-prod --name database-password --file db-password-backup.json
+</span><span class="no">EOF
+
+</span><span class="nb">chmod</span> +x backup-script.sh
+</code></pre></div></div> <h2 id="troubleshooting-common-issues"> <a href="#troubleshooting-common-issues" class="anchor-heading" aria-labelledby="troubleshooting-common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting Common Issues </h2> <h3 id="1-deployment-failures"> <a href="#1-deployment-failures" class="anchor-heading" aria-labelledby="1-deployment-failures"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Deployment Failures </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check deployment status</span>
+az deployment group list <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--query</span> <span class="s2">"[?properties.provisioningState=='Failed']"</span>
+
+<span class="c"># View deployment logs</span>
+az deployment operation group list <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> deployment-name
+</code></pre></div></div> <h3 id="2-connectivity-issues"> <a href="#2-connectivity-issues" class="anchor-heading" aria-labelledby="2-connectivity-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Connectivity Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Test network connectivity</span>
+az network watcher connectivity-test <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--source-resource</span> func-advisoros-prod <span class="se">\</span>
+  <span class="nt">--dest-resource</span> psql-advisoros-prod <span class="se">\</span>
+  <span class="nt">--dest-port</span> 5432
+
+<span class="c"># Check firewall rules</span>
+az postgres flexible-server firewall-rule list <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> psql-advisoros-prod
+</code></pre></div></div> <h3 id="3-performance-issues"> <a href="#3-performance-issues" class="anchor-heading" aria-labelledby="3-performance-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Performance Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check resource utilization</span>
+az monitor metrics list <span class="se">\</span>
+  <span class="nt">--resource</span> <span class="s2">"/subscriptions/</span><span class="nv">$SUBSCRIPTION_ID</span><span class="s2">/resourceGroups/</span><span class="nv">$RESOURCE_GROUP</span><span class="s2">/providers/Microsoft.Web/sites/func-advisoros-</span><span class="k">${</span><span class="nv">ENVIRONMENT</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--metric</span> CpuPercentage,MemoryPercentage <span class="se">\</span>
+  <span class="nt">--start-time</span> <span class="si">$(</span><span class="nb">date</span> <span class="nt">-d</span> <span class="s1">'1 hour ago'</span> <span class="nt">-u</span> +%Y-%m-%dT%H:%M:%SZ<span class="si">)</span> <span class="se">\</span>
+  <span class="nt">--end-time</span> <span class="si">$(</span><span class="nb">date</span> <span class="nt">-u</span> +%Y-%m-%dT%H:%M:%SZ<span class="si">)</span>
+</code></pre></div></div> <h2 id="cost-optimization"> <a href="#cost-optimization" class="anchor-heading" aria-labelledby="cost-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Cost Optimization </h2> <h3 id="1-resource-right-sizing"> <a href="#1-resource-right-sizing" class="anchor-heading" aria-labelledby="1-resource-right-sizing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Resource Right-Sizing </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Monitor resource usage and adjust sizes</span>
+<span class="c"># Use Azure Advisor recommendations</span>
+az advisor recommendation list <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--category</span> Cost
+
+<span class="c"># Implement auto-scaling for Function Apps</span>
+az functionapp plan update <span class="se">\</span>
+  <span class="nt">--name</span> ASP-advisoros-prod <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--sku</span> P1v2 <span class="se">\</span>
+  <span class="nt">--number-of-workers</span> 1
+</code></pre></div></div> <h3 id="2-cost-monitoring"> <a href="#2-cost-monitoring" class="anchor-heading" aria-labelledby="2-cost-monitoring"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Cost Monitoring </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set up budget alerts</span>
+az consumption budget create <span class="se">\</span>
+  <span class="nt">--budget-name</span> <span class="s2">"AdvisorOS-Monthly-Budget"</span> <span class="se">\</span>
+  <span class="nt">--amount</span> 1000 <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--time-grain</span> Monthly <span class="se">\</span>
+  <span class="nt">--time-period</span> start-date<span class="o">=</span>2024-01-01 end-date<span class="o">=</span>2024-12-31
+</code></pre></div></div> <h2 id="security-hardening"> <a href="#security-hardening" class="anchor-heading" aria-labelledby="security-hardening"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Security Hardening </h2> <h3 id="1-network-security"> <a href="#1-network-security" class="anchor-heading" aria-labelledby="1-network-security"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Network Security </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Restrict database access to application subnet only</span>
+az postgres flexible-server firewall-rule delete <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> psql-advisoros-prod <span class="se">\</span>
+  <span class="nt">--rule-name</span> AllowAll_2023-01-01_0-0-0-0
+
+<span class="c"># Add specific IP ranges</span>
+az postgres flexible-server firewall-rule create <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> psql-advisoros-prod <span class="se">\</span>
+  <span class="nt">--rule-name</span> <span class="s2">"AllowApplicationSubnet"</span> <span class="se">\</span>
+  <span class="nt">--start-ip-address</span> 10.0.1.0 <span class="se">\</span>
+  <span class="nt">--end-ip-address</span> 10.0.1.255
+</code></pre></div></div> <h3 id="2-identity-and-access-management"> <a href="#2-identity-and-access-management" class="anchor-heading" aria-labelledby="2-identity-and-access-management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Identity and Access Management </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable managed identity for Function App</span>
+az functionapp identity assign <span class="se">\</span>
+  <span class="nt">--name</span> func-advisoros-prod <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span>
+
+<span class="c"># Grant Key Vault access to managed identity</span>
+<span class="nv">FUNCTION_PRINCIPAL_ID</span><span class="o">=</span><span class="si">$(</span>az functionapp identity show <span class="se">\</span>
+  <span class="nt">--name</span> func-advisoros-prod <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--query</span> principalId <span class="nt">-o</span> tsv<span class="si">)</span>
+
+az keyvault set-policy <span class="se">\</span>
+  <span class="nt">--name</span> kv-advisoros-prod <span class="se">\</span>
+  <span class="nt">--object-id</span> <span class="nv">$FUNCTION_PRINCIPAL_ID</span> <span class="se">\</span>
+  <span class="nt">--secret-permissions</span> get list
+</code></pre></div></div> <h2 id="maintenance-procedures"> <a href="#maintenance-procedures" class="anchor-heading" aria-labelledby="maintenance-procedures"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Maintenance Procedures </h2> <h3 id="1-regular-updates"> <a href="#1-regular-updates" class="anchor-heading" aria-labelledby="1-regular-updates"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Regular Updates </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Update Function App runtime</span>
+az functionapp config <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--name</span> func-advisoros-prod <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--node-version</span> 18
+
+<span class="c"># Update database version (requires maintenance window)</span>
+az postgres flexible-server update <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--name</span> psql-advisoros-prod <span class="se">\</span>
+  <span class="nt">--version</span> 15
+</code></pre></div></div> <h3 id="2-performance-tuning"> <a href="#2-performance-tuning" class="anchor-heading" aria-labelledby="2-performance-tuning"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Performance Tuning </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Optimize database performance</span>
+az postgres flexible-server parameter <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--server-name</span> psql-advisoros-prod <span class="se">\</span>
+  <span class="nt">--name</span> shared_preload_libraries <span class="se">\</span>
+  <span class="nt">--value</span> pg_stat_statements
+
+<span class="c"># Configure connection pooling</span>
+az postgres flexible-server parameter <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> <span class="nv">$RESOURCE_GROUP</span> <span class="se">\</span>
+  <span class="nt">--server-name</span> psql-advisoros-prod <span class="se">\</span>
+  <span class="nt">--name</span> max_connections <span class="se">\</span>
+  <span class="nt">--value</span> 200
+</code></pre></div></div> <p>This deployment guide provides a comprehensive foundation for deploying AdvisorOS to Azure. Regular updates and maintenance will ensure optimal performance and security.</p> </main> <hr> <footer> <p class="text-small text-grey-dk-100 mb-0">Built by the AdvisorOS team | Updated {{ site.time | date: '%B %d, %Y' }}</p> </footer> </div> </div> <div class="search-overlay"></div> </div> </body> </html>

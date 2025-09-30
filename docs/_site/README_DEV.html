@@ -1,0 +1,536 @@
+<!DOCTYPE html> <html lang="en-US"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <link rel="stylesheet" href="/AdvisorOS/assets/css/just-the-docs-default.css"> <link rel="stylesheet" href="/AdvisorOS/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet"> <style id="jtd-nav-activation"> .site-nav > ul.nav-list:first-child > li:not(:nth-child(22)) > a, .site-nav > ul.nav-list:first-child > li > ul > li a { background-image: none; } .site-nav > ul.nav-list:not(:first-child) a, .site-nav li.external a { background-image: none; } .site-nav > ul.nav-list:first-child > li:nth-child(22) > a { font-weight: 600; text-decoration: none; }.site-nav > ul.nav-list:first-child > li:nth-child(22) > button svg { transform: rotate(-90deg); }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(22) > ul.nav-list { display: block; } </style> <script src="/AdvisorOS/assets/js/vendor/lunr.min.js"></script> <script src="/AdvisorOS/assets/js/just-the-docs.js"></script> <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Begin Jekyll SEO tag v2.8.0 --> <title>Developer Setup | AdvisorOS Documentation</title> <meta name="generator" content="Jekyll v3.10.0" /> <meta property="og:title" content="Developer Setup" /> <meta property="og:locale" content="en_US" /> <meta name="description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <meta property="og:description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <link rel="canonical" href="https://markus41.github.io/AdvisorOS/README_DEV.html" /> <meta property="og:url" content="https://markus41.github.io/AdvisorOS/README_DEV.html" /> <meta property="og:site_name" content="AdvisorOS Documentation" /> <meta property="og:type" content="website" /> <meta name="twitter:card" content="summary" /> <meta property="twitter:title" content="Developer Setup" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"WebPage","description":"Implementation, adoption, and operations playbook for AdvisorOS.","headline":"Developer Setup","url":"https://markus41.github.io/AdvisorOS/README_DEV.html"}</script> <!-- End Jekyll SEO tag --> </head> <body> <a class="skip-to-main" href="#main-content">Skip to main content</a> <svg xmlns="http://www.w3.org/2000/svg" class="d-none"> <symbol id="svg-link" viewBox="0 0 24 24"> <title>Link</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path> </svg> </symbol> <symbol id="svg-menu" viewBox="0 0 24 24"> <title>Menu</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"> <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line> </svg> </symbol> <symbol id="svg-arrow-right" viewBox="0 0 24 24"> <title>Expand</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"> <polyline points="9 18 15 12 9 6"></polyline> </svg> </symbol> <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE --> <symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"> <title id="svg-external-link-title">(external link)</title> <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line> </symbol> <symbol id="svg-doc" viewBox="0 0 24 24"> <title>Document</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"> <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline> </svg> </symbol> <symbol id="svg-search" viewBox="0 0 24 24"> <title>Search</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg> </symbol> <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md --> <symbol id="svg-copy" viewBox="0 0 16 16"> <title>Copy</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/> <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/> </svg> </symbol> <symbol id="svg-copied" viewBox="0 0 16 16"> <title>Copied</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16"> <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/> </svg> </symbol> </svg> <div class="side-bar"> <div class="site-header" role="banner"> <a href="/AdvisorOS/" class="site-title lh-tight"> AdvisorOS Documentation </a> <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false"> <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg> </button> </div> <nav aria-label="Main" id="site-nav" class="site-nav"> <ul class="nav-list"><li class="nav-list-item"><a href="/AdvisorOS/wiki/" class="nav-list-link">AdvisorOS Wiki</a></li><li class="nav-list-item"><a href="/AdvisorOS/" class="nav-list-link">Overview</a></li><li class="nav-list-item"><a href="/AdvisorOS/business/" class="nav-list-link">Business Overview</a></li><li class="nav-list-item"><a href="/AdvisorOS/FEATURES.html" class="nav-list-link">Product Capabilities</a></li><li class="nav-list-item"><a href="/AdvisorOS/strategic/" class="nav-list-link">Strategic Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/QUICK_START.html" class="nav-list-link">Executive Quick Start</a></li><li class="nav-list-item"><a href="/AdvisorOS/README.html" class="nav-list-link">Documentation Home</a></li><li class="nav-list-item"><a href="/AdvisorOS/technical/" class="nav-list-link">Technical Hub</a></li><li class="nav-list-item"><a href="/AdvisorOS/integrations/" class="nav-list-link">Integrations Hub</a></li><li class="nav-list-item"><a href="/AdvisorOS/security/" class="nav-list-link">Security & Compliance</a></li><li class="nav-list-item"><a href="/AdvisorOS/ARCHITECTURE.html" class="nav-list-link">Architecture</a></li><li class="nav-list-item"><a href="/AdvisorOS/API_REFERENCE.html" class="nav-list-link">API Reference</a></li><li class="nav-list-item"><a href="/AdvisorOS/USER_GUIDE_COMPREHENSIVE.html" class="nav-list-link">User Guide (Comprehensive)</a></li><li class="nav-list-item"><a href="/AdvisorOS/README_USER.html" class="nav-list-link">Implementation Runbook</a></li><li class="nav-list-item"><a href="/AdvisorOS/CLIENT_PORTAL_GUIDE.html" class="nav-list-link">Client Portal Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/DATABASE.html" class="nav-list-link">Database Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/DEVELOPER_SETUP_ENHANCED.html" class="nav-list-link">Developer Environment Setup</a></li><li class="nav-list-item"><a href="/AdvisorOS/DEPLOYMENT.html" class="nav-list-link">Deployment Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/ADMINISTRATOR_GUIDE.html" class="nav-list-link">Administrator Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/INTEGRATION_GUIDES.html" class="nav-list-link">Integration Guides</a></li><li class="nav-list-item"><a href="/AdvisorOS/QUICKBOOKS_SETUP.html" class="nav-list-link">QuickBooks Setup</a></li><li class="nav-list-item"><a href="/AdvisorOS/README_DEV.html" class="nav-list-link">Developer Setup</a></li><li class="nav-list-item"><a href="/AdvisorOS/TROUBLESHOOTING.html" class="nav-list-link">Troubleshooting</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Operations Command Center category" aria-pressed="false"> <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg> </button><a href="/AdvisorOS/operations/" class="nav-list-link">Operations Command Center</a><ul class="nav-list"><li class="nav-list-item"><a href="/AdvisorOS/operations/incident-response.html" class="nav-list-link">Incident Response Playbook</a></li><li class="nav-list-item"><a href="/AdvisorOS/operations/RUNBOOK.html" class="nav-list-link">Operations Runbook</a></li><li class="nav-list-item"><a href="/AdvisorOS/operations/DEPLOYMENT_GUIDE.html" class="nav-list-link">Production Deployment Guide</a></li></ul></li><li class="nav-list-item"><a href="/AdvisorOS/compliance/README.html" class="nav-list-link">Compliance Overview</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/001-multi-tenant-data-isolation.html" class="nav-list-link">ADR-001: Multi-Tenant Data Isolation Strategy</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/002-prisma-schema-design.html" class="nav-list-link">ADR-002: Prisma Schema Design and Relationships</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/003-nextjs-app-router-api-design.html" class="nav-list-link">ADR-003: Next.js App Router Structure and API Design</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/004-azure-infrastructure-scaling.html" class="nav-list-link">ADR-004: Azure Infrastructure Choices and Scaling Strategy</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/005-security-architecture-compliance.html" class="nav-list-link">ADR-005: Security Architecture and Compliance Framework</a></li><li class="nav-list-item"><a href="/AdvisorOS/api/" class="nav-list-link">AdvisorOS API Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/admin/" class="nav-list-link">AdvisorOS Administrator Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/ARCHITECTURE_AUDIT_SUMMARY.html" class="nav-list-link">AdvisorOS Architecture Audit Summary</a></li><li class="nav-list-item"><a href="/AdvisorOS/COST_OPTIMIZATION_STRATEGY.html" class="nav-list-link">AdvisorOS Cost Optimization Strategy</a></li><li class="nav-list-item"><a href="/AdvisorOS/developer/" class="nav-list-link">AdvisorOS Developer Documentation</a></li><li class="nav-list-item"><a href="/AdvisorOS/FAQ_TROUBLESHOOTING.html" class="nav-list-link">AdvisorOS FAQ &amp; Troubleshooting Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/PRODUCTION_READINESS_CHECKLIST.html" class="nav-list-link">AdvisorOS Production Readiness Checklist</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/TECHNICAL_DEBT_ANALYSIS.html" class="nav-list-link">AdvisorOS Technical Debt Analysis and Improvement Roadmap</a></li><li class="nav-list-item"><a href="/AdvisorOS/templates/TECHNICAL_DOC_TEMPLATE.html" class="nav-list-link">AdvisorOS Technical Doc Template</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/" class="nav-list-link">AdvisorOS User Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/architecture/adrs/" class="nav-list-link">Architectural Decision Records (ADRs)</a></li><li class="nav-list-item"><a href="/AdvisorOS/admin/infrastructure/azure-deployment.html" class="nav-list-link">Azure Deployment Guide for AdvisorOS</a></li><li class="nav-list-item"><a href="/AdvisorOS/api-specs/endpoints.html" class="nav-list-link">CPA Platform API Specifications</a></li><li class="nav-list-item"><a href="/AdvisorOS/design-system/components.html" class="nav-list-link">CPA Platform Design System - Components</a></li><li class="nav-list-item"><a href="/AdvisorOS/api/routes/client.html" class="nav-list-link">Client Management API</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/cpa-firms/client-management.html" class="nav-list-link">Client Management Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/clients/client-portal-guide.html" class="nav-list-link">Client Portal User Guide</a></li><li class="nav-list-item"><a href="/AdvisorOS/user-guide/cpa-firms/getting-started.html" class="nav-list-link">Getting Started with AdvisorOS</a></li><li class="nav-list-item"><a href="/AdvisorOS/compliance/soc2/overview.html" class="nav-list-link">SOC 2 Type II Compliance Overview</a></li></ul> <ul class="nav-list"><li class="nav-list-item external"> <a href="https://github.com/markus41/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md" class="nav-list-link external" > Product Overview (PDF) <svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title"><use xlink:href="#svg-external-link"></use></svg> </a> </li></ul> </nav> <footer class="site-footer"> This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll. </footer> </div> <div class="main" id="top"> <div id="main-header" class="main-header"> <div class="search" role="search"> <div class="search-input-wrap"> <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search AdvisorOS Documentation" aria-label="Search AdvisorOS Documentation" autocomplete="off"> <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label> </div> <div id="search-results" class="search-results"></div> </div> <nav aria-label="Auxiliary" class="aux-nav"> <ul class="aux-nav-list"> <li class="aux-nav-list-item"> <a href="https://github.com/markus41/AdvisorOS" class="site-button" > AdvisorOS on GitHub </a> </li> </ul> </nav> </div> <div class="main-content-wrap"> <div id="main-content" class="main-content"> <main> <h1 id="developer-setup-guide"> <a href="#developer-setup-guide" class="anchor-heading" aria-labelledby="developer-setup-guide"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Developer Setup Guide </h1> <blockquote> <p>[!NOTE] <strong>Navigation:</strong> <a href="/AdvisorOS/">Documentation Portal</a> › Developer Setup Guide Adjacent tracks: <a href="/AdvisorOS/DEVELOPER_SETUP_ENHANCED.html">Developer Environment Setup</a> · <a href="/AdvisorOS/DEPLOYMENT.html">Deployment Blueprint</a> · <a href="/AdvisorOS/ARCHITECTURE.html">Architecture Deep Dive</a></p> </blockquote> <h2 id="table-of-contents"> <a href="#table-of-contents" class="anchor-heading" aria-labelledby="table-of-contents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Table of Contents </h2> <ol> <li><a href="#development-environment-setup">Development Environment Setup</a></li> <li><a href="#prerequisites">Prerequisites</a></li> <li><a href="#installation">Installation</a></li> <li><a href="#project-structure">Project Structure</a></li> <li><a href="#development-workflow">Development Workflow</a></li> <li><a href="#testing">Testing</a></li> <li><a href="#database-management">Database Management</a></li> <li><a href="#environment-configuration">Environment Configuration</a></li> <li><a href="#debugging">Debugging</a></li> <li><a href="#performance-optimization">Performance Optimization</a></li> <li><a href="#deployment">Deployment</a></li> <li><a href="#contributing">Contributing</a></li> </ol><hr /> <h2 id="development-environment-setup"> <a href="#development-environment-setup" class="anchor-heading" aria-labelledby="development-environment-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Environment Setup </h2> <h3 id="system-requirements"> <a href="#system-requirements" class="anchor-heading" aria-labelledby="system-requirements"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> System Requirements </h3> <ul> <li><strong>Node.js</strong>: 18.17.0 or higher (LTS recommended)</li> <li><strong>npm</strong>: 10.0.0 or higher (included with Node.js)</li> <li><strong>PostgreSQL</strong>: 14+ (local development)</li> <li><strong>Docker</strong>: Optional for containerized development</li> <li><strong>Git</strong>: Latest version for version control</li> </ul> <h3 id="recommended-tools"> <a href="#recommended-tools" class="anchor-heading" aria-labelledby="recommended-tools"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Recommended Tools </h3> <ul> <li><strong>IDE</strong>: Visual Studio Code with recommended extensions</li> <li><strong>Database Client</strong>: pgAdmin, TablePlus, or Prisma Studio</li> <li><strong>API Testing</strong>: Postman or Thunder Client</li> <li><strong>Git Client</strong>: GitHub Desktop or command line</li> <li><strong>Terminal</strong>: Windows Terminal, iTerm2, or built-in terminal</li> </ul> <h3 id="vs-code-extensions"> <a href="#vs-code-extensions" class="anchor-heading" aria-labelledby="vs-code-extensions"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> VS Code Extensions </h3> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"recommendations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"ms-vscode.vscode-typescript-next"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"bradlc.vscode-tailwindcss"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"esbenp.prettier-vscode"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"ms-vscode.vscode-eslint"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Prisma.prisma"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"ms-vscode.vscode-json"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"formulahendry.auto-rename-tag"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"christian-kohler.path-intellisense"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"ms-vscode.vscode-todo-highlight"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div><hr /> <h2 id="prerequisites"> <a href="#prerequisites" class="anchor-heading" aria-labelledby="prerequisites"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Prerequisites </h2> <h3 id="required-software-installation"> <a href="#required-software-installation" class="anchor-heading" aria-labelledby="required-software-installation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Required Software Installation </h3> <h4 id="nodejs-and-npm"> <a href="#nodejs-and-npm" class="anchor-heading" aria-labelledby="nodejs-and-npm"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Node.js and npm </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check if Node.js is installed</span>
+node <span class="nt">--version</span>  <span class="c"># Should be 18.17.0+</span>
+npm <span class="nt">--version</span>   <span class="c"># Should be 10.0.0+</span>
+
+<span class="c"># Install Node.js from https://nodejs.org/</span>
+<span class="c"># Or use a version manager like nvm:</span>
+curl <span class="nt">-o-</span> https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm <span class="nb">install </span>18.17.0
+nvm use 18.17.0
+</code></pre></div></div> <h4 id="postgresql"> <a href="#postgresql" class="anchor-heading" aria-labelledby="postgresql"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> PostgreSQL </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Option 1: Local PostgreSQL installation</span>
+<span class="c"># Download from https://www.postgresql.org/download/</span>
+
+<span class="c"># Option 2: Docker PostgreSQL</span>
+docker run <span class="nt">--name</span> cpa-postgres <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">POSTGRES_USER</span><span class="o">=</span>cpa_user <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>your_password <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">POSTGRES_DB</span><span class="o">=</span>cpa_platform <span class="se">\</span>
+  <span class="nt">-p</span> 5432:5432 <span class="se">\</span>
+  <span class="nt">-d</span> postgres:14
+
+<span class="c"># Option 3: Cloud Database (Azure, AWS RDS, etc.)</span>
+<span class="c"># Use connection string provided by cloud provider</span>
+</code></pre></div></div> <h4 id="git-configuration"> <a href="#git-configuration" class="anchor-heading" aria-labelledby="git-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Configuration </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure Git with your information</span>
+git config <span class="nt">--global</span> user.name <span class="s2">"Your Name"</span>
+git config <span class="nt">--global</span> user.email <span class="s2">"your.email@example.com"</span>
+
+<span class="c"># Set up SSH key for GitHub</span>
+ssh-keygen <span class="nt">-t</span> ed25519 <span class="nt">-C</span> <span class="s2">"your.email@example.com"</span>
+<span class="c"># Add the public key to your GitHub account</span>
+</code></pre></div></div><hr /> <h2 id="installation"> <a href="#installation" class="anchor-heading" aria-labelledby="installation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Installation </h2> <h3 id="clone-and-setup-repository"> <a href="#clone-and-setup-repository" class="anchor-heading" aria-labelledby="clone-and-setup-repository"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Clone and Setup Repository </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Clone the repository</span>
+git clone https://github.com/your-org/cpa-platform.git
+<span class="nb">cd </span>cpa-platform
+
+<span class="c"># Install dependencies (this may take a few minutes)</span>
+npm <span class="nb">install</span>
+
+<span class="c"># Verify installation</span>
+npm run lint
+</code></pre></div></div> <h3 id="environment-configuration"> <a href="#environment-configuration" class="anchor-heading" aria-labelledby="environment-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Environment Configuration </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Copy environment template</span>
+<span class="nb">cp</span> .env.example .env.local
+
+<span class="c"># Edit environment variables</span>
+nano .env.local  <span class="c"># or your preferred editor</span>
+</code></pre></div></div> <h4 id="required-environment-variables"> <a href="#required-environment-variables" class="anchor-heading" aria-labelledby="required-environment-variables"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Required Environment Variables </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Database</span>
+<span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"postgresql://username:password@localhost:5432/cpa_platform"</span>
+
+<span class="c"># Authentication</span>
+<span class="nv">NEXTAUTH_SECRET</span><span class="o">=</span><span class="s2">"your-32-character-secret-key-here"</span>
+<span class="nv">NEXTAUTH_URL</span><span class="o">=</span><span class="s2">"http://localhost:3000"</span>
+
+<span class="c"># Azure Storage (for file uploads)</span>
+<span class="nv">AZURE_STORAGE_CONNECTION_STRING</span><span class="o">=</span><span class="s2">"your-azure-storage-connection"</span>
+
+<span class="c"># QuickBooks (for development, use Intuit sandbox)</span>
+<span class="nv">QUICKBOOKS_CLIENT_ID</span><span class="o">=</span><span class="s2">"your-qb-sandbox-client-id"</span>
+<span class="nv">QUICKBOOKS_CLIENT_SECRET</span><span class="o">=</span><span class="s2">"your-qb-sandbox-client-secret"</span>
+<span class="nv">QUICKBOOKS_SANDBOX_BASE_URL</span><span class="o">=</span><span class="s2">"https://sandbox-quickbooks.api.intuit.com"</span>
+
+<span class="c"># Stripe (use test keys for development)</span>
+<span class="nv">STRIPE_SECRET_KEY</span><span class="o">=</span><span class="s2">"sk_test_your_stripe_test_secret_key"</span>
+<span class="nv">STRIPE_PUBLISHABLE_KEY</span><span class="o">=</span><span class="s2">"pk_test_your_stripe_test_publishable_key"</span>
+<span class="nv">STRIPE_WEBHOOK_SECRET</span><span class="o">=</span><span class="s2">"whsec_your_stripe_webhook_secret"</span>
+
+<span class="c"># Email (for development, use Mailtrap or similar)</span>
+<span class="nv">SMTP_HOST</span><span class="o">=</span><span class="s2">"smtp.mailtrap.io"</span>
+<span class="nv">SMTP_PORT</span><span class="o">=</span><span class="s2">"2525"</span>
+<span class="nv">SMTP_USER</span><span class="o">=</span><span class="s2">"your-mailtrap-user"</span>
+<span class="nv">SMTP_PASS</span><span class="o">=</span><span class="s2">"your-mailtrap-password"</span>
+
+<span class="c"># Optional: AI Services</span>
+<span class="nv">AZURE_OPENAI_ENDPOINT</span><span class="o">=</span><span class="s2">"your-azure-openai-endpoint"</span>
+<span class="nv">AZURE_OPENAI_API_KEY</span><span class="o">=</span><span class="s2">"your-azure-openai-key"</span>
+</code></pre></div></div> <h3 id="database-setup"> <a href="#database-setup" class="anchor-heading" aria-labelledby="database-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Setup </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Generate Prisma client</span>
+npx prisma generate
+
+<span class="c"># Push schema to database (creates tables)</span>
+npx prisma db push
+
+<span class="c"># Seed the database with initial data</span>
+npm run db:seed
+
+<span class="c"># Open Prisma Studio to view data (optional)</span>
+npx prisma studio
+</code></pre></div></div> <h3 id="verify-installation"> <a href="#verify-installation" class="anchor-heading" aria-labelledby="verify-installation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Verify Installation </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start development server</span>
+npm run dev
+
+<span class="c"># In another terminal, run tests</span>
+npm run <span class="nb">test</span>
+
+<span class="c"># Check if everything is working</span>
+curl http://localhost:3000/api/health
+</code></pre></div></div><hr /> <h2 id="project-structure"> <a href="#project-structure" class="anchor-heading" aria-labelledby="project-structure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Project Structure </h2> <h3 id="monorepo-architecture"> <a href="#monorepo-architecture" class="anchor-heading" aria-labelledby="monorepo-architecture"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Monorepo Architecture </h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cpa-platform/
+├── apps/
+│   └── web/                    # Next.js application
+│       ├── src/
+│       │   ├── app/           # App Router pages
+│       │   ├── components/    # React components
+│       │   ├── lib/          # Utility functions
+│       │   └── server/       # Server-side code
+│       ├── public/           # Static assets
+│       └── package.json
+├── packages/
+│   ├── database/             # Prisma schema and client
+│   │   ├── prisma/
+│   │   │   └── schema.prisma
+│   │   └── package.json
+│   ├── types/               # TypeScript type definitions
+│   ├── ui/                  # Shared UI components
+│   └── shared/              # Shared utilities
+├── infrastructure/
+│   └── azure/               # Terraform infrastructure
+├── docs/                    # Documentation
+├── .github/                 # GitHub workflows
+└── package.json            # Root package.json
+</code></pre></div></div> <h3 id="key-directories-explained"> <a href="#key-directories-explained" class="anchor-heading" aria-labelledby="key-directories-explained"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Key Directories Explained </h3> <h4 id="appswebsrcapp"> <a href="#appswebsrcapp" class="anchor-heading" aria-labelledby="appswebsrcapp"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">/apps/web/src/app/</code> </h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app/
+├── (auth)/                  # Authentication routes
+├── api/                     # API routes
+│   ├── auth/               # NextAuth endpoints
+│   ├── clients/            # Client management
+│   ├── documents/          # Document handling
+│   └── quickbooks/         # QuickBooks integration
+├── dashboard/              # Main dashboard
+├── clients/                # Client management pages
+├── documents/              # Document management
+├── reports/                # Reporting interface
+└── settings/               # Settings pages
+</code></pre></div></div> <h4 id="appswebsrccomponents"> <a href="#appswebsrccomponents" class="anchor-heading" aria-labelledby="appswebsrccomponents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">/apps/web/src/components/</code> </h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>components/
+├── ui/                     # Base UI components
+│   ├── button.tsx
+│   ├── input.tsx
+│   └── dialog.tsx
+├── forms/                  # Form components
+├── charts/                 # Chart components (Tremor)
+├── layout/                 # Layout components
+└── features/               # Feature-specific components
+    ├── clients/
+    ├── documents/
+    └── reports/
+</code></pre></div></div> <h4 id="appswebsrclib"> <a href="#appswebsrclib" class="anchor-heading" aria-labelledby="appswebsrclib"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">/apps/web/src/lib/</code> </h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lib/
+├── auth.ts                 # Authentication configuration
+├── db.ts                   # Database connection
+├── utils.ts                # Utility functions
+├── validations/            # Zod schemas
+├── hooks/                  # Custom React hooks
+└── services/               # Business logic services
+    ├── client.service.ts
+    ├── document.service.ts
+    └── quickbooks.service.ts
+</code></pre></div></div><hr /> <h2 id="development-workflow"> <a href="#development-workflow" class="anchor-heading" aria-labelledby="development-workflow"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Workflow </h2> <h3 id="starting-development"> <a href="#starting-development" class="anchor-heading" aria-labelledby="starting-development"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Starting Development </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start all services</span>
+npm run dev
+
+<span class="c"># Or start specific services</span>
+npm run dev:web          <span class="c"># Next.js app only</span>
+npm run dev:db           <span class="c"># Database with Prisma Studio</span>
+npm run dev:docs         <span class="c"># Documentation server</span>
+</code></pre></div></div> <h3 id="making-changes"> <a href="#making-changes" class="anchor-heading" aria-labelledby="making-changes"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Making Changes </h3> <ol> <li><strong>Create Feature Branch</strong> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout <span class="nt">-b</span> feature/your-feature-name
+</code></pre></div> </div> </li> <li><strong>Make Changes</strong> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Edit files using your preferred editor</span>
+<span class="c"># Follow the coding standards (see STYLE_GUIDE.md)</span>
+</code></pre></div> </div> </li> <li><strong>Test Changes</strong> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run lint              <span class="c"># Check code style</span>
+npm run type-check        <span class="c"># TypeScript type checking</span>
+npm run <span class="nb">test</span>              <span class="c"># Run tests</span>
+npm run <span class="nb">test</span>:e2e          <span class="c"># Run end-to-end tests</span>
+</code></pre></div> </div> </li> <li><strong>Commit Changes</strong> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"feat: add new client management feature"</span>
+</code></pre></div> </div> </li> <li><strong>Push and Create PR</strong> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin feature/your-feature-name
+<span class="c"># Create pull request on GitHub</span>
+</code></pre></div> </div> </li> </ol> <h3 id="code-generation"> <a href="#code-generation" class="anchor-heading" aria-labelledby="code-generation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Code Generation </h3> <h4 id="generate-new-api-route"> <a href="#generate-new-api-route" class="anchor-heading" aria-labelledby="generate-new-api-route"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Generate New API Route </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create new API route</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> apps/web/src/app/api/your-endpoint
+<span class="nb">touch </span>apps/web/src/app/api/your-endpoint/route.ts
+</code></pre></div></div> <h4 id="generate-new-page"> <a href="#generate-new-page" class="anchor-heading" aria-labelledby="generate-new-page"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Generate New Page </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create new page</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> apps/web/src/app/your-page
+<span class="nb">touch </span>apps/web/src/app/your-page/page.tsx
+</code></pre></div></div> <h4 id="generate-new-component"> <a href="#generate-new-component" class="anchor-heading" aria-labelledby="generate-new-component"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Generate New Component </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create new component</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> apps/web/src/components/your-component
+<span class="nb">touch </span>apps/web/src/components/your-component/index.tsx
+</code></pre></div></div><hr /> <h2 id="testing"> <a href="#testing" class="anchor-heading" aria-labelledby="testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Testing </h2> <h3 id="test-setup"> <a href="#test-setup" class="anchor-heading" aria-labelledby="test-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Test Setup </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install test dependencies (already included)</span>
+npm <span class="nb">install</span>
+
+<span class="c"># Run all tests</span>
+npm run <span class="nb">test</span>
+
+<span class="c"># Run tests in watch mode</span>
+npm run <span class="nb">test</span>:watch
+
+<span class="c"># Run tests with coverage</span>
+npm run <span class="nb">test</span>:coverage
+</code></pre></div></div> <h3 id="test-types"> <a href="#test-types" class="anchor-heading" aria-labelledby="test-types"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Test Types </h3> <h4 id="unit-tests"> <a href="#unit-tests" class="anchor-heading" aria-labelledby="unit-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Unit Tests </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run unit tests only</span>
+npm run <span class="nb">test</span>:unit
+
+<span class="c"># Test specific file</span>
+npm run <span class="nb">test</span> <span class="nt">--</span> client.service.test.ts
+
+<span class="c"># Test with coverage</span>
+npm run <span class="nb">test</span>:coverage
+</code></pre></div></div> <h4 id="integration-tests"> <a href="#integration-tests" class="anchor-heading" aria-labelledby="integration-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Integration Tests </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run integration tests</span>
+npm run <span class="nb">test</span>:integration
+
+<span class="c"># Test API endpoints</span>
+npm run <span class="nb">test</span>:api
+</code></pre></div></div> <h4 id="end-to-end-tests"> <a href="#end-to-end-tests" class="anchor-heading" aria-labelledby="end-to-end-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> End-to-End Tests </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run E2E tests (requires running application)</span>
+npm run <span class="nb">test</span>:e2e
+
+<span class="c"># Run E2E tests with UI</span>
+npm run <span class="nb">test</span>:e2e:ui
+
+<span class="c"># Run specific E2E test</span>
+npx playwright <span class="nb">test </span>auth.spec.ts
+</code></pre></div></div> <h3 id="writing-tests"> <a href="#writing-tests" class="anchor-heading" aria-labelledby="writing-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Writing Tests </h3> <h4 id="unit-test-example"> <a href="#unit-test-example" class="anchor-heading" aria-labelledby="unit-test-example"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Unit Test Example </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// apps/web/src/lib/services/__tests__/client.service.test.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">describe</span><span class="p">,</span> <span class="nx">it</span><span class="p">,</span> <span class="nx">expect</span><span class="p">,</span> <span class="nx">beforeEach</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jest/globals</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ClientService</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../client.service</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">prisma</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../../db</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="dl">'</span><span class="s1">ClientService</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">beforeEach</span><span class="p">(</span><span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// Clean up test data</span>
+    <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">deleteMany</span><span class="p">();</span>
+  <span class="p">});</span>
+
+  <span class="nx">it</span><span class="p">(</span><span class="dl">'</span><span class="s1">should create a new client</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">clientData</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">businessName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test Business</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test@example.com</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">organizationId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test-org-id</span><span class="dl">'</span>
+    <span class="p">};</span>
+
+    <span class="kd">const</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span><span class="nx">clientData</span><span class="p">);</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">client</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">();</span>
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">client</span><span class="p">.</span><span class="nx">businessName</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="dl">'</span><span class="s1">Test Business</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div> <h4 id="integration-test-example"> <a href="#integration-test-example" class="anchor-heading" aria-labelledby="integration-test-example"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Integration Test Example </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// apps/web/src/app/api/__tests__/clients.test.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createMocks</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">node-mocks-http</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">handler</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../clients/route</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="dl">'</span><span class="s1">/api/clients</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">it</span><span class="p">(</span><span class="dl">'</span><span class="s1">should return clients for authenticated user</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="p">{</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">createMocks</span><span class="p">({</span>
+      <span class="na">method</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">authorization</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Bearer valid-token</span><span class="dl">'</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">await</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">);</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">_getStatusCode</span><span class="p">()).</span><span class="nx">toBe</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">_getData</span><span class="p">());</span>
+    <span class="nx">expect</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">data</span><span class="p">)).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div> <h4 id="e2e-test-example"> <a href="#e2e-test-example" class="anchor-heading" aria-labelledby="e2e-test-example"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> E2E Test Example </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// tests/e2e/auth.spec.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">test</span><span class="p">,</span> <span class="nx">expect</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@playwright/test</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="nx">test</span><span class="p">(</span><span class="dl">'</span><span class="s1">user can log in</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">({</span> <span class="nx">page</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">goto</span><span class="p">(</span><span class="dl">'</span><span class="s1">/login</span><span class="dl">'</span><span class="p">);</span>
+
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=email]</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">test@example.com</span><span class="dl">'</span><span class="p">);</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=password]</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">password123</span><span class="dl">'</span><span class="p">);</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=login-button]</span><span class="dl">'</span><span class="p">);</span>
+
+  <span class="k">await</span> <span class="nx">expect</span><span class="p">(</span><span class="nx">page</span><span class="p">).</span><span class="nx">toHaveURL</span><span class="p">(</span><span class="dl">'</span><span class="s1">/dashboard</span><span class="dl">'</span><span class="p">);</span>
+  <span class="k">await</span> <span class="nx">expect</span><span class="p">(</span><span class="nx">page</span><span class="p">.</span><span class="nx">locator</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=user-menu]</span><span class="dl">'</span><span class="p">)).</span><span class="nx">toBeVisible</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div><hr /> <h2 id="database-management"> <a href="#database-management" class="anchor-heading" aria-labelledby="database-management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Management </h2> <h3 id="prisma-workflow"> <a href="#prisma-workflow" class="anchor-heading" aria-labelledby="prisma-workflow"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Prisma Workflow </h3> <h4 id="schema-changes"> <a href="#schema-changes" class="anchor-heading" aria-labelledby="schema-changes"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Schema Changes </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Edit schema.prisma file</span>
+nano packages/database/prisma/schema.prisma
+
+<span class="c"># 2. Generate migration</span>
+npx prisma migrate dev <span class="nt">--name</span> add-new-field
+
+<span class="c"># 3. Generate client</span>
+npx prisma generate
+
+<span class="c"># 4. Apply to production (when ready)</span>
+npx prisma migrate deploy
+</code></pre></div></div> <h4 id="database-operations"> <a href="#database-operations" class="anchor-heading" aria-labelledby="database-operations"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Operations </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Reset database (development only)</span>
+npx prisma migrate reset
+
+<span class="c"># Seed database</span>
+npx prisma db seed
+
+<span class="c"># View database</span>
+npx prisma studio
+
+<span class="c"># Format schema file</span>
+npx prisma format
+</code></pre></div></div> <h3 id="database-seeding"> <a href="#database-seeding" class="anchor-heading" aria-labelledby="database-seeding"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Seeding </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// packages/database/prisma/seed.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">PrismaClient</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@prisma/client</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">bcrypt</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">bcryptjs</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">prisma</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PrismaClient</span><span class="p">();</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Create test organization</span>
+  <span class="kd">const</span> <span class="nx">organization</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">organization</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test CPA Firm</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">subdomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test-firm</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">subscriptionTier</span><span class="p">:</span> <span class="dl">'</span><span class="s1">professional</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="c1">// Create test user</span>
+  <span class="kd">const</span> <span class="nx">hashedPassword</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">bcrypt</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span><span class="dl">'</span><span class="s1">password123</span><span class="dl">'</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">admin@test-firm.com</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test Admin</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">password</span><span class="p">:</span> <span class="nx">hashedPassword</span><span class="p">,</span>
+      <span class="na">role</span><span class="p">:</span> <span class="dl">'</span><span class="s1">owner</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">organizationId</span><span class="p">:</span> <span class="nx">organization</span><span class="p">.</span><span class="nx">id</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Database seeded successfully</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">main</span><span class="p">()</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">finally</span><span class="p">(</span><span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">$disconnect</span><span class="p">();</span>
+  <span class="p">});</span>
+</code></pre></div></div><hr /> <h2 id="environment-configuration-1"> <a href="#environment-configuration-1" class="anchor-heading" aria-labelledby="environment-configuration-1"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Environment Configuration </h2> <h3 id="development-environments"> <a href="#development-environments" class="anchor-heading" aria-labelledby="development-environments"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Environments </h3> <h4 id="local-development"> <a href="#local-development" class="anchor-heading" aria-labelledby="local-development"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Local Development </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># .env.local for local development</span>
+<span class="nv">NODE_ENV</span><span class="o">=</span>development
+<span class="nv">DATABASE_URL</span><span class="o">=</span>postgresql://localhost:5432/cpa_platform_dev
+<span class="nv">NEXTAUTH_URL</span><span class="o">=</span>http://localhost:3000
+</code></pre></div></div> <h4 id="testing-environment"> <a href="#testing-environment" class="anchor-heading" aria-labelledby="testing-environment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Testing Environment </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># .env.test for testing</span>
+<span class="nv">NODE_ENV</span><span class="o">=</span><span class="nb">test
+</span><span class="nv">DATABASE_URL</span><span class="o">=</span>postgresql://localhost:5432/cpa_platform_test
+<span class="nv">NEXTAUTH_URL</span><span class="o">=</span>http://localhost:3000
+</code></pre></div></div> <h4 id="staging-environment"> <a href="#staging-environment" class="anchor-heading" aria-labelledby="staging-environment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Staging Environment </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># .env.staging for staging</span>
+<span class="nv">NODE_ENV</span><span class="o">=</span>production
+<span class="nv">DATABASE_URL</span><span class="o">=</span>postgresql://staging-db:5432/cpa_platform
+<span class="nv">NEXTAUTH_URL</span><span class="o">=</span>https://staging.cpaplatform.com
+</code></pre></div></div> <h3 id="environment-variable-management"> <a href="#environment-variable-management" class="anchor-heading" aria-labelledby="environment-variable-management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Environment Variable Management </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// apps/web/src/lib/env.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">z</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">zod</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">envSchema</span> <span class="o">=</span> <span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span>
+  <span class="na">NODE_ENV</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">enum</span><span class="p">([</span><span class="dl">'</span><span class="s1">development</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">test</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">production</span><span class="dl">'</span><span class="p">]),</span>
+  <span class="na">DATABASE_URL</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">url</span><span class="p">(),</span>
+  <span class="na">NEXTAUTH_SECRET</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+  <span class="na">NEXTAUTH_URL</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">url</span><span class="p">(),</span>
+  <span class="na">AZURE_STORAGE_CONNECTION_STRING</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">(),</span>
+  <span class="na">QUICKBOOKS_CLIENT_ID</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">(),</span>
+  <span class="na">QUICKBOOKS_CLIENT_SECRET</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">(),</span>
+<span class="p">});</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">env</span> <span class="o">=</span> <span class="nx">envSchema</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">);</span>
+</code></pre></div></div><hr /> <h2 id="debugging"> <a href="#debugging" class="anchor-heading" aria-labelledby="debugging"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Debugging </h2> <h3 id="vs-code-debug-configuration"> <a href="#vs-code-debug-configuration" class="anchor-heading" aria-labelledby="vs-code-debug-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> VS Code Debug Configuration </h3> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">.vscode/launch.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"configurations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Next.js: debug server-side"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node-terminal"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"launch"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"npm run dev"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Next.js: debug client-side"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chrome"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"launch"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://localhost:3000"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"webRoot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}/apps/web"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Next.js: debug full stack"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node-terminal"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"launch"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"npm run dev"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"serverReadyAction"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"pattern"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ready - started server on .+, url: (https?://.+)"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"uriFormat"</span><span class="p">:</span><span class="w"> </span><span class="s2">"%s"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"debugWithChrome"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div> <h3 id="common-debugging-techniques"> <a href="#common-debugging-techniques" class="anchor-heading" aria-labelledby="common-debugging-techniques"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Debugging Techniques </h3> <h4 id="server-side-debugging"> <a href="#server-side-debugging" class="anchor-heading" aria-labelledby="server-side-debugging"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Server-Side Debugging </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Add console.log for basic debugging</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Debug info:</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">variable</span><span class="p">,</span> <span class="nx">data</span> <span class="p">});</span>
+
+<span class="c1">// Use debugger statement</span>
+<span class="k">debugger</span><span class="p">;</span>
+
+<span class="c1">// Use VS Code breakpoints</span>
+<span class="c1">// Click in the gutter next to line numbers</span>
+</code></pre></div></div> <h4 id="client-side-debugging"> <a href="#client-side-debugging" class="anchor-heading" aria-labelledby="client-side-debugging"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Client-Side Debugging </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Browser console debugging</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Client data:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+
+<span class="c1">// React Developer Tools</span>
+<span class="c1">// Install browser extension for component inspection</span>
+
+<span class="c1">// Network tab</span>
+<span class="c1">// Monitor API calls and responses</span>
+</code></pre></div></div> <h4 id="database-debugging"> <a href="#database-debugging" class="anchor-heading" aria-labelledby="database-debugging"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Debugging </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Enable Prisma query logging</span>
+<span class="kd">const</span> <span class="nx">prisma</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PrismaClient</span><span class="p">({</span>
+  <span class="na">log</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">query</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">info</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">warn</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">],</span>
+<span class="p">});</span>
+
+<span class="c1">// Use Prisma Studio for data inspection</span>
+<span class="c1">// npx prisma studio</span>
+</code></pre></div></div><hr /> <h2 id="performance-optimization"> <a href="#performance-optimization" class="anchor-heading" aria-labelledby="performance-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Performance Optimization </h2> <h3 id="development-performance"> <a href="#development-performance" class="anchor-heading" aria-labelledby="development-performance"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Performance </h3> <h4 id="bundle-analysis"> <a href="#bundle-analysis" class="anchor-heading" aria-labelledby="bundle-analysis"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Bundle Analysis </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Analyze bundle size</span>
+npm run build
+npm run analyze
+
+<span class="c"># Check for large dependencies</span>
+npx bundlesize
+
+<span class="c"># Profile build performance</span>
+npm run build <span class="nt">--</span> <span class="nt">--profile</span>
+</code></pre></div></div> <h4 id="development-server-optimization"> <a href="#development-server-optimization" class="anchor-heading" aria-labelledby="development-server-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Server Optimization </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Enable SWC for faster compilation</span>
+<span class="c"># (already configured in next.config.js)</span>
+
+<span class="c"># Use incremental compilation</span>
+npm run dev <span class="nt">--</span> <span class="nt">--turbo</span>
+
+<span class="c"># Monitor memory usage</span>
+node <span class="nt">--max-old-space-size</span><span class="o">=</span>4096 node_modules/.bin/next dev
+</code></pre></div></div> <h3 id="code-optimization"> <a href="#code-optimization" class="anchor-heading" aria-labelledby="code-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Code Optimization </h3> <h4 id="lazy-loading"> <a href="#lazy-loading" class="anchor-heading" aria-labelledby="lazy-loading"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Lazy Loading </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Dynamic imports for code splitting</span>
+<span class="k">import</span> <span class="nx">dynamic</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">next/dynamic</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">DynamicComponent</span> <span class="o">=</span> <span class="nx">dynamic</span><span class="p">(</span>
+  <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">../components/HeavyComponent</span><span class="dl">'</span><span class="p">),</span>
+  <span class="p">{</span> <span class="na">loading</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">Loading</span><span class="p">...</span><span class="o">&lt;</span><span class="sr">/p&gt; </span><span class="err">}
+</span><span class="p">);</span>
+</code></pre></div></div> <h4 id="image-optimization"> <a href="#image-optimization" class="anchor-heading" aria-labelledby="image-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Image Optimization </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Use Next.js Image component</span>
+<span class="k">import</span> <span class="nx">Image</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">next/image</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="o">&lt;</span><span class="nx">Image</span>
+  <span class="nx">src</span><span class="o">=</span><span class="dl">"</span><span class="s2">/logo.png</span><span class="dl">"</span>
+  <span class="nx">alt</span><span class="o">=</span><span class="dl">"</span><span class="s2">Logo</span><span class="dl">"</span>
+  <span class="nx">width</span><span class="o">=</span><span class="p">{</span><span class="mi">200</span><span class="p">}</span>
+  <span class="nx">height</span><span class="o">=</span><span class="p">{</span><span class="mi">100</span><span class="p">}</span>
+  <span class="nx">priority</span> <span class="c1">// for above-the-fold images</span>
+<span class="o">/&gt;</span>
+</code></pre></div></div> <h4 id="database-optimization"> <a href="#database-optimization" class="anchor-heading" aria-labelledby="database-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Optimization </h4> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Use database indexes (already configured in schema.prisma)</span>
+<span class="c1">// Implement database query optimization</span>
+<span class="kd">const</span> <span class="nx">optimizedQuery</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">findMany</span><span class="p">({</span>
+  <span class="na">select</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">businessName</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="c1">// Only select needed fields</span>
+  <span class="p">},</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="c1">// Limit results</span>
+<span class="p">});</span>
+</code></pre></div></div><hr /> <h2 id="deployment"> <a href="#deployment" class="anchor-heading" aria-labelledby="deployment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Deployment </h2> <h3 id="build-process"> <a href="#build-process" class="anchor-heading" aria-labelledby="build-process"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Build Process </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Build for production</span>
+npm run build
+
+<span class="c"># Test production build locally</span>
+npm run start
+
+<span class="c"># Build specific package</span>
+npm run build <span class="nt">--workspace</span><span class="o">=</span>@cpa-platform/web
+</code></pre></div></div> <h3 id="environment-setup"> <a href="#environment-setup" class="anchor-heading" aria-labelledby="environment-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Environment Setup </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Production environment variables</span>
+<span class="nv">NODE_ENV</span><span class="o">=</span>production
+<span class="nv">DATABASE_URL</span><span class="o">=</span>postgresql://prod-db:5432/cpa_platform
+<span class="nv">NEXTAUTH_URL</span><span class="o">=</span>https://your-domain.com
+<span class="nv">AZURE_STORAGE_CONNECTION_STRING</span><span class="o">=</span>production-connection-string
+</code></pre></div></div> <h3 id="database-migration"> <a href="#database-migration" class="anchor-heading" aria-labelledby="database-migration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Migration </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Apply migrations to production</span>
+npx prisma migrate deploy
+
+<span class="c"># Generate production client</span>
+npx prisma generate
+</code></pre></div></div> <h3 id="health-checks"> <a href="#health-checks" class="anchor-heading" aria-labelledby="health-checks"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Health Checks </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// apps/web/src/app/api/health/route.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">NextResponse</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">next/server</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">prisma</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@/lib/db</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="k">async</span> <span class="kd">function</span> <span class="nx">GET</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="c1">// Check database connection</span>
+    <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">$queryRaw</span><span class="s2">`SELECT 1`</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">NextResponse</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span>
+      <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">healthy</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">timestamp</span><span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">(),</span>
+      <span class="na">version</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">npm_package_version</span>
+    <span class="p">});</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">NextResponse</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span>
+      <span class="p">{</span> <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">unhealthy</span><span class="dl">'</span><span class="p">,</span> <span class="na">error</span><span class="p">:</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="na">status</span><span class="p">:</span> <span class="mi">503</span> <span class="p">}</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div><hr /> <h2 id="contributing"> <a href="#contributing" class="anchor-heading" aria-labelledby="contributing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Contributing </h2> <h3 id="code-style"> <a href="#code-style" class="anchor-heading" aria-labelledby="code-style"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Code Style </h3> <p>Follow the guidelines in <code class="language-plaintext highlighter-rouge">STYLE_GUIDE.md</code>:</p> <ul> <li>Use TypeScript for all new code</li> <li>Follow Prettier formatting</li> <li>Use ESLint for code quality</li> <li>Write tests for new features</li> <li>Update documentation</li> </ul> <h3 id="pull-request-process"> <a href="#pull-request-process" class="anchor-heading" aria-labelledby="pull-request-process"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Pull Request Process </h3> <ol> <li>Fork the repository</li> <li>Create feature branch</li> <li>Make changes with tests</li> <li>Update documentation</li> <li>Submit pull request</li> <li>Address review feedback</li> </ol> <h3 id="git-workflow"> <a href="#git-workflow" class="anchor-heading" aria-labelledby="git-workflow"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Git Workflow </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Keep main branch clean</span>
+git checkout main
+git pull origin main
+
+<span class="c"># Create feature branch</span>
+git checkout <span class="nt">-b</span> feature/new-feature
+
+<span class="c"># Make commits with conventional format</span>
+git commit <span class="nt">-m</span> <span class="s2">"feat: add new client search functionality"</span>
+
+<span class="c"># Push and create PR</span>
+git push origin feature/new-feature
+</code></pre></div></div><hr /> <h2 id="common-issues"> <a href="#common-issues" class="anchor-heading" aria-labelledby="common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Issues </h2> <h3 id="port-already-in-use"> <a href="#port-already-in-use" class="anchor-heading" aria-labelledby="port-already-in-use"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Port Already in Use </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Kill process using port 3000</span>
+lsof <span class="nt">-ti</span>:3000 | xargs <span class="nb">kill</span> <span class="nt">-9</span>
+
+<span class="c"># Or use different port</span>
+npm run dev <span class="nt">--</span> <span class="nt">-p</span> 3001
+</code></pre></div></div> <h3 id="database-connection-issues"> <a href="#database-connection-issues" class="anchor-heading" aria-labelledby="database-connection-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database Connection Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check PostgreSQL is running</span>
+pg_isready <span class="nt">-h</span> localhost <span class="nt">-p</span> 5432
+
+<span class="c"># Reset database connection</span>
+npx prisma migrate reset
+npx prisma generate
+</code></pre></div></div> <h3 id="node-modules-issues"> <a href="#node-modules-issues" class="anchor-heading" aria-labelledby="node-modules-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Node Modules Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Clear npm cache</span>
+npm cache clean <span class="nt">--force</span>
+
+<span class="c"># Delete node_modules and reinstall</span>
+<span class="nb">rm</span> <span class="nt">-rf</span> node_modules package-lock.json
+npm <span class="nb">install</span>
+</code></pre></div></div><hr /> <h2 id="additional-resources"> <a href="#additional-resources" class="anchor-heading" aria-labelledby="additional-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Additional Resources </h2> <ul> <li><a href="https://nextjs.org/docs">Next.js Documentation</a></li> <li><a href="https://www.prisma.io/docs">Prisma Documentation</a></li> <li><a href="https://www.typescriptlang.org/docs">TypeScript Handbook</a></li> <li><a href="https://tailwindcss.com/docs">Tailwind CSS Documentation</a></li> <li><a href="https://www.tremor.so/docs">Tremor Documentation</a></li> </ul> <p><em>For questions or issues not covered in this guide, please check the existing GitHub issues or create a new one.</em></p> </main> <hr> <footer> <p class="text-small text-grey-dk-100 mb-0">Built by the AdvisorOS team | Updated {{ site.time | date: '%B %d, %Y' }}</p> </footer> </div> </div> <div class="search-overlay"></div> </div> </body> </html>
