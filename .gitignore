@@ -108,3 +108,11 @@ coverage
 # OS
 .DS_Store
 Thumbs.db
+
+# Jekyll
+docs/_site/
+docs/vendor/
+docs/.sass-cache/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/.bundle/
