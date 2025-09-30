@@ -1,3 +1,9 @@
+---
+layout: default
+title: Integration Guides
+nav_order: 40
+---
+
 # AdvisorOS Integration Guides
 
 > [!TIP]

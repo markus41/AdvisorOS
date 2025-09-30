@@ -1,3 +1,9 @@
+---
+layout: default
+title: Client Portal Guide
+nav_order: 25
+---
+
 # Client Portal Guide
 
 ## Table of Contents
