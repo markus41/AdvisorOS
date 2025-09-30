@@ -1,0 +1,20 @@
+# Jekyll build output
+_site/
+
+# Bundler
+vendor/
+Gemfile.lock
+
+# Ruby
+.rbenv-version
+.rvmrc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jekyll cache
+.jekyll-cache/
+
+# Build logs
+*.log
