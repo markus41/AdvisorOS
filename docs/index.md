@@ -10,7 +10,18 @@ mermaid: true
 AdvisorOS is the operating system for modern CPA firms. Use this site as the single briefing room for product narrative, implementation playbooks, and day-to-day operations. Everything here links directly to the living documents in this repo so you are always reading the source of truth.
 
 > [!TIP]
-> Pin this page in your browser. The tiles and dashboards below reflect the documents we update most often during rollouts, production support, and stakeholder briefings.
+> **New to AdvisorOS?** Start with our [comprehensive wiki portal](wiki.md) for organized access to all documentation, or pin this page in your browser for quick access to the most frequently updated documents during rollouts, production support, and stakeholder briefings.
+
+## 🚀 Quick Access Hub
+
+| I want to... | Start here | Why this matters |
+|--------------|------------|------------------|
+| **Explore all documentation** | [📚 Wiki Portal](wiki.md) | Organized access to 170+ documents |
+| **Get started quickly** | [⚡ Quick Start](QUICK_START.md) | 5-minute platform orientation |
+| **Understand capabilities** | [🎯 Product Features](FEATURES.md) | Complete feature overview |
+| **Set up development** | [💻 Developer Setup](README_DEV.md) | Full development environment |
+| **Handle operations** | [🛠️ Operations Center](operations/index.md) | Production operations hub |
+| **Ensure compliance** | [🔒 Security & Compliance](compliance/README.md) | Regulatory framework |
 
 ## Choose Your Track
 
