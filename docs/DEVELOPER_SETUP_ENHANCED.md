@@ -4,6 +4,10 @@ title: Developer Environment Setup
 nav_order: 30
 ---
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Developer Environment Setup  
+> Adjacent tracks: [Architecture Deep Dive](ARCHITECTURE.md) · [Product Capabilities](FEATURES.md) · [Operations Command Center](operations/index.md)
+
 # AdvisorOS Developer Setup & Architecture Guide
 
 ## Table of Contents

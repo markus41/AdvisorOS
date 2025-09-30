@@ -1,5 +1,9 @@
 # Developer Setup Guide
 
+> [!NOTE]
+> **Navigation:** [Documentation Portal](index.md) › Developer Setup Guide
+> Adjacent tracks: [Developer Environment Setup](DEVELOPER_SETUP_ENHANCED.md) · [Deployment Blueprint](DEPLOYMENT.md) · [Architecture Deep Dive](ARCHITECTURE.md)
+
 ## Table of Contents
 
 1. [Development Environment Setup](#development-environment-setup)
