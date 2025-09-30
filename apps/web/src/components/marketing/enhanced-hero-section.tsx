@@ -277,12 +277,12 @@ export function EnhancedHeroSection({
               </div>
             </div>
 
-            {/* Floating Elements */}
-            <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-500 rounded-full opacity-20 animate-bounce"></div>
-            <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-purple-500 rounded-full opacity-10 animate-pulse"></div>
+            {/* Floating Elements - Non-obstructive positioning */}
+            <div className="absolute top-4 right-4 w-8 h-8 md:w-12 md:h-12 bg-blue-500 rounded-full opacity-15 animate-bounce pointer-events-none"></div>
+            <div className="absolute bottom-8 left-4 w-12 h-12 md:w-16 md:h-16 bg-purple-500 rounded-full opacity-10 animate-pulse pointer-events-none"></div>
 
             {/* Security Badge */}
-            <div className="absolute -bottom-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
+            <div className="absolute bottom-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-2">
                 <Shield className="w-4 h-4 text-green-500" />
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Bank-Level Security</span>
