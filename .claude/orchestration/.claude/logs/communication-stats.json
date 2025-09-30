@@ -1,0 +1,115 @@
+{
+  "totalMessages": 1,
+  "totalAgents": 11,
+  "activeAgents": 11,
+  "messagesByType": {
+    "pattern_discovered": 1
+  },
+  "messagesByPriority": {
+    "normal": 1
+  },
+  "agentStats": [
+    {
+      "name": "backend-api-developer",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "backend_development",
+        "database_optimization"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "frontend-builder",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "frontend_development"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "database-optimizer",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "database_optimization",
+        "performance"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "security-auditor",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "security_audit"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "test-suite-developer",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "testing"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "docs-writer",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "documentation"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "ai-features-orchestrator",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "ai_integration"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "devops-azure-specialist",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "devops"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "cpa-tax-compliance",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "cpa_compliance"
+      ],
+      "lastActive": 1759236731421
+    },
+    {
+      "name": "architecture-designer",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "architecture",
+        "database_optimization"
+      ],
+      "lastActive": 1759236731422
+    },
+    {
+      "name": "performance-optimization-specialist",
+      "messagesSent": 0,
+      "messagesReceived": 1,
+      "capabilities": [
+        "performance"
+      ],
+      "lastActive": 1759236731422
+    }
+  ]
+}

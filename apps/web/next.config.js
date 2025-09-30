@@ -81,10 +81,10 @@ const nextConfig = {
       }
     }
 
-    // Analyze bundle size in development
-    if (dev && !isServer) {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-      if (process.env.ANALYZE === 'true') {
+    // Analyze bundle size in development (optional dependency)
+    if (dev && !isServer && process.env.ANALYZE === 'true') {
+      try {
+        const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
         config.plugins.push(
           new BundleAnalyzerPlugin({
             analyzerMode: 'server',
@@ -92,6 +92,8 @@ const nextConfig = {
             openAnalyzer: true,
           })
         )
+      } catch (error) {
+        console.warn('webpack-bundle-analyzer not installed, skipping bundle analysis')
       }
     }
 

@@ -1,0 +1,57 @@
+# Multi-stage build for AdvisorOS Worker
+# Optimized for production deployment with minimal image size
+
+FROM node:20-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Install dependencies based on the preferred package manager
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Build the application
+FROM base AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Build the worker
+# Note: Workers don't need Next.js build, just TypeScript compilation
+RUN npm run build || npx tsc --project tsconfig.json
+
+# Production image, copy all the files and run the worker
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3001
+
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 worker
+
+# Copy necessary files from builder
+COPY --from=builder --chown=worker:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=worker:nodejs /app/apps/web/src ./apps/web/src
+COPY --from=builder --chown=worker:nodejs /app/apps/web/prisma ./apps/web/prisma
+COPY --from=builder --chown=worker:nodejs /app/apps/web/.next ./apps/web/.next
+COPY --from=builder --chown=worker:nodejs /app/package*.json ./
+
+# Switch to non-root user
+USER worker
+
+# Health check endpoint (basic node check)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "process.exit(0)" || exit 1
+
+# Run the worker
+CMD ["node", "-r", "ts-node/register", "apps/web/src/workers/index.ts"]

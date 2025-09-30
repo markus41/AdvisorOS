@@ -1,0 +1,31 @@
+{
+  "sessionId": "session_mg6k1rhc_mesr2mlhx",
+  "totalDuration": 2345,
+  "agentsUsed": [
+    "docs-writer"
+  ],
+  "toolCallsTotal": 1,
+  "agentMessagesTotal": 0,
+  "parallelExecutionPercentage": 0,
+  "mcpUtilization": 0,
+  "performanceMetrics": {
+    "bottlenecks": [],
+    "toolUsage": {
+      "Read": {
+        "count": 1,
+        "totalDuration": 100,
+        "failures": 0,
+        "avgDuration": 100,
+        "successRate": 100
+      }
+    },
+    "agentCollaboration": {
+      "communicationGraph": {},
+      "missedHandoffs": 0,
+      "totalMessages": 0,
+      "suggestions": []
+    }
+  },
+  "recommendations": [],
+  "learnedPatterns": []
+}

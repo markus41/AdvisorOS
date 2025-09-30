@@ -1,0 +1,45 @@
+{
+  "sessionId": "session_mg6ji3xt_nj8pyh47r",
+  "totalDuration": 9930,
+  "agentsUsed": [
+    "security-auditor",
+    "database-optimizer"
+  ],
+  "toolCallsTotal": 3,
+  "agentMessagesTotal": 0,
+  "parallelExecutionPercentage": 0,
+  "mcpUtilization": 0,
+  "performanceMetrics": {
+    "bottlenecks": [],
+    "toolUsage": {
+      "Read": {
+        "count": 3,
+        "totalDuration": 300,
+        "failures": 0,
+        "avgDuration": 100,
+        "successRate": 100
+      }
+    },
+    "agentCollaboration": {
+      "communicationGraph": {},
+      "missedHandoffs": 0,
+      "totalMessages": 0,
+      "suggestions": []
+    }
+  },
+  "recommendations": [],
+  "learnedPatterns": [
+    {
+      "type": "agent_sequence",
+      "pattern": "security-auditor → database-optimizer → database-optimizer",
+      "context": "Successful execution flow",
+      "confidence": 85
+    },
+    {
+      "type": "tool_sequence",
+      "pattern": "Read → Read → Read",
+      "context": "Common tool usage pattern",
+      "confidence": 75
+    }
+  ]
+}

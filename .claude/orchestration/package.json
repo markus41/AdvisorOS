@@ -1,0 +1,30 @@
+{
+  "name": "@advisoros/agent-orchestration",
+  "version": "1.0.0",
+  "description": "Intelligent multi-agent orchestration with inter-agent communication, runtime logging, handoffs, and learning",
+  "main": "execution-orchestrator.js",
+  "scripts": {
+    "test": "node test-orchestration.js",
+    "demo": "node test-orchestration.js",
+    "clean-logs": "rm -rf ../logs/*"
+  },
+  "keywords": [
+    "agent",
+    "orchestration",
+    "multi-agent",
+    "communication",
+    "logging",
+    "learning",
+    "ai",
+    "automation"
+  ],
+  "author": "AdvisorOS Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markus41/AdvisorOS"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

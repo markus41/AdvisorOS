@@ -1,0 +1,58 @@
+{
+  "sessionId": "session_mg6jlwi3_woou6zl2z",
+  "totalDuration": 17909,
+  "agentsUsed": [
+    "security-auditor",
+    "backend-api-developer",
+    "database-optimizer",
+    "frontend-builder"
+  ],
+  "toolCallsTotal": 6,
+  "agentMessagesTotal": 0,
+  "parallelExecutionPercentage": 0,
+  "mcpUtilization": 0,
+  "performanceMetrics": {
+    "bottlenecks": [],
+    "toolUsage": {
+      "Read": {
+        "count": 6,
+        "totalDuration": 600,
+        "failures": 0,
+        "avgDuration": 100,
+        "successRate": 100
+      }
+    },
+    "agentCollaboration": {
+      "communicationGraph": {},
+      "missedHandoffs": 3,
+      "totalMessages": 0,
+      "suggestions": [
+        "Enable automatic handoffs for better coordination"
+      ]
+    }
+  },
+  "recommendations": [
+    {
+      "type": "communication",
+      "priority": "medium",
+      "message": "3 potential handoffs were not utilized",
+      "details": [
+        "Enable automatic handoffs for better coordination"
+      ]
+    }
+  ],
+  "learnedPatterns": [
+    {
+      "type": "agent_sequence",
+      "pattern": "security-auditor → backend-api-developer → database-optimizer → backend-api-developer → frontend-builder → database-optimizer",
+      "context": "Successful execution flow",
+      "confidence": 85
+    },
+    {
+      "type": "tool_sequence",
+      "pattern": "Read → Read → Read → Read → Read",
+      "context": "Common tool usage pattern",
+      "confidence": 75
+    }
+  ]
+}

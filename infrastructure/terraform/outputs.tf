@@ -54,9 +54,37 @@ output "database_name" {
 }
 
 output "database_url" {
-  description = "PostgreSQL connection URL"
+  description = "PostgreSQL connection URL (primary, write operations)"
   value       = local.database_url
   sensitive   = true
+}
+
+output "database_readonly_url" {
+  description = "PostgreSQL read-only connection URL (defaults to replica 1 in prod)"
+  value       = local.database_readonly_url
+  sensitive   = true
+}
+
+output "database_read_replica_1_url" {
+  description = "PostgreSQL Read Replica 1 URL (same-region, analytics)"
+  value       = var.environment == "prod" ? local.database_read_replica_1_url : "N/A - Production only"
+  sensitive   = true
+}
+
+output "database_read_replica_dr_url" {
+  description = "PostgreSQL Read Replica DR URL (cross-region, disaster recovery)"
+  value       = var.environment == "prod" && var.enable_dr_replica ? local.database_read_replica_dr_url : "N/A - Not enabled"
+  sensitive   = true
+}
+
+output "postgres_replica_1_fqdn" {
+  description = "FQDN of PostgreSQL Read Replica 1"
+  value       = var.environment == "prod" ? azurerm_postgresql_flexible_server.read_replica_1[0].fqdn : "N/A - Production only"
+}
+
+output "postgres_replica_dr_fqdn" {
+  description = "FQDN of PostgreSQL Read Replica DR"
+  value       = var.environment == "prod" && var.enable_dr_replica ? azurerm_postgresql_flexible_server.read_replica_dr[0].fqdn : "N/A - Not enabled"
 }
 
 # App Service outputs
