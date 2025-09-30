@@ -1,3 +1,9 @@
+---
+layout: default
+title: QuickBooks Setup
+nav_order: 45
+---
+
 # QuickBooks Integration Setup Guide
 
 ## Table of Contents

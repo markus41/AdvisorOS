@@ -7,11 +7,11 @@ enable_copy_code_button: true
 heading_anchors: true
 
 aux_links:
-  "AdvisorOS on GitHub": "https://github.com/MarkusAhling/AdvisorOS"
+  "AdvisorOS on GitHub": "https://github.com/markus41/AdvisorOS"
 
 nav_external_links:
   - title: Product Overview (PDF)
-    url: https://github.com/MarkusAhling/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md
+    url: https://github.com/markus41/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md
     open_in_new_tab: true
 
 callouts:

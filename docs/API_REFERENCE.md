@@ -1,3 +1,9 @@
+---
+layout: default
+title: API Reference
+nav_order: 15
+---
+
 # AdvisorOS API Reference
 
 > [!TIP]
