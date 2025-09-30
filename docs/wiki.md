@@ -37,10 +37,11 @@ In-depth technical resources for developers and system administrators.
 
 | Resource | Audience | Purpose |
 |----------|----------|---------|
+| [Technical Hub](technical.md) | Developers | Complete technical documentation portal |
 | [Architecture Overview](ARCHITECTURE.md) | Architects | System design and technology stack |
 | [API Reference](API_REFERENCE.md) | Developers | Complete API documentation |
 | [Database Schema](DATABASE.md) | Developers | Database design and operations |
-| [Integration Guides](INTEGRATION_GUIDES.md) | Developers | Third-party integration setup |
+| [Integration Hub](integrations-hub.md) | Developers | Comprehensive integration documentation |
 
 ### 🛠️ Operations & Maintenance
 Operational procedures and maintenance guides for keeping AdvisorOS running smoothly.
@@ -57,6 +58,7 @@ Security protocols, compliance frameworks, and audit procedures.
 
 | Resource | Audience | Purpose |
 |----------|----------|---------|
+| [Security & Compliance Hub](security-compliance-hub.md) | Security Teams | Complete security documentation portal |
 | [Security Audit Report]({{ site.github.repository_url }}/blob/main/COMPREHENSIVE_SECURITY_AUDIT_REPORT.md) | Security Teams | Comprehensive security assessment |
 | [Compliance Overview](compliance/README.md) | Compliance Officers | Regulatory compliance framework |
 | [SOC 2 Compliance](compliance/soc2/overview.md) | Auditors | SOC 2 certification details |
@@ -88,11 +90,13 @@ Domain-specific guides and optimization strategies.
 graph TD
     A[AdvisorOS Wiki Portal] --> B[Getting Started]
     A --> C[Business Documentation]
-    A --> D[Technical Documentation]
+    A --> D[Technical Hub]
     A --> E[Operations & Maintenance]
-    A --> F[Security & Compliance]
+    A --> F[Security & Compliance Hub]
     A --> G[Analytics & Intelligence]
     A --> H[Specialized Workflows]
+    A --> I[Strategic Documentation Hub]
+    A --> J[Integrations Hub]
     
     B --> B1[Platform Overview]
     B --> B2[Quick Start Guide]
@@ -107,17 +111,17 @@ graph TD
     D --> D1[Architecture Overview]
     D --> D2[API Reference]
     D --> D3[Database Schema]
-    D --> D4[Integration Guides]
+    D --> D4[Development Resources]
     
     E --> E1[Operations Command Center]
     E --> E2[Deployment Guide]
     E --> E3[Incident Response]
     E --> E4[Operations Runbook]
     
-    F --> F1[Security Audit Report]
-    F --> F2[Compliance Overview]
-    F --> F3[SOC 2 Compliance]
-    F --> F4[Security Vulnerability Guide]
+    F --> F1[Security Framework]
+    F --> F2[Compliance Management]
+    F --> F3[Audit Procedures]
+    F --> F4[Security Controls]
     
     G --> G1[Financial Analytics]
     G --> G2[Revenue Intelligence]
@@ -128,6 +132,16 @@ graph TD
     H --> H2[Tax Season Optimization]
     H --> H3[QuickBooks Setup]
     H --> H4[Sales Enablement]
+    
+    I --> I1[Executive Summaries]
+    I --> I2[Business Intelligence]
+    I --> I3[Strategic Planning]
+    I --> I4[Launch Planning]
+    
+    J --> J1[Accounting Systems]
+    J --> J2[Cloud Services]
+    J --> J3[Payment Systems]
+    J --> J4[API Framework]
 ```
 
 ## 🔍 Quick Navigation by Role
