@@ -1,3 +1,9 @@
+---
+layout: default
+title: Documentation Home
+nav_order: 5
+---
+
 # AdvisorOS Documentation
 
 AdvisorOS is the operating system for modern CPA firms. Use this portal as the single briefing room for product narrative, implementation playbooks, and day-to-day operations. Everything here links directly to the living documents in this repository so you are always reading the source of truth.
@@ -11,7 +17,7 @@ AdvisorOS is the operating system for modern CPA firms. Use this portal as the s
 | --- | --- | --- | --- |
 | :file_folder: GitHub-native hub | [README.md](README.md) | Browse the curated tiles directly in the GitHub file viewer. | Add it to your repo favorites for one-click access during reviews. |
 | :compass: In-repo microsite | [Documentation Portal](index.md) | Navigate with section anchors, breadcrumbs, and mermaid diagrams while working locally. | Tap <kbd>cmd</kbd>+<kbd>k</kbd> (or <kbd>ctrl</kbd>+<kbd>k</kbd>) to jump to headings in supported editors. |
-| :globe_with_meridians: Published site | [GitHub Pages](https://markusahling.github.io/AdvisorOS/) | Share the polished GitHub Pages experience with stakeholders once published. | Use the site-wide search to surface nested guides instantly. |
+| :globe_with_meridians: Published site | [GitHub Pages](https://markus41.github.io/AdvisorOS/) | Share the polished GitHub Pages experience with stakeholders once published. | Use the site-wide search to surface nested guides instantly. |
 
 > [!INFO]
 > Switching contexts? Each launcher above resolves to the same source files, so updates propagate everywhere once merged.
