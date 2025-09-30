@@ -102,9 +102,9 @@ Ground these numbers with the measurement model in the [Production Success Metri
 
 ## Product Walkthrough
 
-![AdvisorOS dashboard highlighting revenue insights, task queue, and real-time alerts](https://dummyimage.com/1200x720/0f172a/f1f5f9&text=AdvisorOS+Dashboard+Screenshot)
+![AdvisorOS Homepage - Complete CPA Practice Management Platform](assets/screenshots/advisoros-homepage.png)
 
-![Client workspace showing secure document exchange and collaboration timeline](https://dummyimage.com/1200x720/1e293b/f8fafc&text=Client+Workspace+Screenshot)
+![AdvisorOS Features Page - Comprehensive Platform Capabilities](assets/screenshots/advisoros-features.png)
 
 Swap in real screenshots from `docs/assets/screenshots/` so prospects see the actual experience. Include caption callouts referencing client outcomes from [CLIENT_SUCCESS_SYSTEM.md]({{ site.github.repository_url }}/blob/main/CLIENT_SUCCESS_SYSTEM.md).
 
