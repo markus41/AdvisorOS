@@ -1,3 +1,10 @@
+---
+layout: default
+title: Architecture
+nav_order: 10
+mermaid: true
+---
+
 # AdvisorOS Architecture Blueprint
 
 > [!TIP]

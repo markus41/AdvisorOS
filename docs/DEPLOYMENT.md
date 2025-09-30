@@ -1,3 +1,9 @@
+---
+layout: default
+title: Deployment Guide
+nav_order: 35
+---
+
 # AdvisorOS Deployment Playbook
 
 > [!TIP]

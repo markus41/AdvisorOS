@@ -1,3 +1,9 @@
+---
+layout: default
+title: Troubleshooting
+nav_order: 55
+---
+
 # Troubleshooting Guide
 
 ## Table of Contents

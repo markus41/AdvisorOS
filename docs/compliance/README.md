@@ -1,3 +1,10 @@
+---
+layout: default
+title: Compliance Overview
+nav_order: 65
+has_children: true
+---
+
 # AdvisorOS Compliance Documentation
 
 ## Overview

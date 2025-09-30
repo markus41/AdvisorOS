@@ -1,3 +1,9 @@
+---
+layout: default
+title: Database Guide
+nav_order: 30
+---
+
 # AdvisorOS Data Platform Guide
 
 > [!TIP]

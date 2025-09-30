@@ -1,3 +1,9 @@
+---
+layout: default
+title: Developer Setup
+nav_order: 50
+---
+
 # Developer Setup Guide
 
 > [!NOTE]
