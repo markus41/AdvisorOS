@@ -121,8 +121,8 @@ export function HeroSection({
           </div>
 
           {/* Visual */}
-          <div className="relative">
-            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
+          <div className="relative overflow-hidden">
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700 overflow-hidden">
               {/* Mock Dashboard */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -142,9 +142,9 @@ export function HeroSection({
               </div>
             </div>
 
-            {/* Floating Elements */}
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500 rounded-full opacity-20 animate-pulse"></div>
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-purple-500 rounded-full opacity-10 animate-pulse"></div>
+            {/* Floating Elements - Non-obstructive positioning */}
+            <div className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 bg-blue-500 rounded-full opacity-15 animate-pulse pointer-events-none"></div>
+            <div className="absolute bottom-4 left-4 w-16 h-16 md:w-20 md:h-20 bg-purple-500 rounded-full opacity-10 animate-pulse pointer-events-none"></div>
           </div>
         </div>
       </div>
