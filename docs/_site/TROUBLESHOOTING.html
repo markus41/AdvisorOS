@@ -1,0 +1,437 @@
+<!DOCTYPE html> <html lang="en-US"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <link rel="stylesheet" href="/assets/css/just-the-docs-default.css"> <link rel="stylesheet" href="/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet"> <style id="jtd-nav-activation"> .site-nav > ul.nav-list:first-child > li:not(:nth-child(23)) > a, .site-nav > ul.nav-list:first-child > li > ul > li a { background-image: none; } .site-nav > ul.nav-list:not(:first-child) a, .site-nav li.external a { background-image: none; } .site-nav > ul.nav-list:first-child > li:nth-child(23) > a { font-weight: 600; text-decoration: none; }.site-nav > ul.nav-list:first-child > li:nth-child(23) > button svg { transform: rotate(-90deg); }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(23) > ul.nav-list { display: block; } </style> <script src="/assets/js/vendor/lunr.min.js"></script> <script src="/assets/js/just-the-docs.js"></script> <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Begin Jekyll SEO tag v2.8.0 --> <title>Troubleshooting | AdvisorOS Documentation</title> <meta name="generator" content="Jekyll v3.10.0" /> <meta property="og:title" content="Troubleshooting" /> <meta property="og:locale" content="en_US" /> <meta name="description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <meta property="og:description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <meta property="og:site_name" content="AdvisorOS Documentation" /> <meta property="og:type" content="website" /> <meta name="twitter:card" content="summary" /> <meta property="twitter:title" content="Troubleshooting" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"WebPage","description":"Implementation, adoption, and operations playbook for AdvisorOS.","headline":"Troubleshooting","url":"/TROUBLESHOOTING.html"}</script> <!-- End Jekyll SEO tag --> </head> <body> <a class="skip-to-main" href="#main-content">Skip to main content</a> <svg xmlns="http://www.w3.org/2000/svg" class="d-none"> <symbol id="svg-link" viewBox="0 0 24 24"> <title>Link</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path> </svg> </symbol> <symbol id="svg-menu" viewBox="0 0 24 24"> <title>Menu</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"> <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line> </svg> </symbol> <symbol id="svg-arrow-right" viewBox="0 0 24 24"> <title>Expand</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"> <polyline points="9 18 15 12 9 6"></polyline> </svg> </symbol> <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE --> <symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"> <title id="svg-external-link-title">(external link)</title> <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line> </symbol> <symbol id="svg-doc" viewBox="0 0 24 24"> <title>Document</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"> <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline> </svg> </symbol> <symbol id="svg-search" viewBox="0 0 24 24"> <title>Search</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg> </symbol> <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md --> <symbol id="svg-copy" viewBox="0 0 16 16"> <title>Copy</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/> <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/> </svg> </symbol> <symbol id="svg-copied" viewBox="0 0 16 16"> <title>Copied</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16"> <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/> </svg> </symbol> </svg> <div class="side-bar"> <div class="site-header" role="banner"> <a href="/" class="site-title lh-tight"> AdvisorOS Documentation </a> <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false"> <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg> </button> </div> <nav aria-label="Main" id="site-nav" class="site-nav"> <ul class="nav-list"><li class="nav-list-item"><a href="/wiki/" class="nav-list-link">AdvisorOS Wiki</a></li><li class="nav-list-item"><a href="/" class="nav-list-link">Overview</a></li><li class="nav-list-item"><a href="/business/" class="nav-list-link">Business Overview</a></li><li class="nav-list-item"><a href="/FEATURES.html" class="nav-list-link">Product Capabilities</a></li><li class="nav-list-item"><a href="/strategic/" class="nav-list-link">Strategic Documentation</a></li><li class="nav-list-item"><a href="/QUICK_START.html" class="nav-list-link">Executive Quick Start</a></li><li class="nav-list-item"><a href="/README.html" class="nav-list-link">Documentation Home</a></li><li class="nav-list-item"><a href="/technical/" class="nav-list-link">Technical Hub</a></li><li class="nav-list-item"><a href="/integrations/" class="nav-list-link">Integrations Hub</a></li><li class="nav-list-item"><a href="/security/" class="nav-list-link">Security & Compliance</a></li><li class="nav-list-item"><a href="/ARCHITECTURE.html" class="nav-list-link">Architecture</a></li><li class="nav-list-item"><a href="/API_REFERENCE.html" class="nav-list-link">API Reference</a></li><li class="nav-list-item"><a href="/USER_GUIDE_COMPREHENSIVE.html" class="nav-list-link">User Guide (Comprehensive)</a></li><li class="nav-list-item"><a href="/README_USER.html" class="nav-list-link">Implementation Runbook</a></li><li class="nav-list-item"><a href="/CLIENT_PORTAL_GUIDE.html" class="nav-list-link">Client Portal Guide</a></li><li class="nav-list-item"><a href="/DATABASE.html" class="nav-list-link">Database Guide</a></li><li class="nav-list-item"><a href="/DEVELOPER_SETUP_ENHANCED.html" class="nav-list-link">Developer Environment Setup</a></li><li class="nav-list-item"><a href="/DEPLOYMENT.html" class="nav-list-link">Deployment Guide</a></li><li class="nav-list-item"><a href="/ADMINISTRATOR_GUIDE.html" class="nav-list-link">Administrator Guide</a></li><li class="nav-list-item"><a href="/INTEGRATION_GUIDES.html" class="nav-list-link">Integration Guides</a></li><li class="nav-list-item"><a href="/QUICKBOOKS_SETUP.html" class="nav-list-link">QuickBooks Setup</a></li><li class="nav-list-item"><a href="/README_DEV.html" class="nav-list-link">Developer Setup</a></li><li class="nav-list-item"><a href="/TROUBLESHOOTING.html" class="nav-list-link">Troubleshooting</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Operations Command Center category" aria-pressed="false"> <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg> </button><a href="/operations/" class="nav-list-link">Operations Command Center</a><ul class="nav-list"><li class="nav-list-item"><a href="/operations/incident-response.html" class="nav-list-link">Incident Response Playbook</a></li><li class="nav-list-item"><a href="/operations/RUNBOOK.html" class="nav-list-link">Operations Runbook</a></li><li class="nav-list-item"><a href="/operations/DEPLOYMENT_GUIDE.html" class="nav-list-link">Production Deployment Guide</a></li></ul></li><li class="nav-list-item"><a href="/compliance/README.html" class="nav-list-link">Compliance Overview</a></li><li class="nav-list-item"><a href="/architecture/adrs/001-multi-tenant-data-isolation.html" class="nav-list-link">ADR-001: Multi-Tenant Data Isolation Strategy</a></li><li class="nav-list-item"><a href="/architecture/adrs/002-prisma-schema-design.html" class="nav-list-link">ADR-002: Prisma Schema Design and Relationships</a></li><li class="nav-list-item"><a href="/architecture/adrs/003-nextjs-app-router-api-design.html" class="nav-list-link">ADR-003: Next.js App Router Structure and API Design</a></li><li class="nav-list-item"><a href="/architecture/adrs/004-azure-infrastructure-scaling.html" class="nav-list-link">ADR-004: Azure Infrastructure Choices and Scaling Strategy</a></li><li class="nav-list-item"><a href="/architecture/adrs/005-security-architecture-compliance.html" class="nav-list-link">ADR-005: Security Architecture and Compliance Framework</a></li><li class="nav-list-item"><a href="/api/" class="nav-list-link">AdvisorOS API Documentation</a></li><li class="nav-list-item"><a href="/admin/" class="nav-list-link">AdvisorOS Administrator Documentation</a></li><li class="nav-list-item"><a href="/architecture/ARCHITECTURE_AUDIT_SUMMARY.html" class="nav-list-link">AdvisorOS Architecture Audit Summary</a></li><li class="nav-list-item"><a href="/COST_OPTIMIZATION_STRATEGY.html" class="nav-list-link">AdvisorOS Cost Optimization Strategy</a></li><li class="nav-list-item"><a href="/developer/" class="nav-list-link">AdvisorOS Developer Documentation</a></li><li class="nav-list-item"><a href="/FAQ_TROUBLESHOOTING.html" class="nav-list-link">AdvisorOS FAQ &amp; Troubleshooting Guide</a></li><li class="nav-list-item"><a href="/PRODUCTION_READINESS_CHECKLIST.html" class="nav-list-link">AdvisorOS Production Readiness Checklist</a></li><li class="nav-list-item"><a href="/architecture/TECHNICAL_DEBT_ANALYSIS.html" class="nav-list-link">AdvisorOS Technical Debt Analysis and Improvement Roadmap</a></li><li class="nav-list-item"><a href="/templates/TECHNICAL_DOC_TEMPLATE.html" class="nav-list-link">AdvisorOS Technical Doc Template</a></li><li class="nav-list-item"><a href="/user-guide/" class="nav-list-link">AdvisorOS User Guide</a></li><li class="nav-list-item"><a href="/architecture/adrs/" class="nav-list-link">Architectural Decision Records (ADRs)</a></li><li class="nav-list-item"><a href="/admin/infrastructure/azure-deployment.html" class="nav-list-link">Azure Deployment Guide for AdvisorOS</a></li><li class="nav-list-item"><a href="/api-specs/endpoints.html" class="nav-list-link">CPA Platform API Specifications</a></li><li class="nav-list-item"><a href="/design-system/components.html" class="nav-list-link">CPA Platform Design System - Components</a></li><li class="nav-list-item"><a href="/api/routes/client.html" class="nav-list-link">Client Management API</a></li><li class="nav-list-item"><a href="/user-guide/cpa-firms/client-management.html" class="nav-list-link">Client Management Guide</a></li><li class="nav-list-item"><a href="/user-guide/clients/client-portal-guide.html" class="nav-list-link">Client Portal User Guide</a></li><li class="nav-list-item"><a href="/user-guide/cpa-firms/getting-started.html" class="nav-list-link">Getting Started with AdvisorOS</a></li><li class="nav-list-item"><a href="/compliance/soc2/overview.html" class="nav-list-link">SOC 2 Type II Compliance Overview</a></li></ul> <ul class="nav-list"><li class="nav-list-item external"> <a href="https://github.com/markus41/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md" class="nav-list-link external" > Product Overview (PDF) <svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title"><use xlink:href="#svg-external-link"></use></svg> </a> </li></ul> </nav> <footer class="site-footer"> This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll. </footer> </div> <div class="main" id="top"> <div id="main-header" class="main-header"> <div class="search" role="search"> <div class="search-input-wrap"> <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search AdvisorOS Documentation" aria-label="Search AdvisorOS Documentation" autocomplete="off"> <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label> </div> <div id="search-results" class="search-results"></div> </div> <nav aria-label="Auxiliary" class="aux-nav"> <ul class="aux-nav-list"> <li class="aux-nav-list-item"> <a href="https://github.com/markus41/AdvisorOS" class="site-button" > AdvisorOS on GitHub </a> </li> </ul> </nav> </div> <div class="main-content-wrap"> <div id="main-content" class="main-content"> <main> <h1 id="troubleshooting-guide"> <a href="#troubleshooting-guide" class="anchor-heading" aria-labelledby="troubleshooting-guide"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting Guide </h1> <h2 id="table-of-contents"> <a href="#table-of-contents" class="anchor-heading" aria-labelledby="table-of-contents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Table of Contents </h2> <ol> <li><a href="#common-issues">Common Issues</a></li> <li><a href="#login-and-authentication">Login and Authentication</a></li> <li><a href="#document-upload-problems">Document Upload Problems</a></li> <li><a href="#quickbooks-integration-issues">QuickBooks Integration Issues</a></li> <li><a href="#performance-issues">Performance Issues</a></li> <li><a href="#browser-compatibility">Browser Compatibility</a></li> <li><a href="#mobile-app-issues">Mobile App Issues</a></li> <li><a href="#error-messages">Error Messages</a></li> <li><a href="#data-sync-problems">Data Sync Problems</a></li> <li><a href="#network-and-connectivity">Network and Connectivity</a></li> <li><a href="#reporting-issues">Reporting Issues</a></li> <li><a href="#contact-support">Contact Support</a></li> </ol><hr /> <h2 id="common-issues"> <a href="#common-issues" class="anchor-heading" aria-labelledby="common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Issues </h2> <h3 id="quick-solutions-checklist"> <a href="#quick-solutions-checklist" class="anchor-heading" aria-labelledby="quick-solutions-checklist"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Quick Solutions Checklist </h3> <p>Before diving into specific issues, try these common solutions:</p> <ol> <li><strong>Refresh the Page</strong> - Press F5 or Ctrl+F5 (Cmd+R on Mac)</li> <li><strong>Clear Browser Cache</strong> - Clear cookies and cached data</li> <li><strong>Check Internet Connection</strong> - Ensure stable internet connectivity</li> <li><strong>Try Different Browser</strong> - Test with Chrome, Firefox, or Edge</li> <li><strong>Disable Browser Extensions</strong> - Temporarily disable ad blockers</li> <li><strong>Update Browser</strong> - Ensure you’re using the latest version</li> </ol> <h3 id="system-status-check"> <a href="#system-status-check" class="anchor-heading" aria-labelledby="system-status-check"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> System Status Check </h3> <p>Check our status page for known issues:</p> <ul> <li>Platform Status: <code class="language-plaintext highlighter-rouge">https://status.cpaplatform.com</code></li> <li>Azure Services: <code class="language-plaintext highlighter-rouge">https://status.azure.com</code></li> <li>QuickBooks API: <code class="language-plaintext highlighter-rouge">https://status.developer.intuit.com</code></li> </ul><hr /> <h2 id="login-and-authentication"> <a href="#login-and-authentication" class="anchor-heading" aria-labelledby="login-and-authentication"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Login and Authentication </h2> <h3 id="cannot-login--invalid-credentials-error"> <a href="#cannot-login--invalid-credentials-error" class="anchor-heading" aria-labelledby="cannot-login--invalid-credentials-error"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Cannot Login / “Invalid Credentials” Error </h3> <h4 id="possible-causes-and-solutions"> <a href="#possible-causes-and-solutions" class="anchor-heading" aria-labelledby="possible-causes-and-solutions"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Possible Causes and Solutions: </h4> <p><strong>1. Incorrect Password</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Solution:
+- Use <span class="s2">"Forgot Password"</span> <span class="nb">link </span>on login page
+- Check email <span class="k">for </span>password reset instructions
+- Create new strong password
+- Avoid common password mistakes <span class="o">(</span>caps lock, special characters<span class="o">)</span>
+</code></pre></div></div> <p><strong>2. Account Locked</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms: <span class="s2">"Account temporarily locked"</span> message
+Solution:
+- Wait 15 minutes <span class="k">for </span>automatic unlock
+- Contact administrator to unlock immediately
+- Review failed login attempts <span class="k">in </span>account security
+</code></pre></div></div> <p><strong>3. Two-Factor Authentication Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Problem: 2FA code not working
+Solutions:
+- Ensure device <span class="nb">time </span>is synchronized
+- Try generating new code
+- Check <span class="k">if </span>backup codes are available
+- Contact admin to reset 2FA <span class="k">if </span>needed
+</code></pre></div></div> <p><strong>4. Organization Subdomain Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Problem: <span class="s2">"Organization not found"</span> error
+Solutions:
+- Verify correct subdomain URL
+- Check with organization admin <span class="k">for </span>correct URL
+- Clear browser cache and cookies
+- Try accessing from organization<span class="s1">'s main website
+</span></code></pre></div></div> <h3 id="session-timeout-issues"> <a href="#session-timeout-issues" class="anchor-heading" aria-labelledby="session-timeout-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Session Timeout Issues </h3> <p><strong>Frequent Logouts</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms: Getting logged out every few minutes
+Causes:
+- Security policy settings
+- Network connectivity issues
+- Browser cookie settings
+- Multiple concurrent sessions
+
+Solutions:
+- Check <span class="s2">"Remember Me"</span> option when logging <span class="k">in</span>
+- Enable cookies <span class="k">in </span>browser settings
+- Close other active sessions
+- Contact admin about session <span class="nb">timeout </span>settings
+</code></pre></div></div><hr /> <h2 id="document-upload-problems"> <a href="#document-upload-problems" class="anchor-heading" aria-labelledby="document-upload-problems"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Document Upload Problems </h2> <h3 id="upload-fails-or-gets-stuck"> <a href="#upload-fails-or-gets-stuck" class="anchor-heading" aria-labelledby="upload-fails-or-gets-stuck"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Upload Fails or Gets Stuck </h3> <h4 id="file-size-issues"> <a href="#file-size-issues" class="anchor-heading" aria-labelledby="file-size-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> File Size Issues </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Problem: <span class="s2">"File too large"</span> error
+Limits:
+- Individual file: 25MB <span class="o">(</span>client portal<span class="o">)</span> / 50MB <span class="o">(</span>staff portal<span class="o">)</span>
+- Total monthly: Based on subscription plan
+- Concurrent uploads: Maximum 10 files
+
+Solutions:
+- Compress large files before upload
+- Split large documents into smaller parts
+- Use file compression tools <span class="o">(</span>PDF compression<span class="o">)</span>
+- Contact support <span class="k">for </span>enterprise limits
+</code></pre></div></div> <h4 id="unsupported-file-types"> <a href="#unsupported-file-types" class="anchor-heading" aria-labelledby="unsupported-file-types"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Unsupported File Types </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Supported Formats:
+Documents: PDF, DOC, DOCX, TXT, RTF
+Spreadsheets: XLS, XLSX, CSV
+Images: JPG, JPEG, PNG, TIFF, BMP
+Other: ZIP <span class="o">(</span>containing supported files<span class="o">)</span>
+
+Solutions:
+- Convert unsupported files to PDF
+- Save Excel files as .xlsx format
+- Use standard image formats
+- Contact support <span class="k">for </span>additional format needs
+</code></pre></div></div> <h4 id="network-upload-issues"> <a href="#network-upload-issues" class="anchor-heading" aria-labelledby="network-upload-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Network Upload Issues </h4> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- Upload progress bar freezes
+- <span class="s2">"Network error"</span> messages
+- Files appear uploaded but not processed
+
+Solutions:
+- Check internet connection stability
+- Try uploading one file at a <span class="nb">time</span>
+- Use wired connection instead of WiFi
+- Disable VPN temporarily
+- Try different browser or incognito mode
+</code></pre></div></div> <h3 id="ocr-processing-problems"> <a href="#ocr-processing-problems" class="anchor-heading" aria-labelledby="ocr-processing-problems"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> OCR Processing Problems </h3> <p><strong>Low Confidence Scores</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Causes:
+- Poor image quality or resolution
+- Handwritten text <span class="o">(</span>not supported<span class="o">)</span>
+- Non-standard document layouts
+- Damaged or corrupted files
+
+Solutions:
+- Scan documents at 300 DPI minimum
+- Ensure good lighting and contrast
+- Use PDF format <span class="k">for </span>best results
+- Manually review and correct extracted data
+</code></pre></div></div> <p><strong>OCR Processing Stuck</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms: Documents show <span class="s2">"Processing"</span> status indefinitely
+Solutions:
+- Wait up to 30 minutes <span class="k">for </span>complex documents
+- Refresh page to check updated status
+- Try re-uploading the document
+- Contact support <span class="k">if </span>issue persists over 1 hour
+</code></pre></div></div><hr /> <h2 id="quickbooks-integration-issues"> <a href="#quickbooks-integration-issues" class="anchor-heading" aria-labelledby="quickbooks-integration-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> QuickBooks Integration Issues </h2> <h3 id="connection-problems"> <a href="#connection-problems" class="anchor-heading" aria-labelledby="connection-problems"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Connection Problems </h3> <p><strong>Authorization Failed</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error: <span class="s2">"Unable to connect to QuickBooks"</span>
+Solutions:
+- Verify QuickBooks Online subscription is active
+- Ensure you have admin access to QBO company
+- Clear browser cache and retry connection
+- Disable pop-up blockers during authorization
+- Try different browser <span class="k">for </span>OAuth process
+</code></pre></div></div> <p><strong>Token Expired</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- <span class="s2">"Authentication required"</span> messages
+- Data not syncing from QuickBooks
+- <span class="s2">"Token expired"</span> error <span class="k">in </span><span class="nb">sync </span>logs
+
+Solutions:
+- Reconnect QuickBooks <span class="k">in </span>Settings → Integrations
+- Ensure QuickBooks subscription hasn<span class="s1">'t expired
+- Verify company file access permissions
+- Contact support if reconnection fails repeatedly
+</span></code></pre></div></div> <h3 id="sync-issues"> <a href="#sync-issues" class="anchor-heading" aria-labelledby="sync-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Sync Issues </h3> <p><strong>Data Not Syncing</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Troubleshooting Steps:
+1. Check <span class="nb">sync </span>status <span class="k">in </span>Settings → Integrations
+2. Review <span class="nb">sync </span>logs <span class="k">for </span>error messages
+3. Verify last successful <span class="nb">sync </span>timestamp
+4. Manually trigger <span class="nb">sync </span><span class="k">if </span>automatic <span class="nb">sync </span>failed
+5. Check QuickBooks <span class="k">for </span>recent changes
+</code></pre></div></div> <p><strong>Partial Data Sync</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Issues:
+- Some accounts missing
+- Incomplete transaction <span class="nb">history</span>
+- Customer data not importing
+
+Solutions:
+- Check <span class="nb">date </span>range settings <span class="k">for </span><span class="nb">sync</span>
+- Verify chart of accounts structure
+- Review QuickBooks permissions
+- Run full re-sync <span class="k">if </span>necessary
+</code></pre></div></div> <p><strong>Sync Conflicts</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms: <span class="s2">"Data conflict detected"</span> messages
+Causes:
+- Same data modified <span class="k">in </span>both systems
+- Duplicate entries created
+- Timing conflicts during <span class="nb">sync
+
+</span>Solutions:
+- Review conflict details <span class="k">in </span><span class="nb">sync </span>logs
+- Choose correct version of conflicted data
+- Set up conflict resolution preferences
+- Establish data entry protocols to avoid conflicts
+</code></pre></div></div><hr /> <h2 id="performance-issues"> <a href="#performance-issues" class="anchor-heading" aria-labelledby="performance-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Performance Issues </h2> <h3 id="slow-loading-times"> <a href="#slow-loading-times" class="anchor-heading" aria-labelledby="slow-loading-times"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Slow Loading Times </h3> <p><strong>Page Load Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- Pages take more than 10 seconds to load
+- Timeout errors
+- Blank or partially loaded pages
+
+Solutions:
+- Clear browser cache and cookies
+- Disable browser extensions temporarily
+- Check internet connection speed
+- Try incognito/private browsing mode
+- Use different browser <span class="k">for </span>comparison
+</code></pre></div></div> <p><strong>Dashboard Performance</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- Dashboard widgets load slowly
+- Charts and graphs don<span class="s1">'t display
+- Data appears outdated
+
+Solutions:
+- Reduce number of dashboard widgets
+- Adjust date ranges for reports
+- Clear application cache
+- Check with admin about data volume limits
+</span></code></pre></div></div> <h3 id="memory-and-resource-issues"> <a href="#memory-and-resource-issues" class="anchor-heading" aria-labelledby="memory-and-resource-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Memory and Resource Issues </h3> <p><strong>Browser Crashes</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- Browser becomes unresponsive
+- <span class="s2">"Page unresponsive"</span> messages
+- Automatic page refreshes
+
+Solutions:
+- Close unnecessary browser tabs
+- Restart browser application
+- Clear browser cache and data
+- Update browser to latest version
+- Check available system memory
+</code></pre></div></div><hr /> <h2 id="browser-compatibility"> <a href="#browser-compatibility" class="anchor-heading" aria-labelledby="browser-compatibility"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Browser Compatibility </h2> <h3 id="supported-browsers"> <a href="#supported-browsers" class="anchor-heading" aria-labelledby="supported-browsers"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Supported Browsers </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Recommended Browsers:
+- Chrome 90+ <span class="o">(</span>recommended<span class="o">)</span>
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+Note: Internet Explorer is not supported
+</code></pre></div></div> <h3 id="browser-specific-issues"> <a href="#browser-specific-issues" class="anchor-heading" aria-labelledby="browser-specific-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Browser-Specific Issues </h3> <p><strong>Chrome Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Problems:
+- Extensions blocking functionality
+- Security settings too restrictive
+- Outdated browser version
+
+Solutions:
+- Disable extensions <span class="k">in </span>incognito mode
+- Check security and privacy settings
+- Update to latest Chrome version
+- Reset Chrome settings <span class="k">if </span>necessary
+</code></pre></div></div> <p><strong>Firefox Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Problems:
+- Strict tracking protection
+- Add-ons interfering with scripts
+- Security exceptions needed
+
+Solutions:
+- Adjust tracking protection settings
+- Disable add-ons temporarily
+- Add site to security exceptions
+- Clear Firefox cache and cookies
+</code></pre></div></div> <p><strong>Safari Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Problems:
+- Third-party cookies disabled
+- Intelligent tracking prevention
+- Cross-site scripting protection
+
+Solutions:
+- Enable third-party cookies <span class="k">for </span>site
+- Adjust tracking prevention settings
+- Allow cross-site tracking <span class="k">for </span>platform
+- Update Safari to latest version
+</code></pre></div></div><hr /> <h2 id="mobile-app-issues"> <a href="#mobile-app-issues" class="anchor-heading" aria-labelledby="mobile-app-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Mobile App Issues </h2> <h3 id="installation-problems"> <a href="#installation-problems" class="anchor-heading" aria-labelledby="installation-problems"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Installation Problems </h3> <p><strong>Cannot Download App</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Solutions:
+- Check device storage space
+- Verify iOS 13+ or Android 8+ requirement
+- Try downloading from different network
+- Clear App Store/Play Store cache
+- Restart device and retry download
+</code></pre></div></div> <p><strong>App Won’t Open</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- App crashes on startup
+- Black screen when opening
+- <span class="s2">"App not responding"</span> message
+
+Solutions:
+- Force close and restart app
+- Restart mobile device
+- Update app to latest version
+- Clear app cache and data
+- Reinstall app <span class="k">if </span>necessary
+</code></pre></div></div> <h3 id="mobile-functionality-issues"> <a href="#mobile-functionality-issues" class="anchor-heading" aria-labelledby="mobile-functionality-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Mobile Functionality Issues </h3> <p><strong>Document Camera Not Working</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Problems:
+- Camera doesn<span class="s1">'t open
+- Photos are blurry or dark
+- Cannot save scanned documents
+
+Solutions:
+- Check camera permissions in device settings
+- Ensure adequate lighting for scanning
+- Clean camera lens
+- Try different scanning angle
+- Use device'</span>s native camera as backup
+</code></pre></div></div> <p><strong>Push Notifications Not Working</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Solutions:
+- Enable notifications <span class="k">in </span>device settings
+- Check app notification permissions
+- Verify notification preferences <span class="k">in </span>app
+- Restart device to refresh notification service
+- Check Do Not Disturb settings
+</code></pre></div></div><hr /> <h2 id="error-messages"> <a href="#error-messages" class="anchor-heading" aria-labelledby="error-messages"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Error Messages </h2> <h3 id="common-error-codes"> <a href="#common-error-codes" class="anchor-heading" aria-labelledby="common-error-codes"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Error Codes </h3> <p><strong>ERROR 401: Unauthorized</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Meaning: Authentication required or session expired
+Solutions:
+- Log out and log back <span class="k">in</span>
+- Clear browser cookies
+- Check <span class="k">if </span>account is active
+- Contact admin <span class="k">if </span>problem persists
+</code></pre></div></div> <p><strong>ERROR 403: Forbidden</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Meaning: Insufficient permissions <span class="k">for </span>requested action
+Solutions:
+- Contact administrator <span class="k">for </span>permission review
+- Verify you<span class="s1">'re logged into correct organization
+- Check if account has been restricted
+- Try accessing different section to test permissions
+</span></code></pre></div></div> <p><strong>ERROR 404: Not Found</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Meaning: Requested resource doesn<span class="s1">'t exist
+Solutions:
+- Check URL for typos
+- Verify the item hasn'</span>t been deleted
+- Try navigating from main menu
+- Clear browser cache and retry
+</code></pre></div></div> <p><strong>ERROR 500: Internal Server Error</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Meaning: Server-side problem occurred
+Solutions:
+- Wait a few minutes and retry
+- Check platform status page
+- Try different browser or device
+- Contact support <span class="k">if </span>error persists
+</code></pre></div></div> <p><strong>ERROR 503: Service Unavailable</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Meaning: Service temporarily down <span class="k">for </span>maintenance
+Solutions:
+- Check platform status page <span class="k">for </span>maintenance notices
+- Wait <span class="k">for </span>maintenance to <span class="nb">complete</span>
+- Try again <span class="k">in </span>15-30 minutes
+- Follow platform social media <span class="k">for </span>updates
+</code></pre></div></div> <h3 id="application-specific-errors"> <a href="#application-specific-errors" class="anchor-heading" aria-labelledby="application-specific-errors"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Application-Specific Errors </h3> <p><strong>“Sync Failed” Messages</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Causes:
+- QuickBooks connection issues
+- Data validation errors
+- Network connectivity problems
+
+Solutions:
+- Check QuickBooks connection status
+- Review <span class="nb">sync </span>error logs
+- Retry <span class="nb">sync </span>manually
+- Contact support with error details
+</code></pre></div></div> <p><strong>“Upload Failed” Messages</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Causes:
+- File format not supported
+- File size too large
+- Network interruption
+- Storage quota exceeded
+
+Solutions:
+- Check file format requirements
+- Compress large files
+- Verify internet connection
+- Contact admin about storage limits
+</code></pre></div></div><hr /> <h2 id="data-sync-problems"> <a href="#data-sync-problems" class="anchor-heading" aria-labelledby="data-sync-problems"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Data Sync Problems </h2> <h3 id="missing-data"> <a href="#missing-data" class="anchor-heading" aria-labelledby="missing-data"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Missing Data </h3> <p><strong>Client Information Missing</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Troubleshooting:
+1. Check <span class="k">if </span>client was created <span class="k">in </span>platform
+2. Verify QuickBooks <span class="nb">sync </span>includes customers
+3. Review client status <span class="o">(</span>active vs inactive<span class="o">)</span>
+4. Check organization permissions
+5. Manually add client <span class="k">if </span><span class="nb">sync </span>unavailable
+</code></pre></div></div> <p><strong>Financial Data Incomplete</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Issues:
+- Date range restrictions
+- Account <span class="nb">type </span>filters
+- Permission limitations
+- Sync configuration
+
+Solutions:
+- Adjust <span class="nb">sync date </span>ranges
+- Review included account types
+- Check QuickBooks user permissions
+- Run full historical <span class="nb">sync</span>
+</code></pre></div></div> <h3 id="duplicate-data"> <a href="#duplicate-data" class="anchor-heading" aria-labelledby="duplicate-data"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Duplicate Data </h3> <p><strong>Duplicate Clients or Transactions</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Causes:
+- Multiple <span class="nb">sync </span>sources
+- Manual entry + automatic <span class="nb">sync</span>
+- Partial <span class="nb">sync </span>failures
+
+Solutions:
+- Review data sources and eliminate duplicates
+- Use merge tools <span class="k">for </span>duplicate clients
+- Set up data validation rules
+- Establish single <span class="nb">source </span>of truth protocols
+</code></pre></div></div><hr /> <h2 id="reporting-issues"> <a href="#reporting-issues" class="anchor-heading" aria-labelledby="reporting-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reporting Issues </h2> <h3 id="reports-not-generating"> <a href="#reports-not-generating" class="anchor-heading" aria-labelledby="reports-not-generating"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reports Not Generating </h3> <p><strong>Blank or Empty Reports</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Possible Causes:
+- No data <span class="k">in </span>selected <span class="nb">date </span>range
+- Insufficient permissions
+- Data <span class="nb">source </span>connection issues
+- Report template errors
+
+Solutions:
+- Verify data exists <span class="k">for </span>selected period
+- Check report permissions
+- Test with different <span class="nb">date </span>ranges
+- Try different report template
+</code></pre></div></div> <p><strong>Report Generation Timeouts</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Symptoms:
+- <span class="s2">"Report taking longer than expected"</span>
+- Timeout error messages
+- Partial report generation
+
+Solutions:
+- Reduce report <span class="nb">date </span>range
+- Simplify report parameters
+- Generate during off-peak hours
+- Contact support <span class="k">for </span>large data sets
+</code></pre></div></div> <h3 id="report-display-issues"> <a href="#report-display-issues" class="anchor-heading" aria-labelledby="report-display-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Report Display Issues </h3> <p><strong>Charts Not Loading</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Causes:
+- Browser compatibility issues
+- JavaScript disabled
+- Ad blockers interfering
+- Network connectivity problems
+
+Solutions:
+- Enable JavaScript <span class="k">in </span>browser
+- Disable ad blockers temporarily
+- Try different browser
+- Check network connection
+</code></pre></div></div> <p><strong>Export Problems</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Issues:
+- PDF <span class="nb">export </span>fails
+- Excel file corrupted
+- Download incomplete
+
+Solutions:
+- Try different <span class="nb">export </span>format
+- Use different browser <span class="k">for </span><span class="nb">export</span>
+- Check download folder permissions
+- Reduce report size <span class="k">if </span>necessary
+</code></pre></div></div><hr /> <h2 id="network-and-connectivity"> <a href="#network-and-connectivity" class="anchor-heading" aria-labelledby="network-and-connectivity"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Network and Connectivity </h2> <h3 id="connection-diagnostics"> <a href="#connection-diagnostics" class="anchor-heading" aria-labelledby="connection-diagnostics"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Connection Diagnostics </h3> <p><strong>Testing Network Connection</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Quick Tests:
+1. Visit other websites to verify internet access
+2. Check platform status page
+3. Try accessing platform from different device
+4. Test from different network <span class="o">(</span>mobile hotspot<span class="o">)</span>
+5. Run speed <span class="nb">test </span>to verify bandwidth
+</code></pre></div></div> <p><strong>Corporate Network Issues</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Common Corporate Restrictions:
+- Firewall blocking platform domains
+- Proxy servers interfering
+- SSL/TLS certificate issues
+- Port restrictions
+
+Solutions:
+- Contact IT department <span class="k">for </span>whitelist requests
+- Provide list of required domains and ports
+- Request SSL certificate installation
+- Try accessing from external network <span class="k">for </span>testing
+</code></pre></div></div> <h3 id="required-network-configuration"> <a href="#required-network-configuration" class="anchor-heading" aria-labelledby="required-network-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Required Network Configuration </h3> <p><strong>Domains to Whitelist</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Primary Domains:
+- <span class="k">*</span>.cpaplatform.com
+- <span class="k">*</span>.azure.com
+- <span class="k">*</span>.microsoft.com
+- <span class="k">*</span>.intuit.com <span class="o">(</span><span class="k">for </span>QuickBooks<span class="o">)</span>
+- <span class="k">*</span>.stripe.com <span class="o">(</span><span class="k">for </span>payments<span class="o">)</span>
+
+Ports Required:
+- 443 <span class="o">(</span>HTTPS<span class="o">)</span>
+- 80 <span class="o">(</span>HTTP redirect<span class="o">)</span>
+</code></pre></div></div><hr /> <h2 id="contact-support"> <a href="#contact-support" class="anchor-heading" aria-labelledby="contact-support"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Contact Support </h2> <h3 id="before-contacting-support"> <a href="#before-contacting-support" class="anchor-heading" aria-labelledby="before-contacting-support"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Before Contacting Support </h3> <p><strong>Information to Gather</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Technical Details:
+- Browser version and operating system
+- Error messages <span class="o">(</span>screenshots helpful<span class="o">)</span>
+- Steps to reproduce the issue
+- Time when issue occurred
+- User account and organization details
+
+Business Context:
+- Impact on daily operations
+- Urgency level
+- Number of <span class="nb">users </span>affected
+- Workarounds attempted
+</code></pre></div></div> <h3 id="support-channels"> <a href="#support-channels" class="anchor-heading" aria-labelledby="support-channels"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Support Channels </h3> <p><strong>Email Support</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>General Support: support@cpaplatform.com
+Technical Issues: technical@cpaplatform.com
+Billing Questions: billing@cpaplatform.com
+Security Concerns: security@cpaplatform.com
+
+Response Times:
+- Critical Issues: 2-4 hours
+- High Priority: 4-8 hours
+- Standard: 24-48 hours
+</code></pre></div></div> <p><strong>Live Chat Support</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Availability: Monday-Friday, 8 AM - 6 PM EST
+Access: Click chat icon <span class="k">in </span>platform
+Best For: Quick questions and immediate assistance
+</code></pre></div></div> <p><strong>Phone Support</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Available <span class="k">for</span>: Enterprise customers
+Hours: Business hours <span class="o">(</span>EST<span class="o">)</span>
+Emergency Line: Available <span class="k">for </span>critical system issues
+</code></pre></div></div> <h3 id="support-ticket-guidelines"> <a href="#support-ticket-guidelines" class="anchor-heading" aria-labelledby="support-ticket-guidelines"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Support Ticket Guidelines </h3> <p><strong>Creating Effective Tickets</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Include:
+- Clear description of the problem
+- Steps to reproduce the issue
+- Expected vs actual behavior
+- Screenshots or error messages
+- User account and organization info
+- Browser and device information
+
+Avoid:
+- Vague descriptions like <span class="s2">"it's not working"</span>
+- Multiple unrelated issues <span class="k">in </span>one ticket
+- Missing contact information
+- Unclear urgency or impact statements
+</code></pre></div></div> <h3 id="self-service-resources"> <a href="#self-service-resources" class="anchor-heading" aria-labelledby="self-service-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Self-Service Resources </h3> <p><strong>Knowledge Base</strong></p> <ul> <li>Comprehensive help articles</li> <li>Video tutorials</li> <li>Best practices guides</li> <li>Feature documentation</li> </ul> <p><strong>Community Forum</strong></p> <ul> <li>User discussions</li> <li>Feature requests</li> <li>Shared solutions</li> <li>Product announcements</li> </ul> <p><strong>Status Updates</strong></p> <ul> <li>Real-time system status</li> <li>Maintenance notifications</li> <li>Feature releases</li> <li>Known issue updates</li> </ul><hr /> <h2 id="emergency-procedures"> <a href="#emergency-procedures" class="anchor-heading" aria-labelledby="emergency-procedures"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Emergency Procedures </h2> <h3 id="critical-system-issues"> <a href="#critical-system-issues" class="anchor-heading" aria-labelledby="critical-system-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Critical System Issues </h3> <p><strong>Data Loss or Corruption</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Immediate Actions:
+1. Stop all data entry immediately
+2. Document exactly what occurred
+3. Contact emergency support line
+4. Preserve any error messages
+5. Don<span class="s1">'t attempt to "fix" data without guidance
+</span></code></pre></div></div> <p><strong>Security Breaches</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Immediate Actions:
+1. Change passwords immediately
+2. Log out of all sessions
+3. Contact security team
+4. Document suspicious activity
+5. Preserve evidence of breach
+</code></pre></div></div> <p><strong>Complete System Outage</strong></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Actions:
+1. Check status page <span class="k">for </span>known issues
+2. Verify it<span class="s1">'s not local network issue
+3. Follow backup procedures
+4. Communicate with clients about delays
+5. Monitor status page for updates
+</span></code></pre></div></div><hr /> <p><em>For additional help not covered in this guide, please contact our support team with specific details about your issue.</em></p> </main> <hr> <footer> <p class="text-small text-grey-dk-100 mb-0">Built by the AdvisorOS team | Updated {{ site.time | date: '%B %d, %Y' }}</p> </footer> </div> </div> <div class="search-overlay"></div> </div> </body> </html>

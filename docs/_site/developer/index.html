@@ -1,0 +1,643 @@
+<!DOCTYPE html> <html lang="en-US"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <link rel="stylesheet" href="/assets/css/just-the-docs-default.css"> <link rel="stylesheet" href="/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet"> <style id="jtd-nav-activation"> .site-nav > ul.nav-list:first-child > li:not(:nth-child(35)) > a, .site-nav > ul.nav-list:first-child > li > ul > li a { background-image: none; } .site-nav > ul.nav-list:not(:first-child) a, .site-nav li.external a { background-image: none; } .site-nav > ul.nav-list:first-child > li:nth-child(35) > a { font-weight: 600; text-decoration: none; }.site-nav > ul.nav-list:first-child > li:nth-child(35) > button svg { transform: rotate(-90deg); }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(35) > ul.nav-list { display: block; } </style> <script src="/assets/js/vendor/lunr.min.js"></script> <script src="/assets/js/just-the-docs.js"></script> <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Begin Jekyll SEO tag v2.8.0 --> <title>AdvisorOS Developer Documentation | AdvisorOS Documentation</title> <meta name="generator" content="Jekyll v3.10.0" /> <meta property="og:title" content="AdvisorOS Developer Documentation" /> <meta property="og:locale" content="en_US" /> <meta name="description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <meta property="og:description" content="Implementation, adoption, and operations playbook for AdvisorOS." /> <meta property="og:site_name" content="AdvisorOS Documentation" /> <meta property="og:type" content="website" /> <meta name="twitter:card" content="summary" /> <meta property="twitter:title" content="AdvisorOS Developer Documentation" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"WebPage","description":"Implementation, adoption, and operations playbook for AdvisorOS.","headline":"AdvisorOS Developer Documentation","url":"/developer/"}</script> <!-- End Jekyll SEO tag --> </head> <body> <a class="skip-to-main" href="#main-content">Skip to main content</a> <svg xmlns="http://www.w3.org/2000/svg" class="d-none"> <symbol id="svg-link" viewBox="0 0 24 24"> <title>Link</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path> </svg> </symbol> <symbol id="svg-menu" viewBox="0 0 24 24"> <title>Menu</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"> <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line> </svg> </symbol> <symbol id="svg-arrow-right" viewBox="0 0 24 24"> <title>Expand</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"> <polyline points="9 18 15 12 9 6"></polyline> </svg> </symbol> <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE --> <symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"> <title id="svg-external-link-title">(external link)</title> <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line> </symbol> <symbol id="svg-doc" viewBox="0 0 24 24"> <title>Document</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"> <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline> </svg> </symbol> <symbol id="svg-search" viewBox="0 0 24 24"> <title>Search</title> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg> </symbol> <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md --> <symbol id="svg-copy" viewBox="0 0 16 16"> <title>Copy</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/> <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/> </svg> </symbol> <symbol id="svg-copied" viewBox="0 0 16 16"> <title>Copied</title> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16"> <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/> <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/> </svg> </symbol> </svg> <div class="side-bar"> <div class="site-header" role="banner"> <a href="/" class="site-title lh-tight"> AdvisorOS Documentation </a> <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false"> <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg> </button> </div> <nav aria-label="Main" id="site-nav" class="site-nav"> <ul class="nav-list"><li class="nav-list-item"><a href="/wiki/" class="nav-list-link">AdvisorOS Wiki</a></li><li class="nav-list-item"><a href="/" class="nav-list-link">Overview</a></li><li class="nav-list-item"><a href="/business/" class="nav-list-link">Business Overview</a></li><li class="nav-list-item"><a href="/FEATURES.html" class="nav-list-link">Product Capabilities</a></li><li class="nav-list-item"><a href="/strategic/" class="nav-list-link">Strategic Documentation</a></li><li class="nav-list-item"><a href="/QUICK_START.html" class="nav-list-link">Executive Quick Start</a></li><li class="nav-list-item"><a href="/README.html" class="nav-list-link">Documentation Home</a></li><li class="nav-list-item"><a href="/technical/" class="nav-list-link">Technical Hub</a></li><li class="nav-list-item"><a href="/integrations/" class="nav-list-link">Integrations Hub</a></li><li class="nav-list-item"><a href="/security/" class="nav-list-link">Security & Compliance</a></li><li class="nav-list-item"><a href="/ARCHITECTURE.html" class="nav-list-link">Architecture</a></li><li class="nav-list-item"><a href="/API_REFERENCE.html" class="nav-list-link">API Reference</a></li><li class="nav-list-item"><a href="/USER_GUIDE_COMPREHENSIVE.html" class="nav-list-link">User Guide (Comprehensive)</a></li><li class="nav-list-item"><a href="/README_USER.html" class="nav-list-link">Implementation Runbook</a></li><li class="nav-list-item"><a href="/CLIENT_PORTAL_GUIDE.html" class="nav-list-link">Client Portal Guide</a></li><li class="nav-list-item"><a href="/DATABASE.html" class="nav-list-link">Database Guide</a></li><li class="nav-list-item"><a href="/DEVELOPER_SETUP_ENHANCED.html" class="nav-list-link">Developer Environment Setup</a></li><li class="nav-list-item"><a href="/DEPLOYMENT.html" class="nav-list-link">Deployment Guide</a></li><li class="nav-list-item"><a href="/ADMINISTRATOR_GUIDE.html" class="nav-list-link">Administrator Guide</a></li><li class="nav-list-item"><a href="/INTEGRATION_GUIDES.html" class="nav-list-link">Integration Guides</a></li><li class="nav-list-item"><a href="/QUICKBOOKS_SETUP.html" class="nav-list-link">QuickBooks Setup</a></li><li class="nav-list-item"><a href="/README_DEV.html" class="nav-list-link">Developer Setup</a></li><li class="nav-list-item"><a href="/TROUBLESHOOTING.html" class="nav-list-link">Troubleshooting</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Operations Command Center category" aria-pressed="false"> <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg> </button><a href="/operations/" class="nav-list-link">Operations Command Center</a><ul class="nav-list"><li class="nav-list-item"><a href="/operations/incident-response.html" class="nav-list-link">Incident Response Playbook</a></li><li class="nav-list-item"><a href="/operations/RUNBOOK.html" class="nav-list-link">Operations Runbook</a></li><li class="nav-list-item"><a href="/operations/DEPLOYMENT_GUIDE.html" class="nav-list-link">Production Deployment Guide</a></li></ul></li><li class="nav-list-item"><a href="/compliance/README.html" class="nav-list-link">Compliance Overview</a></li><li class="nav-list-item"><a href="/architecture/adrs/001-multi-tenant-data-isolation.html" class="nav-list-link">ADR-001: Multi-Tenant Data Isolation Strategy</a></li><li class="nav-list-item"><a href="/architecture/adrs/002-prisma-schema-design.html" class="nav-list-link">ADR-002: Prisma Schema Design and Relationships</a></li><li class="nav-list-item"><a href="/architecture/adrs/003-nextjs-app-router-api-design.html" class="nav-list-link">ADR-003: Next.js App Router Structure and API Design</a></li><li class="nav-list-item"><a href="/architecture/adrs/004-azure-infrastructure-scaling.html" class="nav-list-link">ADR-004: Azure Infrastructure Choices and Scaling Strategy</a></li><li class="nav-list-item"><a href="/architecture/adrs/005-security-architecture-compliance.html" class="nav-list-link">ADR-005: Security Architecture and Compliance Framework</a></li><li class="nav-list-item"><a href="/api/" class="nav-list-link">AdvisorOS API Documentation</a></li><li class="nav-list-item"><a href="/admin/" class="nav-list-link">AdvisorOS Administrator Documentation</a></li><li class="nav-list-item"><a href="/architecture/ARCHITECTURE_AUDIT_SUMMARY.html" class="nav-list-link">AdvisorOS Architecture Audit Summary</a></li><li class="nav-list-item"><a href="/COST_OPTIMIZATION_STRATEGY.html" class="nav-list-link">AdvisorOS Cost Optimization Strategy</a></li><li class="nav-list-item"><a href="/developer/" class="nav-list-link">AdvisorOS Developer Documentation</a></li><li class="nav-list-item"><a href="/FAQ_TROUBLESHOOTING.html" class="nav-list-link">AdvisorOS FAQ &amp; Troubleshooting Guide</a></li><li class="nav-list-item"><a href="/PRODUCTION_READINESS_CHECKLIST.html" class="nav-list-link">AdvisorOS Production Readiness Checklist</a></li><li class="nav-list-item"><a href="/architecture/TECHNICAL_DEBT_ANALYSIS.html" class="nav-list-link">AdvisorOS Technical Debt Analysis and Improvement Roadmap</a></li><li class="nav-list-item"><a href="/templates/TECHNICAL_DOC_TEMPLATE.html" class="nav-list-link">AdvisorOS Technical Doc Template</a></li><li class="nav-list-item"><a href="/user-guide/" class="nav-list-link">AdvisorOS User Guide</a></li><li class="nav-list-item"><a href="/architecture/adrs/" class="nav-list-link">Architectural Decision Records (ADRs)</a></li><li class="nav-list-item"><a href="/admin/infrastructure/azure-deployment.html" class="nav-list-link">Azure Deployment Guide for AdvisorOS</a></li><li class="nav-list-item"><a href="/api-specs/endpoints.html" class="nav-list-link">CPA Platform API Specifications</a></li><li class="nav-list-item"><a href="/design-system/components.html" class="nav-list-link">CPA Platform Design System - Components</a></li><li class="nav-list-item"><a href="/api/routes/client.html" class="nav-list-link">Client Management API</a></li><li class="nav-list-item"><a href="/user-guide/cpa-firms/client-management.html" class="nav-list-link">Client Management Guide</a></li><li class="nav-list-item"><a href="/user-guide/clients/client-portal-guide.html" class="nav-list-link">Client Portal User Guide</a></li><li class="nav-list-item"><a href="/user-guide/cpa-firms/getting-started.html" class="nav-list-link">Getting Started with AdvisorOS</a></li><li class="nav-list-item"><a href="/compliance/soc2/overview.html" class="nav-list-link">SOC 2 Type II Compliance Overview</a></li></ul> <ul class="nav-list"><li class="nav-list-item external"> <a href="https://github.com/markus41/AdvisorOS/blob/main/ADVISOROS_COMPREHENSIVE_ENHANCEMENT_PORTFOLIO.md" class="nav-list-link external" > Product Overview (PDF) <svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title"><use xlink:href="#svg-external-link"></use></svg> </a> </li></ul> </nav> <footer class="site-footer"> This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll. </footer> </div> <div class="main" id="top"> <div id="main-header" class="main-header"> <div class="search" role="search"> <div class="search-input-wrap"> <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search AdvisorOS Documentation" aria-label="Search AdvisorOS Documentation" autocomplete="off"> <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label> </div> <div id="search-results" class="search-results"></div> </div> <nav aria-label="Auxiliary" class="aux-nav"> <ul class="aux-nav-list"> <li class="aux-nav-list-item"> <a href="https://github.com/markus41/AdvisorOS" class="site-button" > AdvisorOS on GitHub </a> </li> </ul> </nav> </div> <div class="main-content-wrap"> <div id="main-content" class="main-content"> <main> <h1 id="advisoros-developer-documentation"> <a href="#advisoros-developer-documentation" class="anchor-heading" aria-labelledby="advisoros-developer-documentation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> AdvisorOS Developer Documentation </h1> <h2 id="overview"> <a href="#overview" class="anchor-heading" aria-labelledby="overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Overview </h2> <p>Welcome to the AdvisorOS developer documentation. This comprehensive guide covers everything you need to know to contribute to, extend, and maintain the AdvisorOS platform. Whether you’re a new team member or an experienced developer, this documentation will help you understand the architecture, setup your development environment, and follow our development practices.</p> <h2 id="table-of-contents"> <a href="#table-of-contents" class="anchor-heading" aria-labelledby="table-of-contents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Table of Contents </h2> <h3 id="getting-started"> <a href="#getting-started" class="anchor-heading" aria-labelledby="getting-started"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Getting Started </h3> <ul> <li><a href="./setup/development-environment.md">Development Environment Setup</a></li> <li><a href="./architecture/project-structure.md">Project Structure</a></li> <li><a href="./setup/local-development.md">Local Development Guide</a></li> <li><a href="./setup/docker-development.md">Docker Development</a></li> </ul> <h3 id="architecture--design"> <a href="#architecture--design" class="anchor-heading" aria-labelledby="architecture--design"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Architecture &amp; Design </h3> <ul> <li><a href="./architecture/system-architecture.md">System Architecture</a></li> <li><a href="./architecture/database-design.md">Database Design</a></li> <li><a href="./architecture/api-patterns.md">API Design Patterns</a></li> <li><a href="./architecture/frontend-architecture.md">Frontend Architecture</a></li> <li><a href="./architecture/security-architecture.md">Security Architecture</a></li> </ul> <h3 id="development-guidelines"> <a href="#development-guidelines" class="anchor-heading" aria-labelledby="development-guidelines"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Guidelines </h3> <ul> <li><a href="./guidelines/coding-standards.md">Coding Standards</a></li> <li><a href="./guidelines/git-workflow.md">Git Workflow</a></li> <li><a href="./guidelines/code-review.md">Code Review Process</a></li> <li><a href="./guidelines/testing-standards.md">Testing Standards</a></li> <li><a href="./guidelines/documentation-standards.md">Documentation Standards</a></li> </ul> <h3 id="api-development"> <a href="#api-development" class="anchor-heading" aria-labelledby="api-development"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> API Development </h3> <ul> <li><a href="./api/trpc-development.md">tRPC API Development</a></li> <li><a href="./api/database-operations.md">Database Operations</a></li> <li><a href="./api/auth-development.md">Authentication &amp; Authorization</a></li> <li><a href="./api/file-handling.md">File Upload &amp; Storage</a></li> <li><a href="./api/integrations.md">Integration Development</a></li> </ul> <h3 id="frontend-development"> <a href="#frontend-development" class="anchor-heading" aria-labelledby="frontend-development"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Frontend Development </h3> <ul> <li><a href="./frontend/nextjs-development.md">Next.js App Router</a></li> <li><a href="./frontend/react-components.md">React Components</a></li> <li><a href="./frontend/state-management.md">State Management</a></li> <li><a href="./frontend/ui-components.md">UI Component Library</a></li> <li><a href="./frontend/form-handling.md">Form Handling</a></li> </ul> <h3 id="testing"> <a href="#testing" class="anchor-heading" aria-labelledby="testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Testing </h3> <ul> <li><a href="./testing/unit-testing.md">Unit Testing</a></li> <li><a href="./testing/integration-testing.md">Integration Testing</a></li> <li><a href="./testing/e2e-testing.md">End-to-End Testing</a></li> <li><a href="./testing/performance-testing.md">Performance Testing</a></li> <li><a href="./testing/security-testing.md">Security Testing</a></li> </ul> <h3 id="deployment--devops"> <a href="#deployment--devops" class="anchor-heading" aria-labelledby="deployment--devops"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Deployment &amp; DevOps </h3> <ul> <li><a href="./devops/ci-cd-pipeline.md">CI/CD Pipeline</a></li> <li><a href="./devops/azure-deployment.md">Azure Deployment</a></li> <li><a href="./devops/environment-management.md">Environment Management</a></li> <li><a href="./devops/monitoring-logging.md">Monitoring &amp; Logging</a></li> </ul> <h3 id="contributing"> <a href="#contributing" class="anchor-heading" aria-labelledby="contributing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Contributing </h3> <ul> <li><a href="./contributing/guidelines.md">Contributing Guidelines</a></li> <li><a href="./contributing/pull-requests.md">Pull Request Process</a></li> <li><a href="./contributing/issue-templates.md">Issue Templates</a></li> <li><a href="./contributing/release-process.md">Release Process</a></li> </ul> <h2 id="quick-start-for-developers"> <a href="#quick-start-for-developers" class="anchor-heading" aria-labelledby="quick-start-for-developers"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Quick Start for Developers </h2> <h3 id="prerequisites"> <a href="#prerequisites" class="anchor-heading" aria-labelledby="prerequisites"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Prerequisites </h3> <p>Before starting development, ensure you have:</p> <ul> <li><strong>Node.js</strong>: Version 18 LTS or later</li> <li><strong>npm</strong>: Version 9 or later (or pnpm 8+)</li> <li><strong>Git</strong>: Latest version</li> <li><strong>VS Code</strong>: Recommended IDE with our extension pack</li> <li><strong>Docker</strong>: For containerized development (optional)</li> <li><strong>Azure CLI</strong>: For cloud resource management</li> <li><strong>PostgreSQL</strong>: Local instance or Docker container</li> </ul> <h3 id="1-clone-and-setup"> <a href="#1-clone-and-setup" class="anchor-heading" aria-labelledby="1-clone-and-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Clone and Setup </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Clone the repository</span>
+git clone https://github.com/your-org/advisoros.git
+<span class="nb">cd </span>advisoros
+
+<span class="c"># Install dependencies</span>
+npm <span class="nb">install</span>
+
+<span class="c"># Copy environment configuration</span>
+<span class="nb">cp</span> .env.example .env.local
+
+<span class="c"># Generate Prisma client</span>
+npm run db:generate
+
+<span class="c"># Run database migrations</span>
+npm run db:migrate
+
+<span class="c"># Seed development data</span>
+npm run db:seed
+</code></pre></div></div> <h3 id="2-development-environment"> <a href="#2-development-environment" class="anchor-heading" aria-labelledby="2-development-environment"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Development Environment </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start the development server</span>
+npm run dev
+
+<span class="c"># The application will be available at:</span>
+<span class="c"># Frontend: http://localhost:3000</span>
+<span class="c"># API: http://localhost:3000/api</span>
+<span class="c"># Database Studio: npm run db:studio (http://localhost:5555)</span>
+</code></pre></div></div> <h3 id="3-development-workflow"> <a href="#3-development-workflow" class="anchor-heading" aria-labelledby="3-development-workflow"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Development Workflow </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create a feature branch</span>
+git checkout <span class="nt">-b</span> feature/client-management-enhancement
+
+<span class="c"># Make your changes and test</span>
+npm run <span class="nb">test
+</span>npm run lint
+npm run type-check
+
+<span class="c"># Commit your changes</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"feat(client): enhance client management with new filtering options"</span>
+
+<span class="c"># Push and create pull request</span>
+git push origin feature/client-management-enhancement
+</code></pre></div></div> <h2 id="architecture-overview"> <a href="#architecture-overview" class="anchor-heading" aria-labelledby="architecture-overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Architecture Overview </h2> <h3 id="high-level-system-architecture"> <a href="#high-level-system-architecture" class="anchor-heading" aria-labelledby="high-level-system-architecture"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> High-Level System Architecture </h3> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌─────────────────────────────────────────────────────────────────┐
+│                        AdvisorOS Platform                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │
+│  │   Next.js App   │    │   tRPC API      │    │ PostgreSQL  │  │
+│  │   Frontend      │────│   Backend       │────│ Database    │  │
+│  │                 │    │                 │    │             │  │
+│  └─────────────────┘    └─────────────────┘    └─────────────┘  │
+│           │                       │                       │     │
+│           │                       │                       │     │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │
+│  │  React Components│    │  External APIs  │    │   Azure     │  │
+│  │  UI Library     │    │  - QuickBooks   │    │   Services  │  │
+│  │  Tailwind CSS   │    │  - Azure AD B2C │    │   - Blob    │  │
+│  └─────────────────┘    └─────────────────┘    │   - AI      │  │
+│                                                 └─────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre></div></div> <h3 id="technology-stack"> <a href="#technology-stack" class="anchor-heading" aria-labelledby="technology-stack"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Technology Stack </h3> <h4 id="frontend"> <a href="#frontend" class="anchor-heading" aria-labelledby="frontend"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Frontend </h4> <ul> <li><strong>Framework</strong>: Next.js 14 with App Router</li> <li><strong>Language</strong>: TypeScript (strict mode)</li> <li><strong>Styling</strong>: Tailwind CSS</li> <li><strong>UI Components</strong>: Custom components + Radix UI primitives</li> <li><strong>Charts</strong>: Tremor UI + Recharts</li> <li><strong>Forms</strong>: React Hook Form + Zod validation</li> <li><strong>State</strong>: React hooks + Context API</li> </ul> <h4 id="backend"> <a href="#backend" class="anchor-heading" aria-labelledby="backend"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Backend </h4> <ul> <li><strong>API</strong>: tRPC with type-safe procedures</li> <li><strong>Runtime</strong>: Node.js 18+ (Azure Functions)</li> <li><strong>ORM</strong>: Prisma with PostgreSQL</li> <li><strong>Authentication</strong>: NextAuth.js with Azure AD B2C</li> <li><strong>File Storage</strong>: Azure Blob Storage</li> <li><strong>Background Jobs</strong>: Azure Functions</li> </ul> <h4 id="database"> <a href="#database" class="anchor-heading" aria-labelledby="database"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Database </h4> <ul> <li><strong>Primary</strong>: PostgreSQL 14+ on Azure</li> <li><strong>ORM</strong>: Prisma for type-safe database operations</li> <li><strong>Migrations</strong>: Prisma Migrate</li> <li><strong>Seeding</strong>: Custom seed scripts</li> </ul> <h4 id="infrastructure"> <a href="#infrastructure" class="anchor-heading" aria-labelledby="infrastructure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Infrastructure </h4> <ul> <li><strong>Hosting</strong>: Azure Static Web Apps + Azure Functions</li> <li><strong>Database</strong>: Azure Database for PostgreSQL</li> <li><strong>Storage</strong>: Azure Blob Storage</li> <li><strong>CDN</strong>: Azure CDN with Front Door</li> <li><strong>Monitoring</strong>: Application Insights</li> </ul> <h2 id="core-concepts"> <a href="#core-concepts" class="anchor-heading" aria-labelledby="core-concepts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Core Concepts </h2> <h3 id="1-multi-tenancy"> <a href="#1-multi-tenancy" class="anchor-heading" aria-labelledby="1-multi-tenancy"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Multi-Tenancy </h3> <p>AdvisorOS is built as a multi-tenant application where each CPA firm is an organization:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Every database entity includes organizationId</span>
+<span class="kr">interface</span> <span class="nx">BaseEntity</span> <span class="p">{</span>
+  <span class="nl">id</span><span class="p">:</span> <span class="kr">string</span>
+  <span class="nx">organizationId</span><span class="p">:</span> <span class="kr">string</span>
+  <span class="nx">createdAt</span><span class="p">:</span> <span class="nb">Date</span>
+  <span class="nx">updatedAt</span><span class="p">:</span> <span class="nb">Date</span>
+<span class="p">}</span>
+
+<span class="c1">// All API procedures are organization-scoped</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">clientRouter</span> <span class="o">=</span> <span class="nx">createTRPCRouter</span><span class="p">({</span>
+  <span class="na">list</span><span class="p">:</span> <span class="nx">organizationProcedure</span>  <span class="c1">// Automatically filters by organizationId</span>
+    <span class="p">.</span><span class="nx">input</span><span class="p">(</span><span class="nx">clientListSchema</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="k">async</span> <span class="p">({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="c1">// ctx.organizationId is automatically available</span>
+      <span class="k">return</span> <span class="k">await</span> <span class="nx">getClients</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">input</span><span class="p">)</span>
+    <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="2-type-safety"> <a href="#2-type-safety" class="anchor-heading" aria-labelledby="2-type-safety"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Type Safety </h3> <p>End-to-end type safety from database to UI:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Database schema (Prisma)</span>
+<span class="nx">model</span> <span class="nx">Client</span> <span class="p">{</span>
+  <span class="nx">id</span>              <span class="nb">String</span>   <span class="p">@</span><span class="nd">id</span> <span class="p">@</span><span class="nd">default</span><span class="p">(</span><span class="nx">cuid</span><span class="p">())</span>
+  <span class="nx">organizationId</span>  <span class="nb">String</span>
+  <span class="nx">businessName</span>    <span class="nb">String</span>
+  <span class="nx">primaryContactEmail</span> <span class="nb">String</span>
+  <span class="nx">status</span>          <span class="nx">ClientStatus</span>
+  <span class="nx">createdAt</span>       <span class="nx">DateTime</span> <span class="p">@</span><span class="nd">default</span><span class="p">(</span><span class="nx">now</span><span class="p">())</span>
+  <span class="nx">updatedAt</span>       <span class="nx">DateTime</span> <span class="p">@</span><span class="nd">updatedAt</span>
+<span class="p">}</span>
+
+<span class="c1">// API types (Zod schemas)</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">createClientSchema</span> <span class="o">=</span> <span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span>
+  <span class="na">businessName</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+  <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">email</span><span class="p">(),</span>
+  <span class="na">status</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">enum</span><span class="p">([</span><span class="dl">'</span><span class="s1">prospect</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">inactive</span><span class="dl">'</span><span class="p">])</span>
+<span class="p">})</span>
+
+<span class="c1">// Frontend usage (fully typed)</span>
+<span class="kd">const</span> <span class="nx">createClient</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">create</span><span class="p">.</span><span class="nx">useMutation</span><span class="p">()</span>
+<span class="kd">const</span> <span class="nx">handleSubmit</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">:</span> <span class="nx">CreateClientInput</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">createClient</span><span class="p">.</span><span class="nx">mutate</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>  <span class="c1">// TypeScript knows the exact shape</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="3-security-model"> <a href="#3-security-model" class="anchor-heading" aria-labelledby="3-security-model"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Security Model </h3> <p>Role-based access control (RBAC) with organization isolation:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// User roles within organizations</span>
+<span class="kr">enum</span> <span class="nx">Role</span> <span class="p">{</span>
+  <span class="nx">OWNER</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">owner</span><span class="dl">'</span><span class="p">,</span>        <span class="c1">// Full access including billing</span>
+  <span class="nx">ADMIN</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">admin</span><span class="dl">'</span><span class="p">,</span>        <span class="c1">// Administrative access</span>
+  <span class="nx">CPA</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">cpa</span><span class="dl">'</span><span class="p">,</span>           <span class="c1">// Client and document management</span>
+  <span class="nx">STAFF</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">staff</span><span class="dl">'</span>        <span class="c1">// Limited access to assigned clients</span>
+<span class="p">}</span>
+
+<span class="c1">// Procedure-level authorization</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">adminProcedure</span> <span class="o">=</span> <span class="nx">organizationProcedure</span>
+  <span class="p">.</span><span class="nx">use</span><span class="p">(({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">next</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="dl">'</span><span class="s1">owner</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">admin</span><span class="dl">'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TRPCError</span><span class="p">({</span> <span class="na">code</span><span class="p">:</span> <span class="dl">'</span><span class="s1">FORBIDDEN</span><span class="dl">'</span> <span class="p">})</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">next</span><span class="p">()</span>
+  <span class="p">})</span>
+</code></pre></div></div> <h2 id="development-patterns"> <a href="#development-patterns" class="anchor-heading" aria-labelledby="development-patterns"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Patterns </h2> <h3 id="1-api-development-pattern"> <a href="#1-api-development-pattern" class="anchor-heading" aria-labelledby="1-api-development-pattern"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. API Development Pattern </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. Define Zod schema for validation</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">createClientSchema</span> <span class="o">=</span> <span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span>
+  <span class="na">businessName</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Business name is required</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">email</span><span class="p">(</span><span class="dl">'</span><span class="s1">Valid email required</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">businessType</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">enum</span><span class="p">([</span><span class="dl">'</span><span class="s1">individual</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">corporation</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">llc</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">partnership</span><span class="dl">'</span><span class="p">])</span>
+<span class="p">})</span>
+
+<span class="c1">// 2. Create service layer</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">ClientService</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="k">async</span> <span class="nx">createClient</span><span class="p">(</span>
+    <span class="nx">data</span><span class="p">:</span> <span class="nx">CreateClientInput</span><span class="p">,</span>
+    <span class="nx">organizationId</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span>
+    <span class="nx">userId</span><span class="p">:</span> <span class="kr">string</span>
+  <span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Client</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="c1">// Business logic here</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="p">...</span><span class="nx">data</span><span class="p">,</span> <span class="nx">organizationId</span><span class="p">,</span> <span class="na">createdBy</span><span class="p">:</span> <span class="nx">userId</span> <span class="p">}</span>
+    <span class="p">})</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 3. Create tRPC procedure</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">clientRouter</span> <span class="o">=</span> <span class="nx">createTRPCRouter</span><span class="p">({</span>
+  <span class="na">create</span><span class="p">:</span> <span class="nx">organizationProcedure</span>
+    <span class="p">.</span><span class="nx">input</span><span class="p">(</span><span class="nx">createClientSchema</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">mutation</span><span class="p">(</span><span class="k">async</span> <span class="p">({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span>
+        <span class="nx">input</span><span class="p">,</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">userId</span>
+      <span class="p">)</span>
+    <span class="p">})</span>
+<span class="p">})</span>
+
+<span class="c1">// 4. Use in frontend</span>
+<span class="kd">const</span> <span class="nx">createClient</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">create</span><span class="p">.</span><span class="nx">useMutation</span><span class="p">({</span>
+  <span class="na">onSuccess</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">toast</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="dl">'</span><span class="s1">Client created successfully</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nx">utils</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">invalidate</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="2-component-development-pattern"> <a href="#2-component-development-pattern" class="anchor-heading" aria-labelledby="2-component-development-pattern"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Component Development Pattern </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. Define component props with TypeScript</span>
+<span class="kr">interface</span> <span class="nx">ClientFormProps</span> <span class="p">{</span>
+  <span class="nl">client</span><span class="p">?:</span> <span class="nx">Client</span>
+  <span class="nx">onSubmit</span><span class="p">:</span> <span class="p">(</span><span class="nx">data</span><span class="p">:</span> <span class="nx">CreateClientInput</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">void</span>
+  <span class="nx">isLoading</span><span class="p">?:</span> <span class="nx">boolean</span>
+<span class="p">}</span>
+
+<span class="c1">// 2. Create reusable component</span>
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">ClientForm</span><span class="p">({</span> <span class="nx">client</span><span class="p">,</span> <span class="nx">onSubmit</span><span class="p">,</span> <span class="nx">isLoading</span> <span class="p">}:</span> <span class="nx">ClientFormProps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">form</span> <span class="o">=</span> <span class="nx">useForm</span><span class="o">&lt;</span><span class="nx">CreateClientInput</span><span class="o">&gt;</span><span class="p">({</span>
+    <span class="na">resolver</span><span class="p">:</span> <span class="nx">zodResolver</span><span class="p">(</span><span class="nx">createClientSchema</span><span class="p">),</span>
+    <span class="na">defaultValues</span><span class="p">:</span> <span class="nx">client</span>
+  <span class="p">})</span>
+
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="o">&lt;</span><span class="nx">Form</span> <span class="p">{...</span><span class="nx">form</span><span class="p">}</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">form</span> <span class="nx">onSubmit</span><span class="o">=</span><span class="p">{</span><span class="nx">form</span><span class="p">.</span><span class="nx">handleSubmit</span><span class="p">(</span><span class="nx">onSubmit</span><span class="p">)}</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">FormField</span>
+          <span class="nx">control</span><span class="o">=</span><span class="p">{</span><span class="nx">form</span><span class="p">.</span><span class="nx">control</span><span class="p">}</span>
+          <span class="nx">name</span><span class="o">=</span><span class="dl">"</span><span class="s2">businessName</span><span class="dl">"</span>
+          <span class="nx">render</span><span class="o">=</span><span class="p">{({</span> <span class="nx">field</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">(</span>
+            <span class="o">&lt;</span><span class="nx">FormItem</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="nx">FormLabel</span><span class="o">&gt;</span><span class="nx">Business</span> <span class="nx">Name</span><span class="o">&lt;</span><span class="sr">/FormLabel</span><span class="err">&gt;
+</span>              <span class="o">&lt;</span><span class="nx">FormControl</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nx">Input</span> <span class="p">{...</span><span class="nx">field</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>              <span class="o">&lt;</span><span class="sr">/FormControl</span><span class="err">&gt;
+</span>              <span class="o">&lt;</span><span class="nx">FormMessage</span> <span class="o">/&gt;</span>
+            <span class="o">&lt;</span><span class="sr">/FormItem</span><span class="err">&gt;
+</span>          <span class="p">)}</span>
+        <span class="sr">/</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">Button</span> <span class="kd">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">submit</span><span class="dl">"</span> <span class="nx">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">isLoading</span><span class="p">}</span><span class="o">&gt;</span>
+          <span class="p">{</span><span class="nx">isLoading</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">Creating...</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">Create Client</span><span class="dl">'</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="sr">/Button</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/form</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/Form</span><span class="err">&gt;
+</span>  <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// 3. Use in page component</span>
+<span class="k">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="nx">CreateClientPage</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">createClient</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">create</span><span class="p">.</span><span class="nx">useMutation</span><span class="p">()</span>
+
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="o">&lt;</span><span class="nx">ClientForm</span>
+      <span class="nx">onSubmit</span><span class="o">=</span><span class="p">{(</span><span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">createClient</span><span class="p">.</span><span class="nx">mutate</span><span class="p">(</span><span class="nx">data</span><span class="p">)}</span>
+      <span class="nx">isLoading</span><span class="o">=</span><span class="p">{</span><span class="nx">createClient</span><span class="p">.</span><span class="nx">isLoading</span><span class="p">}</span>
+    <span class="sr">/</span><span class="err">&gt;
+</span>  <span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="3-error-handling-pattern"> <a href="#3-error-handling-pattern" class="anchor-heading" aria-labelledby="3-error-handling-pattern"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Error Handling Pattern </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Server-side error handling</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">clientRouter</span> <span class="o">=</span> <span class="nx">createTRPCRouter</span><span class="p">({</span>
+  <span class="na">create</span><span class="p">:</span> <span class="nx">organizationProcedure</span>
+    <span class="p">.</span><span class="nx">input</span><span class="p">(</span><span class="nx">createClientSchema</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">mutation</span><span class="p">(</span><span class="k">async</span> <span class="p">({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">userId</span><span class="p">)</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">error</span> <span class="k">instanceof</span> <span class="nx">Prisma</span><span class="p">.</span><span class="nx">PrismaClientKnownRequestError</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">code</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">P2002</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nx">TRPCError</span><span class="p">({</span>
+              <span class="na">code</span><span class="p">:</span> <span class="dl">'</span><span class="s1">CONFLICT</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">message</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Client with this email already exists</span><span class="dl">'</span>
+            <span class="p">})</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">TRPCError</span><span class="p">({</span>
+          <span class="na">code</span><span class="p">:</span> <span class="dl">'</span><span class="s1">INTERNAL_SERVER_ERROR</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">message</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Failed to create client</span><span class="dl">'</span>
+        <span class="p">})</span>
+      <span class="p">}</span>
+    <span class="p">})</span>
+<span class="p">})</span>
+
+<span class="c1">// Client-side error handling</span>
+<span class="kd">const</span> <span class="nx">createClient</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">create</span><span class="p">.</span><span class="nx">useMutation</span><span class="p">({</span>
+  <span class="na">onError</span><span class="p">:</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">data</span><span class="p">?.</span><span class="nx">code</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">CONFLICT</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">toast</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">A client with this email already exists</span><span class="dl">'</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">toast</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Failed to create client. Please try again.</span><span class="dl">'</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</code></pre></div></div> <h2 id="development-tools"> <a href="#development-tools" class="anchor-heading" aria-labelledby="development-tools"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Development Tools </h2> <h3 id="1-vs-code-extensions"> <a href="#1-vs-code-extensions" class="anchor-heading" aria-labelledby="1-vs-code-extensions"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. VS Code Extensions </h3> <p>Our recommended VS Code extension pack includes:</p> <ul> <li><strong>TypeScript Hero</strong>: Auto-import and organize imports</li> <li><strong>Prisma</strong>: Database schema syntax highlighting</li> <li><strong>Tailwind CSS IntelliSense</strong>: CSS class suggestions</li> <li><strong>ES7+ React/Redux/React-Native snippets</strong>: React snippets</li> <li><strong>GitLens</strong>: Enhanced Git integration</li> <li><strong>Thunder Client</strong>: API testing within VS Code</li> </ul> <h3 id="2-development-scripts"> <a href="#2-development-scripts" class="anchor-heading" aria-labelledby="2-development-scripts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Development Scripts </h3> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next dev"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next build"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next start"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next lint"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint:fix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next lint --fix"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type-check"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tsc --noEmit"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jest"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"test:watch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jest --watch"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"test:coverage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jest --coverage"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"test:e2e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"playwright test"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"db:generate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prisma generate"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"db:push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prisma db push"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"db:migrate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prisma migrate dev"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"db:studio"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prisma studio"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"db:seed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tsx prisma/seed.ts"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div> <h3 id="3-code-quality-tools"> <a href="#3-code-quality-tools" class="anchor-heading" aria-labelledby="3-code-quality-tools"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Code Quality Tools </h3> <h4 id="eslint-configuration"> <a href="#eslint-configuration" class="anchor-heading" aria-labelledby="eslint-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ESLint Configuration </h4> <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// .eslintrc.js</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">extends</span><span class="p">:</span> <span class="p">[</span>
+    <span class="dl">'</span><span class="s1">next/core-web-vitals</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">@typescript-eslint/recommended</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">prettier</span><span class="dl">'</span>
+  <span class="p">],</span>
+  <span class="na">rules</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">'</span><span class="s1">@typescript-eslint/no-unused-vars</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">@typescript-eslint/no-explicit-any</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">warn</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">prefer-const</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">error</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="prettier-configuration"> <a href="#prettier-configuration" class="anchor-heading" aria-labelledby="prettier-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Prettier Configuration </h4> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"semi"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"singleQuote"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"tabWidth"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"trailingComma"</span><span class="p">:</span><span class="w"> </span><span class="s2">"es5"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"printWidth"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div> <h2 id="testing-strategy"> <a href="#testing-strategy" class="anchor-heading" aria-labelledby="testing-strategy"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Testing Strategy </h2> <h3 id="1-unit-tests"> <a href="#1-unit-tests" class="anchor-heading" aria-labelledby="1-unit-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Unit Tests </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Test API procedures</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createTRPCMsw</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@trpc/msw</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">appRouter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@/server/api/root</span><span class="dl">'</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="dl">'</span><span class="s1">Client API</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">it</span><span class="p">(</span><span class="dl">'</span><span class="s1">should create client with valid data</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">caller</span> <span class="o">=</span> <span class="nx">appRouter</span><span class="p">.</span><span class="nx">createCaller</span><span class="p">({</span>
+      <span class="na">organizationId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">org-123</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-123</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">prisma</span><span class="p">:</span> <span class="nx">mockPrisma</span>
+    <span class="p">})</span>
+
+    <span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">caller</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+      <span class="na">businessName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test Corp</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test@example.com</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">businessType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">corporation</span><span class="dl">'</span>
+    <span class="p">})</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">businessName</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="dl">'</span><span class="s1">Test Corp</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="2-integration-tests"> <a href="#2-integration-tests" class="anchor-heading" aria-labelledby="2-integration-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Integration Tests </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Test database operations</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">PrismaClient</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@prisma/client</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ClientService</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@/lib/services/client-service</span><span class="dl">'</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="dl">'</span><span class="s1">ClientService Integration</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="na">prisma</span><span class="p">:</span> <span class="nx">PrismaClient</span>
+
+  <span class="nx">beforeAll</span><span class="p">(</span><span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">prisma</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PrismaClient</span><span class="p">()</span>
+    <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">$connect</span><span class="p">()</span>
+  <span class="p">})</span>
+
+  <span class="nx">it</span><span class="p">(</span><span class="dl">'</span><span class="s1">should create and retrieve client</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">createClient</span><span class="p">({</span>
+      <span class="na">businessName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Integration Test Corp</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="dl">'</span><span class="s1">integration@test.com</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">businessType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">corporation</span><span class="dl">'</span>
+    <span class="p">},</span> <span class="dl">'</span><span class="s1">org-123</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">user-123</span><span class="dl">'</span><span class="p">)</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">client</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">toBeDefined</span><span class="p">()</span>
+
+    <span class="kd">const</span> <span class="nx">retrieved</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">getClientById</span><span class="p">(</span>
+      <span class="nx">client</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">org-123</span><span class="dl">'</span>
+    <span class="p">)</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">retrieved</span><span class="p">?.</span><span class="nx">businessName</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="dl">'</span><span class="s1">Integration Test Corp</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="3-e2e-tests"> <a href="#3-e2e-tests" class="anchor-heading" aria-labelledby="3-e2e-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. E2E Tests </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Test complete user journeys</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">test</span><span class="p">,</span> <span class="nx">expect</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@playwright/test</span><span class="dl">'</span>
+
+<span class="nx">test</span><span class="p">(</span><span class="dl">'</span><span class="s1">client management workflow</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">({</span> <span class="nx">page</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// Login</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">goto</span><span class="p">(</span><span class="dl">'</span><span class="s1">/login</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=email]</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">test@example.com</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=password]</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">password</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=login-button]</span><span class="dl">'</span><span class="p">)</span>
+
+  <span class="c1">// Navigate to clients</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=clients-nav]</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">expect</span><span class="p">(</span><span class="nx">page</span><span class="p">).</span><span class="nx">toHaveURL</span><span class="p">(</span><span class="dl">'</span><span class="s1">/clients</span><span class="dl">'</span><span class="p">)</span>
+
+  <span class="c1">// Create new client</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=add-client-button]</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=business-name]</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">E2E Test Corp</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=email]</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">e2e@test.com</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="dl">'</span><span class="s1">[data-testid=save-button]</span><span class="dl">'</span><span class="p">)</span>
+
+  <span class="c1">// Verify client was created</span>
+  <span class="k">await</span> <span class="nx">expect</span><span class="p">(</span><span class="nx">page</span><span class="p">.</span><span class="nx">locator</span><span class="p">(</span><span class="dl">'</span><span class="s1">text=E2E Test Corp</span><span class="dl">'</span><span class="p">)).</span><span class="nx">toBeVisible</span><span class="p">()</span>
+<span class="p">})</span>
+</code></pre></div></div> <h2 id="performance-considerations"> <a href="#performance-considerations" class="anchor-heading" aria-labelledby="performance-considerations"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Performance Considerations </h2> <h3 id="1-database-optimization"> <a href="#1-database-optimization" class="anchor-heading" aria-labelledby="1-database-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Database Optimization </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Use appropriate indexes</span>
+<span class="c1">// In Prisma schema:</span>
+<span class="nx">model</span> <span class="nx">Client</span> <span class="p">{</span>
+  <span class="nx">id</span>              <span class="nb">String</span>   <span class="p">@</span><span class="nd">id</span> <span class="p">@</span><span class="nd">default</span><span class="p">(</span><span class="nx">cuid</span><span class="p">())</span>
+  <span class="nx">organizationId</span>  <span class="nb">String</span>
+  <span class="nx">businessName</span>    <span class="nb">String</span>
+  <span class="nx">primaryContactEmail</span> <span class="nb">String</span> <span class="p">@</span><span class="nd">unique</span>
+  <span class="nx">status</span>          <span class="nx">ClientStatus</span>
+
+  <span class="p">@@</span><span class="nd">index</span><span class="p">([</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">status</span><span class="p">])</span>
+  <span class="p">@@</span><span class="nd">index</span><span class="p">([</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">businessName</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="c1">// Optimize queries with proper includes</span>
+<span class="kd">const</span> <span class="nx">clients</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="nx">organizationId</span> <span class="p">},</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">documents</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>  <span class="c1">// Only select needed fields</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">20</span>  <span class="c1">// Pagination</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="2-frontend-optimization"> <a href="#2-frontend-optimization" class="anchor-heading" aria-labelledby="2-frontend-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Frontend Optimization </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Use React.memo for expensive components</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">ClientCard</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">memo</span><span class="p">(({</span> <span class="nx">client</span> <span class="p">}:</span> <span class="p">{</span> <span class="nl">client</span><span class="p">:</span> <span class="nx">Client</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="dl">"</span><span class="s2">p-4 border rounded</span><span class="dl">"</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">h3</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">client</span><span class="p">.</span><span class="nx">businessName</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/h3</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">client</span><span class="p">.</span><span class="nx">primaryContactEmail</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>  <span class="p">)</span>
+<span class="p">})</span>
+
+<span class="c1">// Lazy load heavy components</span>
+<span class="kd">const</span> <span class="nx">DocumentViewer</span> <span class="o">=</span> <span class="nx">lazy</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@/components/DocumentViewer</span><span class="dl">'</span><span class="p">))</span>
+
+<span class="c1">// Use useMemo for expensive computations</span>
+<span class="kd">const</span> <span class="nx">expensiveCalculation</span> <span class="o">=</span> <span class="nx">useMemo</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">clients</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">acc</span><span class="p">,</span> <span class="nx">client</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">acc</span> <span class="o">+</span> <span class="nx">client</span><span class="p">.</span><span class="nx">annualRevenue</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">},</span> <span class="p">[</span><span class="nx">clients</span><span class="p">])</span>
+</code></pre></div></div> <h3 id="3-api-optimization"> <a href="#3-api-optimization" class="anchor-heading" aria-labelledby="3-api-optimization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. API Optimization </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Implement proper caching</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">clientRouter</span> <span class="o">=</span> <span class="nx">createTRPCRouter</span><span class="p">({</span>
+  <span class="na">list</span><span class="p">:</span> <span class="nx">organizationProcedure</span>
+    <span class="p">.</span><span class="nx">input</span><span class="p">(</span><span class="nx">clientListSchema</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="k">async</span> <span class="p">({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="c1">// Cache key based on organization and filters</span>
+      <span class="kd">const</span> <span class="nx">cacheKey</span> <span class="o">=</span> <span class="s2">`clients:</span><span class="p">${</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">input</span><span class="p">)}</span><span class="s2">`</span>
+
+      <span class="k">return</span> <span class="k">await</span> <span class="nx">redis</span><span class="p">.</span><span class="nx">cache</span><span class="p">(</span><span class="nx">cacheKey</span><span class="p">,</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">getClients</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">input</span><span class="p">)</span>
+      <span class="p">},</span> <span class="p">{</span> <span class="na">ttl</span><span class="p">:</span> <span class="mi">300</span> <span class="p">})</span>  <span class="c1">// 5 minute cache</span>
+    <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div></div> <h2 id="security-best-practices"> <a href="#security-best-practices" class="anchor-heading" aria-labelledby="security-best-practices"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Security Best Practices </h2> <h3 id="1-input-validation"> <a href="#1-input-validation" class="anchor-heading" aria-labelledby="1-input-validation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Input Validation </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Always validate inputs with Zod</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">createClientSchema</span> <span class="o">=</span> <span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span>
+  <span class="na">businessName</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Business name required</span><span class="dl">'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Business name too long</span><span class="dl">'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">regex</span><span class="p">(</span><span class="sr">/^</span><span class="se">[</span><span class="sr">a-zA-Z0-9</span><span class="se">\s\-</span><span class="sr">&amp;.,'</span><span class="se">]</span><span class="sr">+$/</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Invalid characters</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">email</span><span class="p">(</span><span class="dl">'</span><span class="s1">Valid email required</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">taxId</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">optional</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">refine</span><span class="p">(</span><span class="nx">val</span> <span class="o">=&gt;</span> <span class="o">!</span><span class="nx">val</span> <span class="o">||</span> <span class="sr">/^</span><span class="se">\d{2}</span><span class="sr">-</span><span class="se">\d{7}</span><span class="sr">$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">val</span><span class="p">),</span> <span class="dl">'</span><span class="s1">Invalid tax ID format</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="2-authorization-checks"> <a href="#2-authorization-checks" class="anchor-heading" aria-labelledby="2-authorization-checks"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Authorization Checks </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Check permissions at every level</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">deleteClientProcedure</span> <span class="o">=</span> <span class="nx">organizationProcedure</span>
+  <span class="p">.</span><span class="nx">input</span><span class="p">(</span><span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span> <span class="na">id</span><span class="p">:</span> <span class="nx">z</span><span class="p">.</span><span class="kr">string</span><span class="p">().</span><span class="nx">cuid</span><span class="p">()</span> <span class="p">}))</span>
+  <span class="p">.</span><span class="nx">mutation</span><span class="p">(</span><span class="k">async</span> <span class="p">({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// Verify client belongs to organization</span>
+    <span class="kd">const</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">prisma</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">findFirst</span><span class="p">({</span>
+      <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">id</span><span class="p">:</span> <span class="nx">input</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+        <span class="na">organizationId</span><span class="p">:</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span>
+      <span class="p">}</span>
+    <span class="p">})</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">client</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TRPCError</span><span class="p">({</span> <span class="na">code</span><span class="p">:</span> <span class="dl">'</span><span class="s1">NOT_FOUND</span><span class="dl">'</span> <span class="p">})</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Check user has permission to delete</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">staff</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TRPCError</span><span class="p">({</span> <span class="na">code</span><span class="p">:</span> <span class="dl">'</span><span class="s1">FORBIDDEN</span><span class="dl">'</span> <span class="p">})</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">deleteClient</span><span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">userId</span><span class="p">)</span>
+  <span class="p">})</span>
+</code></pre></div></div> <h3 id="3-data-sanitization"> <a href="#3-data-sanitization" class="anchor-heading" aria-labelledby="3-data-sanitization"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Data Sanitization </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Sanitize data before storage</span>
+<span class="k">import</span> <span class="nx">DOMPurify</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">isomorphic-dompurify</span><span class="dl">'</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">sanitizeClientData</span><span class="p">(</span><span class="nx">data</span><span class="p">:</span> <span class="nx">CreateClientInput</span><span class="p">):</span> <span class="nx">CreateClientInput</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="p">...</span><span class="nx">data</span><span class="p">,</span>
+    <span class="na">businessName</span><span class="p">:</span> <span class="nx">DOMPurify</span><span class="p">.</span><span class="nx">sanitize</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">businessName</span><span class="p">.</span><span class="nx">trim</span><span class="p">()),</span>
+    <span class="na">primaryContactEmail</span><span class="p">:</span> <span class="nx">data</span><span class="p">.</span><span class="nx">primaryContactEmail</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">trim</span><span class="p">(),</span>
+    <span class="na">notes</span><span class="p">:</span> <span class="nx">data</span><span class="p">.</span><span class="nx">notes</span> <span class="p">?</span> <span class="nx">DOMPurify</span><span class="p">.</span><span class="nx">sanitize</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">notes</span><span class="p">)</span> <span class="p">:</span> <span class="kc">undefined</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="deployment-process"> <a href="#deployment-process" class="anchor-heading" aria-labelledby="deployment-process"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Deployment Process </h2> <h3 id="1-cicd-pipeline"> <a href="#1-cicd-pipeline" class="anchor-heading" aria-labelledby="1-cicd-pipeline"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. CI/CD Pipeline </h3> <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/workflows/ci-cd.yml</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">CI/CD Pipeline</span>
+
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">main</span><span class="pi">,</span> <span class="nv">develop</span><span class="pi">]</span>
+  <span class="na">pull_request</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">main</span><span class="pi">]</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">test</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v3</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-node@v3</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">node-version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">18'</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm ci</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm run lint</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm run type-check</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm run test</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm run test:e2e</span>
+
+  <span class="na">deploy</span><span class="pi">:</span>
+    <span class="na">needs</span><span class="pi">:</span> <span class="s">test</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">if</span><span class="pi">:</span> <span class="s">github.ref == 'refs/heads/main'</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v3</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm ci</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">npm run build</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Deploy to Azure</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">Azure/static-web-apps-deploy@v1</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">azure_static_web_apps_api_token</span><span class="pi">:</span> <span class="s">$</span>
+</code></pre></div></div> <h3 id="2-environment-management"> <a href="#2-environment-management" class="anchor-heading" aria-labelledby="2-environment-management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Environment Management </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// config/environment.ts</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">env</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">NODE_ENV</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NODE_ENV</span> <span class="k">as</span> <span class="dl">'</span><span class="s1">development</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">production</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">test</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">DATABASE_URL</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+  <span class="na">NEXTAUTH_SECRET</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXTAUTH_SECRET</span><span class="o">!</span><span class="p">,</span>
+  <span class="na">AZURE_STORAGE_CONNECTION_STRING</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">AZURE_STORAGE_CONNECTION_STRING</span><span class="o">!</span><span class="p">,</span>
+
+  <span class="c1">// Validate environment variables</span>
+  <span class="kd">get</span> <span class="nx">isProduction</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">NODE_ENV</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">production</span><span class="dl">'</span>
+  <span class="p">},</span>
+
+  <span class="nx">validate</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">required</span> <span class="o">=</span> <span class="p">[</span><span class="dl">'</span><span class="s1">DATABASE_URL</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">NEXTAUTH_SECRET</span><span class="dl">'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">const</span> <span class="nx">key</span> <span class="k">of</span> <span class="nx">required</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">`Missing required environment variable: </span><span class="p">${</span><span class="nx">key</span><span class="p">}</span><span class="s2">`</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Validate on startup</span>
+<span class="nx">env</span><span class="p">.</span><span class="nx">validate</span><span class="p">()</span>
+</code></pre></div></div> <h2 id="monitoring-and-debugging"> <a href="#monitoring-and-debugging" class="anchor-heading" aria-labelledby="monitoring-and-debugging"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Monitoring and Debugging </h2> <h3 id="1-logging-strategy"> <a href="#1-logging-strategy" class="anchor-heading" aria-labelledby="1-logging-strategy"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Logging Strategy </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// lib/logger.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createLogger</span><span class="p">,</span> <span class="nx">format</span><span class="p">,</span> <span class="nx">transports</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">winston</span><span class="dl">'</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">logger</span> <span class="o">=</span> <span class="nx">createLogger</span><span class="p">({</span>
+  <span class="na">level</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">LOG_LEVEL</span> <span class="o">||</span> <span class="dl">'</span><span class="s1">info</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">format</span><span class="p">:</span> <span class="nx">format</span><span class="p">.</span><span class="nx">combine</span><span class="p">(</span>
+    <span class="nx">format</span><span class="p">.</span><span class="nx">timestamp</span><span class="p">(),</span>
+    <span class="nx">format</span><span class="p">.</span><span class="nx">errors</span><span class="p">({</span> <span class="na">stack</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}),</span>
+    <span class="nx">format</span><span class="p">.</span><span class="nx">json</span><span class="p">()</span>
+  <span class="p">),</span>
+  <span class="na">transports</span><span class="p">:</span> <span class="p">[</span>
+    <span class="k">new</span> <span class="nx">transports</span><span class="p">.</span><span class="nx">Console</span><span class="p">(),</span>
+    <span class="k">new</span> <span class="nx">transports</span><span class="p">.</span><span class="nx">File</span><span class="p">({</span> <span class="na">filename</span><span class="p">:</span> <span class="dl">'</span><span class="s1">error.log</span><span class="dl">'</span><span class="p">,</span> <span class="na">level</span><span class="p">:</span> <span class="dl">'</span><span class="s1">error</span><span class="dl">'</span> <span class="p">}),</span>
+    <span class="k">new</span> <span class="nx">transports</span><span class="p">.</span><span class="nx">File</span><span class="p">({</span> <span class="na">filename</span><span class="p">:</span> <span class="dl">'</span><span class="s1">combined.log</span><span class="dl">'</span> <span class="p">})</span>
+  <span class="p">]</span>
+<span class="p">})</span>
+
+<span class="c1">// Usage in API procedures</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">clientRouter</span> <span class="o">=</span> <span class="nx">createTRPCRouter</span><span class="p">({</span>
+  <span class="na">create</span><span class="p">:</span> <span class="nx">organizationProcedure</span>
+    <span class="p">.</span><span class="nx">input</span><span class="p">(</span><span class="nx">createClientSchema</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">mutation</span><span class="p">(</span><span class="k">async</span> <span class="p">({</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="dl">'</span><span class="s1">Creating client</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">organizationId</span><span class="p">:</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span>
+        <span class="na">userId</span><span class="p">:</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">userId</span><span class="p">,</span>
+        <span class="na">businessName</span><span class="p">:</span> <span class="nx">input</span><span class="p">.</span><span class="nx">businessName</span>
+      <span class="p">})</span>
+
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="kd">const</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">ClientService</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">organizationId</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">userId</span><span class="p">)</span>
+        <span class="nx">logger</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="dl">'</span><span class="s1">Client created successfully</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">clientId</span><span class="p">:</span> <span class="nx">client</span><span class="p">.</span><span class="nx">id</span> <span class="p">})</span>
+        <span class="k">return</span> <span class="nx">client</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">logger</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Failed to create client</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">input</span> <span class="p">})</span>
+        <span class="k">throw</span> <span class="nx">error</span>
+      <span class="p">}</span>
+    <span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div></div> <h3 id="2-error-tracking"> <a href="#2-error-tracking" class="anchor-heading" aria-labelledby="2-error-tracking"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Error Tracking </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// lib/error-tracking.ts</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">Sentry</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@sentry/nextjs</span><span class="dl">'</span>
+
+<span class="nx">Sentry</span><span class="p">.</span><span class="nx">init</span><span class="p">({</span>
+  <span class="na">dsn</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">SENTRY_DSN</span><span class="p">,</span>
+  <span class="na">environment</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NODE_ENV</span><span class="p">,</span>
+  <span class="na">tracesSampleRate</span><span class="p">:</span> <span class="mf">1.0</span>
+<span class="p">})</span>
+
+<span class="c1">// Custom error boundary</span>
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">withErrorBoundary</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">ComponentType</span><span class="o">&lt;</span><span class="kr">any</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+  <span class="nx">Component</span><span class="p">:</span> <span class="nx">T</span>
+<span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">Sentry</span><span class="p">.</span><span class="nx">withErrorBoundary</span><span class="p">(</span><span class="nx">Component</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">fallback</span><span class="p">:</span> <span class="p">({</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">resetError</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="dl">"</span><span class="s2">p-4 text-center</span><span class="dl">"</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">h2</span><span class="o">&gt;</span><span class="nx">Something</span> <span class="nx">went</span> <span class="nx">wrong</span><span class="o">&lt;</span><span class="sr">/h2</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="nx">resetError</span><span class="p">}</span><span class="o">&gt;</span><span class="nx">Try</span> <span class="nx">again</span><span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">)</span>
+  <span class="p">})</span> <span class="k">as</span> <span class="nx">T</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="performance-monitoring"> <a href="#performance-monitoring" class="anchor-heading" aria-labelledby="performance-monitoring"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Performance Monitoring </h2> <h3 id="1-application-insights-integration"> <a href="#1-application-insights-integration" class="anchor-heading" aria-labelledby="1-application-insights-integration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Application Insights Integration </h3> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// lib/telemetry.ts</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ApplicationInsights</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@microsoft/applicationinsights-web</span><span class="dl">'</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">appInsights</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApplicationInsights</span><span class="p">({</span>
+  <span class="na">config</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">instrumentationKey</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATION_KEY</span><span class="p">,</span>
+    <span class="na">enableAutoRouteTracking</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">enableCorsCorrelation</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="nx">appInsights</span><span class="p">.</span><span class="nx">loadAppInsights</span><span class="p">()</span>
+
+<span class="c1">// Track custom events</span>
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">trackEvent</span><span class="p">(</span><span class="nx">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">properties</span><span class="p">?:</span> <span class="nb">Record</span><span class="o">&lt;</span><span class="kr">string</span><span class="p">,</span> <span class="kr">any</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">appInsights</span><span class="p">.</span><span class="nx">trackEvent</span><span class="p">({</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">properties</span> <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="c1">// Track API performance</span>
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">trackApiCall</span><span class="p">(</span><span class="nx">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">duration</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">success</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">appInsights</span><span class="p">.</span><span class="nx">trackDependency</span><span class="p">({</span>
+    <span class="nx">name</span><span class="p">,</span>
+    <span class="nx">duration</span><span class="p">,</span>
+    <span class="nx">success</span><span class="p">,</span>
+    <span class="na">dependencyType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">API</span><span class="dl">'</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="contributing-guidelines"> <a href="#contributing-guidelines" class="anchor-heading" aria-labelledby="contributing-guidelines"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Contributing Guidelines </h2> <h3 id="1-branch-naming-convention"> <a href="#1-branch-naming-convention" class="anchor-heading" aria-labelledby="1-branch-naming-convention"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Branch Naming Convention </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Feature branches</span>
+feature/client-management-enhancement
+feature/quickbooks-integration-v2
+
+<span class="c"># Bug fixes</span>
+fix/client-email-validation
+fix/document-upload-error
+
+<span class="c"># Hotfixes</span>
+hotfix/security-vulnerability-patch
+
+<span class="c"># Releases</span>
+release/v2.1.0
+</code></pre></div></div> <h3 id="2-commit-message-format"> <a href="#2-commit-message-format" class="anchor-heading" aria-labelledby="2-commit-message-format"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Commit Message Format </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Format: type(scope): description</span>
+feat<span class="o">(</span>client<span class="o">)</span>: add bulk client import functionality
+fix<span class="o">(</span>auth<span class="o">)</span>: resolve session <span class="nb">timeout </span>issue
+docs<span class="o">(</span>api<span class="o">)</span>: update client API documentation
+<span class="nb">test</span><span class="o">(</span>integration<span class="o">)</span>: add QuickBooks <span class="nb">sync </span>tests
+refactor<span class="o">(</span>database<span class="o">)</span>: optimize client queries
+</code></pre></div></div> <h3 id="3-pull-request-process"> <a href="#3-pull-request-process" class="anchor-heading" aria-labelledby="3-pull-request-process"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. Pull Request Process </h3> <ol> <li><strong>Create Feature Branch</strong>: Branch from <code class="language-plaintext highlighter-rouge">develop</code> for new features</li> <li><strong>Implement Changes</strong>: Follow coding standards and write tests</li> <li><strong>Self Review</strong>: Check your code before submitting</li> <li><strong>Create PR</strong>: Use our PR template with proper description</li> <li><strong>Code Review</strong>: Address reviewer feedback</li> <li><strong>Testing</strong>: Ensure all tests pass in CI</li> <li><strong>Merge</strong>: Squash and merge to maintain clean history</li> </ol> <h2 id="troubleshooting-common-issues"> <a href="#troubleshooting-common-issues" class="anchor-heading" aria-labelledby="troubleshooting-common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting Common Issues </h2> <h3 id="1-development-environment-issues"> <a href="#1-development-environment-issues" class="anchor-heading" aria-labelledby="1-development-environment-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Development Environment Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Clear Next.js cache</span>
+<span class="nb">rm</span> <span class="nt">-rf</span> .next
+
+<span class="c"># Reset node modules</span>
+<span class="nb">rm</span> <span class="nt">-rf</span> node_modules package-lock.json
+npm <span class="nb">install</span>
+
+<span class="c"># Reset database</span>
+npx prisma migrate reset
+npx prisma db seed
+
+<span class="c"># Check environment variables</span>
+npm run type-check
+</code></pre></div></div> <h3 id="2-database-issues"> <a href="#2-database-issues" class="anchor-heading" aria-labelledby="2-database-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Database Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check database connection</span>
+npm run db:studio
+
+<span class="c"># View database logs</span>
+az postgres flexible-server logs download <span class="se">\</span>
+  <span class="nt">--name</span> your-db-server <span class="se">\</span>
+  <span class="nt">--resource-group</span> your-rg
+
+<span class="c"># Reset database schema</span>
+npx prisma migrate reset <span class="nt">--force</span>
+</code></pre></div></div> <h3 id="3-api-issues"> <a href="#3-api-issues" class="anchor-heading" aria-labelledby="3-api-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. API Issues </h3> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Test API endpoints</span>
+curl <span class="nt">-X</span> POST http://localhost:3000/api/trpc/client.create <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'{"businessName":"Test","primaryContactEmail":"test@example.com"}'</span>
+
+<span class="c"># Check API logs</span>
+npm run dev <span class="nt">--</span> <span class="nt">--inspect</span>
+</code></pre></div></div> <h2 id="getting-help"> <a href="#getting-help" class="anchor-heading" aria-labelledby="getting-help"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Getting Help </h2> <h3 id="internal-resources"> <a href="#internal-resources" class="anchor-heading" aria-labelledby="internal-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Internal Resources </h3> <ul> <li><strong>Slack</strong>: #advisoros-dev channel</li> <li><strong>Documentation</strong>: This developer documentation</li> <li><strong>Code Reviews</strong>: Request reviews from senior developers</li> <li><strong>Team Meetings</strong>: Weekly development sync meetings</li> </ul> <h3 id="external-resources"> <a href="#external-resources" class="anchor-heading" aria-labelledby="external-resources"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> External Resources </h3> <ul> <li><strong>Next.js Documentation</strong>: <a href="https://nextjs.org/docs">nextjs.org/docs</a></li> <li><strong>tRPC Documentation</strong>: <a href="https://trpc.io/docs">trpc.io/docs</a></li> <li><strong>Prisma Documentation</strong>: <a href="https://prisma.io/docs">prisma.io/docs</a></li> <li><strong>Azure Documentation</strong>: <a href="https://docs.microsoft.com/azure">docs.microsoft.com/azure</a></li> </ul> <h3 id="support-contacts"> <a href="#support-contacts" class="anchor-heading" aria-labelledby="support-contacts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Support Contacts </h3> <ul> <li><strong>Technical Lead</strong>: tech-lead@advisoros.com</li> <li><strong>DevOps Team</strong>: devops@advisoros.com</li> <li><strong>Security Team</strong>: security@advisoros.com</li> </ul> </main> <hr> <footer> <p class="text-small text-grey-dk-100 mb-0">Built by the AdvisorOS team | Updated {{ site.time | date: '%B %d, %Y' }}</p> </footer> </div> </div> <div class="search-overlay"></div> </div> </body> </html>
