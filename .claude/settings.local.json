@@ -56,7 +56,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(npm outdated)",
-      "Read(//c/Users/MarkusAhling/.claude/**)"
+      "Read(//c/Users/MarkusAhling/.claude/**)",
+      "Bash(npm ls:*)",
+      "Bash(python3:*)",
+      "Bash(npm outdated:*)"
     ],
     "deny": [],
     "ask": []

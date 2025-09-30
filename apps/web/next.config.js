@@ -6,6 +6,8 @@ const nextConfig = {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react', '@tremor/react'],
     // Optimize client-side routing
     optimisticClientCache: true,
+    // Enable instrumentation for security initialization
+    instrumentationHook: true,
   },
 
   // Server external packages (moved from experimental)
