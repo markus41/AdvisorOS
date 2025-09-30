@@ -1142,7 +1142,7 @@ sudo apt update && sudo apt upgrade -y
 npm audit fix
 
 # Update Docker images
-docker images --format "table {% raw %}{{.Repository}}:{{.Tag}}{% endraw %}" | grep advisoros | xargs -I {} docker pull {}
+docker images --format "table {{.Repository}}:{{.Tag}}" | grep advisoros | xargs -I {} docker pull {}
 
 # Restart services
 systemctl restart advisoros

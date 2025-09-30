@@ -1,9 +1,6 @@
 title: AdvisorOS Documentation
 description: Implementation, adoption, and operations playbook for AdvisorOS.
 remote_theme: just-the-docs/just-the-docs
-repository: markus41/AdvisorOS
-url: https://markus41.github.io
-baseurl: /AdvisorOS
 search_enabled: true
 color_scheme: dark
 enable_copy_code_button: true
