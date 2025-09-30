@@ -4,6 +4,9 @@ environment = "prod"
 location    = "eastus"
 app_url     = "https://app.cpaplatform.com"
 
+# Read Replica Configuration
+enable_dr_replica = false  # Set to true to enable cross-region DR replica
+
 # CORS Origins for production
 allowed_origins = [
   "https://app.cpaplatform.com",

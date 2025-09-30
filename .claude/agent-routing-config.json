@@ -1,0 +1,523 @@
+{
+  "version": "1.0.0",
+  "description": "Intelligent agent routing configuration for AdvisorOS",
+  "routingRules": {
+    "backend": {
+      "keywords": [
+        "api endpoint",
+        "trpc procedure",
+        "route",
+        "service class",
+        "business logic",
+        "authentication",
+        "nextauth",
+        "session",
+        "middleware",
+        "server",
+        "backend"
+      ],
+      "filePatterns": [
+        "*/server/api/routers/*.ts",
+        "*/server/services/*.ts",
+        "*/server/middleware/*.ts"
+      ],
+      "primaryAgent": "backend-api-developer",
+      "supportingAgents": ["security-auditor", "database-optimizer", "test-suite-developer"]
+    },
+    "frontend": {
+      "keywords": [
+        "react component",
+        "ui",
+        "interface",
+        "form",
+        "validation",
+        "input",
+        "dashboard",
+        "chart",
+        "visualization",
+        "responsive",
+        "mobile",
+        "layout",
+        "tailwind",
+        "css",
+        "styling"
+      ],
+      "filePatterns": [
+        "*/components/**/*.tsx",
+        "*/components/**/*.jsx",
+        "*/app/**/*.tsx",
+        "*/pages/**/*.tsx"
+      ],
+      "primaryAgent": "frontend-builder",
+      "supportingAgents": ["user-journey-optimizer", "micro-animation-coordinator"]
+    },
+    "database": {
+      "keywords": [
+        "slow query",
+        "optimize database",
+        "index",
+        "migration",
+        "schema change",
+        "prisma",
+        "sql",
+        "postgres",
+        "query performance",
+        "n+1",
+        "database"
+      ],
+      "filePatterns": [
+        "*.prisma",
+        "*/prisma/**/*",
+        "*/migrations/**/*"
+      ],
+      "primaryAgent": "database-optimizer",
+      "supportingAgents": ["performance-optimization-specialist", "backend-api-developer"]
+    },
+    "performance": {
+      "keywords": [
+        "performance issue",
+        "slow loading",
+        "optimize",
+        "caching",
+        "redis",
+        "scalability",
+        "load testing",
+        "capacity",
+        "bottleneck",
+        "latency",
+        "response time"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "performance-optimization-specialist",
+      "supportingAgents": ["database-optimizer", "frontend-builder", "devops-azure-specialist"]
+    },
+    "security": {
+      "keywords": [
+        "security audit",
+        "vulnerability",
+        "owasp",
+        "cross-tenant",
+        "data leak",
+        "organizationid",
+        "rbac",
+        "permission",
+        "authorization",
+        "encryption",
+        "secrets",
+        "credentials",
+        "xss",
+        "sql injection",
+        "csrf"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "security-auditor",
+      "supportingAgents": ["audit-trail-perfectionist", "database-optimizer", "compliance-planner"]
+    },
+    "compliance": {
+      "keywords": [
+        "audit trail",
+        "sox",
+        "gaap",
+        "compliance",
+        "regulation",
+        "audit log",
+        "financial compliance"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "audit-trail-perfectionist",
+      "supportingAgents": ["security-auditor", "cpa-tax-compliance", "compliance-planner"]
+    },
+    "tax": {
+      "keywords": [
+        "tax calculation",
+        "irs",
+        "deduction",
+        "tax rate",
+        "quarterly estimated tax",
+        "self-employment tax",
+        "tax bracket",
+        "w-2",
+        "1099",
+        "schedule c",
+        "form 1040"
+      ],
+      "filePatterns": [
+        "*/services/tax*.ts",
+        "*/services/*tax*.ts"
+      ],
+      "primaryAgent": "cpa-tax-compliance",
+      "supportingAgents": ["audit-trail-perfectionist", "financial-prediction-modeler"]
+    },
+    "accounting": {
+      "keywords": [
+        "gaap",
+        "revenue recognition",
+        "asc 606",
+        "financial statement",
+        "accounting",
+        "journal entry",
+        "general ledger",
+        "accounts receivable",
+        "accounts payable"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "cpa-tax-compliance",
+      "supportingAgents": ["audit-trail-perfectionist", "financial-prediction-modeler"]
+    },
+    "testing": {
+      "keywords": [
+        "test",
+        "unit test",
+        "integration test",
+        "e2e",
+        "end-to-end",
+        "playwright",
+        "jest",
+        "coverage",
+        "test strategy",
+        "mock",
+        "stub",
+        "fixture"
+      ],
+      "filePatterns": [
+        "**/__tests__/**/*.ts",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "*/tests/**/*"
+      ],
+      "primaryAgent": "test-suite-developer",
+      "supportingAgents": ["demo-data-generator"]
+    },
+    "ai": {
+      "keywords": [
+        "ocr",
+        "form recognizer",
+        "document processing",
+        "gpt-4",
+        "openai",
+        "ai insights",
+        "azure ai",
+        "cognitive services",
+        "document classification",
+        "extraction",
+        "machine learning"
+      ],
+      "filePatterns": [
+        "*/services/*ai*.ts",
+        "*/services/*ocr*.ts",
+        "*/services/*document*.ts"
+      ],
+      "primaryAgent": "ai-features-orchestrator",
+      "supportingAgents": ["document-intelligence-optimizer", "devops-azure-specialist"]
+    },
+    "documents": {
+      "keywords": [
+        "document upload",
+        "file processing",
+        "pdf",
+        "invoice processing",
+        "receipt",
+        "w-2 processing",
+        "tax document"
+      ],
+      "filePatterns": [
+        "*/services/document*.ts"
+      ],
+      "primaryAgent": "document-intelligence-optimizer",
+      "supportingAgents": ["ai-features-orchestrator", "cpa-tax-compliance"]
+    },
+    "devops": {
+      "keywords": [
+        "deployment",
+        "ci/cd",
+        "pipeline",
+        "azure",
+        "infrastructure",
+        "terraform",
+        "docker",
+        "container",
+        "kubernetes",
+        "monitoring",
+        "application insights"
+      ],
+      "filePatterns": [
+        "infrastructure/**/*",
+        "*.tf",
+        "Dockerfile",
+        "docker-compose.yml",
+        ".github/workflows/*"
+      ],
+      "primaryAgent": "devops-azure-specialist",
+      "supportingAgents": ["security-auditor", "performance-optimization-specialist"]
+    },
+    "architecture": {
+      "keywords": [
+        "architecture",
+        "system design",
+        "diagram",
+        "api design",
+        "schema design",
+        "scalability",
+        "design pattern"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "architecture-designer",
+      "supportingAgents": ["backend-api-developer", "database-optimizer", "performance-optimization-specialist"]
+    },
+    "refactoring": {
+      "keywords": [
+        "technical debt",
+        "refactor",
+        "code smell",
+        "clean code",
+        "improve code quality"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "technical-debt-planner",
+      "supportingAgents": ["architecture-designer", "test-suite-developer"]
+    },
+    "client": {
+      "keywords": [
+        "client portal",
+        "self-service",
+        "client success",
+        "retention",
+        "engagement",
+        "onboarding",
+        "client experience"
+      ],
+      "filePatterns": [
+        "*/components/client/**/*",
+        "*/services/client*.ts"
+      ],
+      "primaryAgent": "client-portal-designer",
+      "supportingAgents": ["client-success-optimizer", "user-journey-optimizer"]
+    },
+    "analytics": {
+      "keywords": [
+        "feature adoption",
+        "analytics",
+        "tracking",
+        "metrics",
+        "kpi",
+        "dashboard analytics"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "feature-adoption-tracker",
+      "supportingAgents": ["user-journey-optimizer"]
+    },
+    "ux": {
+      "keywords": [
+        "user journey",
+        "ux",
+        "user experience",
+        "conversion",
+        "funnel",
+        "drop-off"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "user-journey-optimizer",
+      "supportingAgents": ["frontend-builder", "feature-adoption-tracker"]
+    },
+    "workflow": {
+      "keywords": [
+        "workflow",
+        "automation",
+        "efficiency",
+        "process optimization",
+        "bottleneck"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "workflow-efficiency-analyzer",
+      "supportingAgents": ["smart-automation-designer", "user-journey-optimizer"]
+    },
+    "integration": {
+      "keywords": [
+        "quickbooks",
+        "stripe",
+        "integration",
+        "webhook",
+        "oauth",
+        "api connection",
+        "third-party",
+        "external api"
+      ],
+      "filePatterns": [
+        "*/integrations/**/*",
+        "*/services/*integration*.ts"
+      ],
+      "primaryAgent": "integration-specialist",
+      "supportingAgents": ["backend-api-developer", "security-auditor"]
+    },
+    "documentation": {
+      "keywords": [
+        "documentation",
+        "readme",
+        "api docs",
+        "jsdoc",
+        "comment",
+        "document code",
+        "knowledge base",
+        "wiki",
+        "guide"
+      ],
+      "filePatterns": [
+        "*.md",
+        "README.md",
+        "docs/**/*"
+      ],
+      "primaryAgent": "docs-writer",
+      "supportingAgents": ["documentation-evolution-manager"]
+    },
+    "taxseason": {
+      "keywords": [
+        "tax season",
+        "peak load",
+        "capacity planning",
+        "scaling",
+        "high volume"
+      ],
+      "filePatterns": ["*"],
+      "primaryAgent": "tax-season-optimizer",
+      "supportingAgents": ["performance-optimization-specialist", "database-optimizer"]
+    },
+    "financial": {
+      "keywords": [
+        "forecasting",
+        "prediction",
+        "cash flow",
+        "financial modeling",
+        "anomaly detection"
+      ],
+      "filePatterns": [
+        "*/services/financial*.ts",
+        "*/services/*forecast*.ts"
+      ],
+      "primaryAgent": "financial-prediction-modeler",
+      "supportingAgents": ["cpa-tax-compliance"]
+    }
+  },
+  "multiAgentWorkflows": {
+    "feature-development": {
+      "description": "Complete feature development from design to deployment",
+      "agents": [
+        "architecture-designer",
+        "database-optimizer",
+        "backend-api-developer",
+        "frontend-builder",
+        "security-auditor",
+        "test-suite-developer",
+        "docs-writer"
+      ],
+      "keywords": [
+        "build feature",
+        "new feature",
+        "implement feature",
+        "create feature"
+      ]
+    },
+    "security-audit": {
+      "description": "Comprehensive security assessment",
+      "agents": [
+        "security-auditor",
+        "database-optimizer",
+        "audit-trail-perfectionist",
+        "test-suite-developer"
+      ],
+      "keywords": [
+        "security review",
+        "full security audit",
+        "comprehensive security"
+      ]
+    },
+    "performance-optimization": {
+      "description": "End-to-end performance improvement",
+      "agents": [
+        "performance-optimization-specialist",
+        "database-optimizer",
+        "frontend-builder",
+        "test-suite-developer"
+      ],
+      "keywords": [
+        "optimize performance",
+        "improve performance",
+        "performance issue"
+      ]
+    },
+    "tax-feature": {
+      "description": "Tax calculation feature with compliance",
+      "agents": [
+        "cpa-tax-compliance",
+        "backend-api-developer",
+        "audit-trail-perfectionist",
+        "test-suite-developer",
+        "docs-writer"
+      ],
+      "keywords": [
+        "tax feature",
+        "tax calculation",
+        "implement tax"
+      ]
+    },
+    "client-onboarding": {
+      "description": "Complete client onboarding workflow",
+      "agents": [
+        "client-success-optimizer",
+        "backend-api-developer",
+        "frontend-builder",
+        "integration-specialist",
+        "security-auditor",
+        "docs-writer"
+      ],
+      "keywords": [
+        "client onboarding",
+        "onboard client",
+        "client setup"
+      ]
+    },
+    "document-processing": {
+      "description": "AI-powered document processing pipeline",
+      "agents": [
+        "document-intelligence-optimizer",
+        "ai-features-orchestrator",
+        "backend-api-developer",
+        "cpa-tax-compliance",
+        "security-auditor"
+      ],
+      "keywords": [
+        "document processing",
+        "process documents",
+        "document automation"
+      ]
+    }
+  },
+  "contextRules": {
+    "byFileExtension": {
+      ".prisma": "database-optimizer",
+      ".tsx": "frontend-builder",
+      ".jsx": "frontend-builder",
+      ".test.ts": "test-suite-developer",
+      ".spec.ts": "test-suite-developer",
+      ".tf": "devops-azure-specialist",
+      ".md": "docs-writer"
+    },
+    "byDirectory": {
+      "components/": "frontend-builder",
+      "server/api/": "backend-api-developer",
+      "server/services/": "backend-api-developer",
+      "prisma/": "database-optimizer",
+      "__tests__/": "test-suite-developer",
+      "tests/": "test-suite-developer",
+      "infrastructure/": "devops-azure-specialist",
+      "docs/": "docs-writer"
+    }
+  },
+  "priorityRules": {
+    "security": 1,
+    "compliance": 2,
+    "performance": 3,
+    "testing": 4,
+    "documentation": 5
+  },
+  "fallbackAgent": "architecture-designer"
+}

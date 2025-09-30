@@ -88,11 +88,268 @@
       "args": ["-y", "@modelcontextprotocol/server-reference"],
       "env": {},
       "description": "Technical documentation and reference lookup"
+    },
+    "context7-mcp": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"],
+      "env": {
+        "CONTEXT7_API_KEY": ""
+      },
+      "description": "Advanced context management and semantic search for CPA workflows"
+    },
+    "playwright-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "env": {},
+      "description": "E2E testing and browser automation for CPA applications"
+    },
+    "webflow-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-webflow"],
+      "env": {
+        "WEBFLOW_API_TOKEN": ""
+      },
+      "description": "Webflow CMS integration for marketing site management"
+    },
+    "apify-mcp": {
+      "command": "npx",
+      "args": ["-y", "@apify/mcp-server"],
+      "env": {
+        "APIFY_API_TOKEN": ""
+      },
+      "description": "Web scraping and data extraction for market intelligence"
+    },
+    "stripe-mcp": {
+      "command": "npx",
+      "args": ["-y", "@stripe/mcp-server"],
+      "env": {
+        "STRIPE_SECRET_KEY": "",
+        "STRIPE_WEBHOOK_SECRET": ""
+      },
+      "description": "Payment processing and subscription management integration"
+    },
+    "quickbooks-mcp": {
+      "command": "npx",
+      "args": ["-y", "@intuit/quickbooks-mcp-server"],
+      "env": {
+        "QUICKBOOKS_CLIENT_ID": "",
+        "QUICKBOOKS_CLIENT_SECRET": "",
+        "QUICKBOOKS_REDIRECT_URI": "http://localhost:3000/api/integrations/quickbooks/callback"
+      },
+      "description": "QuickBooks Online integration for accounting data synchronization"
+    },
+    "openai-mcp": {
+      "command": "npx",
+      "args": ["-y", "@openai/mcp-server"],
+      "env": {
+        "OPENAI_API_KEY": ""
+      },
+      "description": "OpenAI API integration for AI-powered insights and document analysis"
+    },
+    "powerbi-mcp": {
+      "command": "npx",
+      "args": ["-y", "@microsoft/powerbi-mcp-server"],
+      "env": {
+        "POWERBI_CLIENT_ID": "",
+        "POWERBI_CLIENT_SECRET": "",
+        "POWERBI_TENANT_ID": "",
+        "POWERBI_WORKSPACE_ID": ""
+      },
+      "description": "Power BI integration for advanced analytics and reporting dashboards"
+    },
+    "financial-datasets-mcp": {
+      "command": "npx",
+      "args": ["-y", "@financial-datasets/mcp-server"],
+      "env": {
+        "FINANCIAL_DATASETS_API_KEY": ""
+      },
+      "description": "Stock market API with income statements, balance sheets, cash flow, and historical prices"
+    },
+    "alpha-vantage-mcp": {
+      "command": "npx",
+      "args": ["-y", "@alphavantage/mcp-server"],
+      "env": {
+        "ALPHA_VANTAGE_API_KEY": ""
+      },
+      "description": "100+ financial APIs for stocks, forex, crypto, commodities, and technical indicators"
+    },
+    "polygon-mcp": {
+      "command": "npx",
+      "args": ["-y", "@polygon-io/mcp-server"],
+      "env": {
+        "POLYGON_API_KEY": ""
+      },
+      "description": "Real-time market data with WebSocket support for stocks and crypto"
+    },
+    "twelve-data-mcp": {
+      "command": "npx",
+      "args": ["-y", "@twelvedata/mcp-server"],
+      "env": {
+        "TWELVE_DATA_API_KEY": ""
+      },
+      "description": "Real-time and historical financial market data for global markets"
+    },
+    "fred-mcp": {
+      "command": "npx",
+      "args": ["-y", "@federal-reserve/fred-mcp-server"],
+      "env": {
+        "FRED_API_KEY": ""
+      },
+      "description": "Federal Reserve Economic Data for macroeconomic analysis and indicators"
+    },
+    "intrinio-mcp": {
+      "command": "npx",
+      "args": ["-y", "@intrinio/mcp-server"],
+      "env": {
+        "INTRINIO_API_KEY": ""
+      },
+      "description": "Institutional-grade US market data for fintech and investment research"
+    },
+    "fmp-mcp": {
+      "command": "npx",
+      "args": ["-y", "@financial-modeling-prep/mcp-server"],
+      "env": {
+        "FMP_API_KEY": ""
+      },
+      "description": "Financial Modeling Prep for company fundamentals and market data"
+    },
+    "alpaca-trading-mcp": {
+      "command": "npx",
+      "args": ["-y", "@alpacahq/mcp-server"],
+      "env": {
+        "ALPACA_API_KEY": "",
+        "ALPACA_API_SECRET": ""
+      },
+      "description": "Trade stocks, ETFs, crypto, options via Alpaca API with strategy building"
+    },
+    "quantconnect-mcp": {
+      "command": "npx",
+      "args": ["-y", "@quantconnect/mcp-server"],
+      "env": {
+        "QUANTCONNECT_USER_ID": "",
+        "QUANTCONNECT_API_TOKEN": ""
+      },
+      "description": "Multi-asset algo trading platform for stocks, options, futures, FX, and crypto"
+    },
+    "composer-mcp": {
+      "command": "npx",
+      "args": ["-y", "@composer/mcp-server"],
+      "env": {
+        "COMPOSER_API_KEY": ""
+      },
+      "description": "Backtest investment ideas and execute automated trading strategies"
+    },
+    "trade-agent-mcp": {
+      "command": "npx",
+      "args": ["-y", "@trade-agent/mcp-server"],
+      "env": {
+        "ROBINHOOD_TOKEN": "",
+        "ETRADE_API_KEY": "",
+        "COINBASE_API_KEY": "",
+        "KRAKEN_API_KEY": ""
+      },
+      "description": "Trade on Robinhood, E*Trade, Coinbase, and Kraken platforms"
+    },
+    "coingecko-mcp": {
+      "command": "npx",
+      "args": ["-y", "@coingecko/mcp-server"],
+      "env": {
+        "COINGECKO_API_KEY": ""
+      },
+      "description": "15k+ cryptocurrencies with real-time prices, market cap, and volume data"
+    },
+    "crypto-trader-mcp": {
+      "command": "npx",
+      "args": ["-y", "@crypto-trader/mcp-server"],
+      "env": {
+        "UPBIT_API_KEY": "",
+        "GATEIO_API_KEY": "",
+        "BINANCE_API_KEY": ""
+      },
+      "description": "Multi-exchange cryptocurrency spot trading for Upbit, Gate.io, and Binance"
+    },
+    "tatum-blockchain-mcp": {
+      "command": "npx",
+      "args": ["-y", "@tatum/mcp-server"],
+      "env": {
+        "TATUM_API_KEY": ""
+      },
+      "description": "130+ blockchain networks with RPC Gateway and blockchain data insights"
+    },
+    "dexpaprika-mcp": {
+      "command": "npx",
+      "args": ["-y", "@dexpaprika/mcp-server"],
+      "env": {
+        "DEXPAPRIKA_API_KEY": ""
+      },
+      "description": "DeFi data across 20+ chains and 5M+ tokens with liquidity pool analysis"
+    },
+    "zillow-mcp": {
+      "command": "npx",
+      "args": ["-y", "@zillow/mcp-server"],
+      "env": {
+        "ZILLOW_API_KEY": ""
+      },
+      "description": "Property search, Zestimates, market trends, and mortgage calculations"
+    },
+    "redfin-mcp": {
+      "command": "npx",
+      "args": ["-y", "@apify/redfin-mcp-server"],
+      "env": {
+        "APIFY_API_TOKEN": ""
+      },
+      "description": "Property data scraping from Redfin.com with price, location, and agent info"
+    },
+    "real-estate-investment-mcp": {
+      "command": "python",
+      "args": ["-m", "real_estate_mcp.server"],
+      "env": {
+        "ZILLOW_DB_PATH": "./data/zillow_real_estate.db"
+      },
+      "description": "Zillow database for ZHVI, ZHVF, ZORI analysis and investment opportunities"
+    },
+    "sec-edgar-mcp": {
+      "command": "python",
+      "args": ["-m", "sec_edgar_mcp"],
+      "env": {},
+      "description": "SEC filings with XBRL parsing for exact numeric precision and compliance"
+    },
+    "shareseer-mcp": {
+      "command": "npx",
+      "args": ["-y", "@shareseer/mcp-server"],
+      "env": {
+        "SHARESEER_API_KEY": ""
+      },
+      "description": "Real-time SEC filings, company financials, and insider trading data"
+    },
+    "us-treasury-mcp": {
+      "command": "npx",
+      "args": ["-y", "@ustreasury/fiscal-data-mcp"],
+      "env": {},
+      "description": "US Treasury fiscal data API for treasury statements and government finance"
+    },
+    "kdbx-mcp": {
+      "command": "python",
+      "args": [".superclaude/mcp-servers/kdbx-server.py"],
+      "env": {
+        "KDB_HOST": "localhost",
+        "KDB_PORT": "5000",
+        "KDB_OAUTH_TOKEN": ""
+      },
+      "description": "High-speed time-series database for real-time financial data and market intelligence"
+    },
+    "monarch-mcp": {
+      "command": "npx",
+      "args": ["-y", "@monarch/mcp-server"],
+      "env": {
+        "MONARCH_API_TOKEN": ""
+      },
+      "description": "Personal finance data: transactions, budgets, accounts, and cashflow analysis"
     }
   },
   "advisoros": {
-    "version": "3.0.0",
-    "description": "AdvisorOS Complete MCP Ecosystem for Professional CPA Development",
+    "version": "4.0.0",
+    "description": "AdvisorOS Complete MCP Ecosystem for Professional CPA Development with Comprehensive Financial Data Integration",
     "capabilities": [
       "Multi-tenant database operations with organization isolation",
       "Professional AI development tools (Zen MCP Server)",
@@ -102,20 +359,32 @@
       "CPA knowledge base and documentation management",
       "Advanced memory and context management",
       "API gateway management for multi-tenant platform",
-      "Technical documentation and tax code reference lookup"
+      "Technical documentation and tax code reference lookup",
+      "Real-time financial market data (stocks, forex, crypto, commodities)",
+      "Multi-asset trading and investment analysis (stocks, ETFs, options, futures)",
+      "Cryptocurrency trading and blockchain analytics (15k+ coins, 130+ networks)",
+      "Real estate property data and investment analysis (Zillow, Redfin)",
+      "SEC EDGAR filings and corporate regulatory compliance",
+      "Federal Reserve economic indicators and macroeconomic analysis",
+      "US Treasury fiscal data and government finance tracking",
+      "High-speed time-series financial data processing (KDB+)",
+      "Personal finance integration (Monarch Money)",
+      "Algorithmic trading strategy development and backtesting"
     ],
     "cpa_workflows": {
       "comprehensive_tax_review": [
         "postgresql-mcp",
-        "zen-mcp-server", 
+        "zen-mcp-server",
         "azure-mcp",
         "memory-bank-mcp",
-        "ref-mcp"
+        "ref-mcp",
+        "sec-edgar-mcp",
+        "us-treasury-mcp"
       ],
       "multi_tenant_security_audit": [
         "postgresql-mcp",
         "zen-mcp-server",
-        "github-mcp", 
+        "github-mcp",
         "gateway-mcp",
         "browser-mcp"
       ],
@@ -124,7 +393,9 @@
         "zen-mcp-server",
         "azure-mcp",
         "notion-mcp",
-        "amem-mcp"
+        "amem-mcp",
+        "sec-edgar-mcp",
+        "shareseer-mcp"
       ],
       "cpa_feature_development": [
         "zen-mcp-server",
@@ -132,6 +403,58 @@
         "postgresql-mcp",
         "browser-mcp",
         "memory-bank-mcp"
+      ],
+      "client_investment_advisory": [
+        "financial-datasets-mcp",
+        "alpha-vantage-mcp",
+        "polygon-mcp",
+        "fred-mcp",
+        "powerbi-mcp",
+        "kdbx-mcp"
+      ],
+      "portfolio_analysis_reporting": [
+        "alpaca-trading-mcp",
+        "quantconnect-mcp",
+        "monarch-mcp",
+        "twelve-data-mcp",
+        "intrinio-mcp",
+        "powerbi-mcp"
+      ],
+      "cryptocurrency_tax_planning": [
+        "coingecko-mcp",
+        "crypto-trader-mcp",
+        "tatum-blockchain-mcp",
+        "dexpaprika-mcp",
+        "postgresql-mcp"
+      ],
+      "real_estate_cpa_services": [
+        "zillow-mcp",
+        "redfin-mcp",
+        "real-estate-investment-mcp",
+        "us-treasury-mcp",
+        "fred-mcp"
+      ],
+      "corporate_compliance_audit": [
+        "sec-edgar-mcp",
+        "shareseer-mcp",
+        "fmp-mcp",
+        "postgresql-mcp",
+        "azure-mcp"
+      ],
+      "retirement_planning_analysis": [
+        "fred-mcp",
+        "us-treasury-mcp",
+        "financial-datasets-mcp",
+        "alpha-vantage-mcp",
+        "monarch-mcp"
+      ],
+      "market_intelligence_research": [
+        "alpha-vantage-mcp",
+        "polygon-mcp",
+        "twelve-data-mcp",
+        "fred-mcp",
+        "apify-mcp",
+        "webflow-mcp"
       ]
     }
   }

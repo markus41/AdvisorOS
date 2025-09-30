@@ -53,10 +53,27 @@ resource "azurerm_postgresql_flexible_server" "main" {
   tags = local.tags
 }
 
-# Read replica for production (for reporting and analytics)
-resource "azurerm_postgresql_flexible_server" "read_replica" {
+# Read replica 1 for production - Same region for performance (analytics/reporting)
+resource "azurerm_postgresql_flexible_server" "read_replica_1" {
   count              = var.environment == "prod" ? 1 : 0
-  name               = "${var.environment}-advisoros-postgres-replica"
+  name               = "${var.environment}-advisoros-postgres-replica-1"
+  resource_group_name = azurerm_resource_group.main.name
+  location           = azurerm_resource_group.main.location # Same region for low latency
+
+  # Replica configuration
+  create_mode         = "Replica"
+  source_server_id    = azurerm_postgresql_flexible_server.main.id
+
+  tags = merge(local.tags, {
+    Purpose = "Performance-Analytics"
+    ReplicaType = "SameRegion"
+  })
+}
+
+# Read replica 2 for production - Cross-region for disaster recovery
+resource "azurerm_postgresql_flexible_server" "read_replica_dr" {
+  count              = var.environment == "prod" && var.enable_dr_replica ? 1 : 0
+  name               = "${var.environment}-advisoros-postgres-replica-dr"
   resource_group_name = azurerm_resource_group.main.name
   location           = var.location == "eastus" ? "westus2" : "eastus" # Different region for DR
 
@@ -64,7 +81,25 @@ resource "azurerm_postgresql_flexible_server" "read_replica" {
   create_mode         = "Replica"
   source_server_id    = azurerm_postgresql_flexible_server.main.id
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    Purpose = "DisasterRecovery"
+    ReplicaType = "CrossRegion"
+  })
+}
+
+# Configure replica 1 for optimal read performance
+resource "azurerm_postgresql_flexible_server_configuration" "replica_1_max_connections" {
+  count     = var.environment == "prod" ? 1 : 0
+  name      = "max_connections"
+  server_id = azurerm_postgresql_flexible_server.read_replica_1[0].id
+  value     = "200"
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "replica_1_work_mem" {
+  count     = var.environment == "prod" ? 1 : 0
+  name      = "work_mem"
+  server_id = azurerm_postgresql_flexible_server.read_replica_1[0].id
+  value     = "32768" # 32MB for analytics queries
 }
 
 # Database configurations
@@ -334,18 +369,26 @@ resource "azurerm_automation_schedule" "db_maintenance" {
 
 # Local values for database configuration
 locals {
-  # Enhanced database URL with connection pooling
+  # Enhanced database URL with connection pooling for writes
   database_url = var.environment == "prod" && length(azurerm_postgresql_flexible_server_configuration.pgbouncer_enabled) > 0 ?
     "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.main.fqdn}:6432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require&pgbouncer=true" :
     "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.main.fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require"
 
-  # Read replica connection string for analytics
-  database_readonly_url = var.environment == "prod" && length(azurerm_postgresql_flexible_server.read_replica) > 0 ?
-    "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.read_replica[0].fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require" :
+  # Read replica 1 connection string for analytics and reporting (same-region, low latency)
+  database_read_replica_1_url = var.environment == "prod" && length(azurerm_postgresql_flexible_server.read_replica_1) > 0 ?
+    "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.read_replica_1[0].fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require&application_name=analytics" :
     local.database_url
+
+  # Read replica DR connection string for disaster recovery (cross-region)
+  database_read_replica_dr_url = var.environment == "prod" && var.enable_dr_replica && length(azurerm_postgresql_flexible_server.read_replica_dr) > 0 ?
+    "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.read_replica_dr[0].fqdn}:5432/${azurerm_postgresql_flexible_server_database.main.name}?sslmode=require&application_name=disaster_recovery" :
+    local.database_url
+
+  # Backward compatibility - default read-only URL points to replica 1
+  database_readonly_url = local.database_read_replica_1_url
 }
 
-# Store read-only database URL in Key Vault
+# Store read-only database URL in Key Vault (backward compatibility)
 resource "azurerm_key_vault_secret" "database_readonly_url" {
   count        = var.environment == "prod" ? 1 : 0
   name         = "database-readonly-url"
@@ -353,4 +396,41 @@ resource "azurerm_key_vault_secret" "database_readonly_url" {
   key_vault_id = azurerm_key_vault.main.id
 
   depends_on = [azurerm_role_assignment.key_vault_secrets_user]
+
+  tags = merge(local.tags, {
+    Purpose = "DatabaseConnection"
+    ConnectionType = "ReadOnly"
+  })
+}
+
+# Store read replica 1 URL in Key Vault
+resource "azurerm_key_vault_secret" "database_read_replica_1_url" {
+  count        = var.environment == "prod" ? 1 : 0
+  name         = "database-read-replica-1-url"
+  value        = local.database_read_replica_1_url
+  key_vault_id = azurerm_key_vault.main.id
+
+  depends_on = [azurerm_role_assignment.key_vault_secrets_user]
+
+  tags = merge(local.tags, {
+    Purpose = "DatabaseConnection"
+    ConnectionType = "ReadReplica1"
+    ReplicaRegion = "SameRegion"
+  })
+}
+
+# Store DR replica URL in Key Vault
+resource "azurerm_key_vault_secret" "database_read_replica_dr_url" {
+  count        = var.environment == "prod" && var.enable_dr_replica ? 1 : 0
+  name         = "database-read-replica-dr-url"
+  value        = local.database_read_replica_dr_url
+  key_vault_id = azurerm_key_vault.main.id
+
+  depends_on = [azurerm_role_assignment.key_vault_secrets_user]
+
+  tags = merge(local.tags, {
+    Purpose = "DatabaseConnection"
+    ConnectionType = "DisasterRecovery"
+    ReplicaRegion = "CrossRegion"
+  })
 }

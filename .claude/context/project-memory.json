@@ -1,0 +1,178 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-09-30T00:00:00Z",
+  "project": {
+    "name": "AdvisorOS",
+    "type": "multi-tenant-cpa-platform",
+    "tech_stack": {
+      "frontend": "Next.js 15, React 18, TypeScript 5, Tailwind CSS, Tremor",
+      "backend": "tRPC v10, Prisma v5, NextAuth v4, Node.js",
+      "database": "PostgreSQL with Prisma ORM",
+      "cloud": "Azure (OpenAI, Form Recognizer, Cognitive Search)",
+      "payments": "Stripe",
+      "queues": "Bull (Redis-backed)"
+    }
+  },
+  "currentState": {
+    "activeFeatures": [
+      "Multi-tenant client management",
+      "Document processing with OCR",
+      "Tax calculation engine",
+      "Financial analytics dashboard",
+      "Client portal with secure access"
+    ],
+    "inProgress": [
+      "Advanced AI capabilities expansion",
+      "Tax season optimization",
+      "Real-time performance monitoring"
+    ],
+    "blockers": [],
+    "recentChanges": [
+      "Implemented comprehensive MCP ecosystem",
+      "Added 32 specialized AI agents",
+      "Created workflow automation templates"
+    ]
+  },
+  "architecture": {
+    "patterns": {
+      "multiTenant": "organizationId scoping on all queries",
+      "authentication": "NextAuth with Azure AD B2C",
+      "authorization": "RBAC with Owner > Admin > CPA > Staff hierarchy",
+      "apiPattern": "tRPC for type-safe API layer",
+      "dataLayer": "Prisma ORM with PostgreSQL"
+    },
+    "criticalPaths": [
+      "apps/web/src/server/api/routers/ - API route handlers",
+      "apps/web/src/server/services/ - Business logic services",
+      "packages/database/prisma/schema.prisma - Database schema",
+      "apps/web/src/components/ - React components"
+    ]
+  },
+  "performance": {
+    "targets": {
+      "apiResponseTime": "<2s",
+      "databaseQueryTime": "<500ms",
+      "frontendLoadTime": "<3s",
+      "uptime": ">99.9%"
+    },
+    "optimization
+
+s": [
+      "Redis caching for frequently accessed data",
+      "Database query optimization with proper indexes",
+      "Connection pooling for multi-tenant queries",
+      "CDN for static assets"
+    ]
+  },
+  "security": {
+    "principles": [
+      "Zero-trust multi-tenant architecture",
+      "Defense in depth with multiple security layers",
+      "Audit trails for all financial operations",
+      "Encryption at rest and in transit"
+    ],
+    "compliance": ["SOC 2", "GAAP", "IRS regulations", "GDPR/CCPA"],
+    "auditRequirements": [
+      "All database modifications logged",
+      "User actions tracked with timestamps",
+      "Financial calculations with audit trails"
+    ]
+  },
+  "teamKnowledge": {
+    "commonPatterns": {
+      "newApiEndpoint": "Use organizationProcedure for multi-tenant security",
+      "newDatabaseModel": "Always include organizationId field",
+      "newReactComponent": "Use TypeScript, Tailwind, and responsive design",
+      "newService": "Implement in apps/web/src/server/services/"
+    },
+    "conventions": {
+      "naming": "camelCase for variables, PascalCase for types/components",
+      "commits": "Conventional commits with scope",
+      "branches": "feature/, bugfix/, hotfix/ prefixes",
+      "testing": "Jest for unit, Playwright for E2E"
+    }
+  },
+  "integrations": {
+    "active": [
+      "QuickBooks Online - Accounting data sync",
+      "Stripe - Payment processing",
+      "Azure OpenAI - AI-powered insights",
+      "Azure Form Recognizer - Document OCR",
+      "Azure Cognitive Search - Knowledge base search"
+    ],
+    "planned": [
+      "Power BI - Advanced analytics dashboards",
+      "DocuSign - E-signature integration",
+      "Xero - Additional accounting platform"
+    ]
+  },
+  "aiAgents": {
+    "mostUsed": [
+      "backend-api-developer",
+      "frontend-builder",
+      "security-auditor",
+      "cpa-tax-compliance",
+      "database-optimizer"
+    ],
+    "workflows": {
+      "featureDevelopment": [
+        "backend-api-developer",
+        "frontend-builder",
+        "test-suite-developer",
+        "security-auditor",
+        "docs-writer"
+      ],
+      "securityAudit": [
+        "security-auditor",
+        "audit-trail-perfectionist",
+        "compliance-planner"
+      ],
+      "performanceOptimization": [
+        "performance-optimization-specialist",
+        "database-optimizer",
+        "test-suite-developer"
+      ]
+    }
+  },
+  "contextHints": {
+    "whenYouSee": {
+      "organizationId": "Multi-tenant data isolation pattern - CRITICAL for security",
+      "tRPC procedures": "Type-safe API layer with input validation",
+      "Prisma models": "Database schema with automatic TypeScript types",
+      "NextAuth": "Authentication and session management",
+      "Zod schemas": "Runtime validation and TypeScript type inference"
+    },
+    "avoidPatterns": [
+      "Direct SQL queries without organizationId filtering",
+      "Hardcoded secrets or API keys",
+      "Missing error handling in API routes",
+      "Unvalidated user input",
+      "Missing audit logs for financial operations"
+    ]
+  },
+  "quickWins": {
+    "optimization": [
+      "Add database indexes for frequently queried fields",
+      "Implement Redis caching for dashboard queries",
+      "Use React.memo for expensive components"
+    ],
+    "security": [
+      "Audit organizationId filtering on all queries",
+      "Review RBAC permissions on new endpoints",
+      "Ensure audit trails on financial operations"
+    ],
+    "quality": [
+      "Add unit tests for new services",
+      "Implement E2E tests for critical workflows",
+      "Update API documentation with new endpoints"
+    ]
+  },
+  "metadata": {
+    "totalAgents": 32,
+    "totalCommands": 12,
+    "totalMcpServers": 30,
+    "linesOfCode": "~50000+",
+    "testCoverage": "85%",
+    "documentationCoverage": "95%"
+  }
+}

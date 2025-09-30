@@ -238,6 +238,193 @@ resource "azurerm_monitor_metric_alert" "openai_errors" {
   tags = local.tags
 }
 
+# Read Replica 1 Monitoring Alerts
+resource "azurerm_monitor_metric_alert" "replica_1_replication_lag" {
+  count               = var.enable_monitoring && var.environment == "prod" ? 1 : 0
+  name                = "${var.environment}-replica-1-replication-lag-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_postgresql_flexible_server.read_replica_1[0].id]
+  description         = "Read Replica 1 replication lag is high"
+  severity            = 2
+  frequency           = "PT1M"
+  window_size         = "PT5M"
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "physical_replication_delay_in_seconds"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 10 # Alert if lag > 10 seconds
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main[0].id
+  }
+
+  tags = merge(local.tags, {
+    AlertType = "ReplicationLag"
+    ReplicaId = "replica-1"
+  })
+}
+
+resource "azurerm_monitor_metric_alert" "replica_1_cpu" {
+  count               = var.enable_monitoring && var.environment == "prod" ? 1 : 0
+  name                = "${var.environment}-replica-1-cpu-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_postgresql_flexible_server.read_replica_1[0].id]
+  description         = "Read Replica 1 CPU usage is high"
+  severity            = 2
+  frequency           = "PT5M"
+  window_size         = "PT15M"
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "cpu_percent"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 80
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main[0].id
+  }
+
+  tags = merge(local.tags, {
+    AlertType = "Performance"
+    ReplicaId = "replica-1"
+  })
+}
+
+resource "azurerm_monitor_metric_alert" "replica_1_memory" {
+  count               = var.enable_monitoring && var.environment == "prod" ? 1 : 0
+  name                = "${var.environment}-replica-1-memory-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_postgresql_flexible_server.read_replica_1[0].id]
+  description         = "Read Replica 1 memory usage is high"
+  severity            = 2
+  frequency           = "PT5M"
+  window_size         = "PT15M"
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "memory_percent"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 85
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main[0].id
+  }
+
+  tags = merge(local.tags, {
+    AlertType = "Performance"
+    ReplicaId = "replica-1"
+  })
+}
+
+resource "azurerm_monitor_metric_alert" "replica_1_connections" {
+  count               = var.enable_monitoring && var.environment == "prod" ? 1 : 0
+  name                = "${var.environment}-replica-1-connections-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_postgresql_flexible_server.read_replica_1[0].id]
+  description         = "Read Replica 1 active connections are high"
+  severity            = 2
+  frequency           = "PT5M"
+  window_size         = "PT10M"
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "active_connections"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 150
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main[0].id
+  }
+
+  tags = merge(local.tags, {
+    AlertType = "Connections"
+    ReplicaId = "replica-1"
+  })
+}
+
+# Diagnostic settings for Read Replica 1
+resource "azurerm_monitor_diagnostic_setting" "replica_1" {
+  count                      = var.environment == "prod" ? 1 : 0
+  name                       = "replica-1-diagnostics"
+  target_resource_id         = azurerm_postgresql_flexible_server.read_replica_1[0].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+
+  enabled_log {
+    category = "PostgreSQLLogs"
+  }
+
+  metric {
+    category = "AllMetrics"
+    enabled  = true
+  }
+
+  tags = merge(local.tags, {
+    ResourceType = "ReadReplica"
+    ReplicaId = "replica-1"
+  })
+}
+
+# DR Replica Monitoring Alerts (if enabled)
+resource "azurerm_monitor_metric_alert" "replica_dr_replication_lag" {
+  count               = var.enable_monitoring && var.environment == "prod" && var.enable_dr_replica ? 1 : 0
+  name                = "${var.environment}-replica-dr-replication-lag-alert"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_postgresql_flexible_server.read_replica_dr[0].id]
+  description         = "DR Replica replication lag is high"
+  severity            = 3 # Lower severity for DR replica
+  frequency           = "PT5M"
+  window_size         = "PT15M"
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "physical_replication_delay_in_seconds"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 60 # Higher threshold for cross-region
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main[0].id
+  }
+
+  tags = merge(local.tags, {
+    AlertType = "ReplicationLag"
+    ReplicaId = "replica-dr"
+    ReplicaType = "DisasterRecovery"
+  })
+}
+
+resource "azurerm_monitor_diagnostic_setting" "replica_dr" {
+  count                      = var.environment == "prod" && var.enable_dr_replica ? 1 : 0
+  name                       = "replica-dr-diagnostics"
+  target_resource_id         = azurerm_postgresql_flexible_server.read_replica_dr[0].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+
+  enabled_log {
+    category = "PostgreSQLLogs"
+  }
+
+  metric {
+    category = "AllMetrics"
+    enabled  = true
+  }
+
+  tags = merge(local.tags, {
+    ResourceType = "ReadReplica"
+    ReplicaId = "replica-dr"
+    ReplicaType = "DisasterRecovery"
+  })
+}
+
 # Custom Log Analytics Queries
 resource "azurerm_log_analytics_saved_search" "app_errors" {
   name                       = "Application Errors"
@@ -299,6 +486,65 @@ resource "azurerm_log_analytics_saved_search" "api_performance" {
         ErrorRate = countif(Success == false) * 100.0 / count()
     by Name
     | order by RequestCount desc
+  QUERY
+}
+
+resource "azurerm_log_analytics_saved_search" "replica_replication_lag" {
+  name                       = "Replica Replication Lag"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+  category                   = "AdvisorOS"
+  display_name              = "PostgreSQL Replica Replication Lag Analysis"
+
+  query = <<-QUERY
+    AzureMetrics
+    | where TimeGenerated > ago(1h)
+    | where ResourceProvider == "MICROSOFT.DBFORPOSTGRESQL"
+    | where MetricName == "physical_replication_delay_in_seconds"
+    | extend ReplicaName = tostring(split(ResourceId, "/")[-1])
+    | summarize
+        AvgLag = avg(Average),
+        MaxLag = max(Maximum),
+        P95Lag = percentile(Average, 95)
+    by ReplicaName, bin(TimeGenerated, 5m)
+    | order by TimeGenerated desc
+  QUERY
+}
+
+resource "azurerm_log_analytics_saved_search" "replica_performance" {
+  name                       = "Replica Performance"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+  category                   = "AdvisorOS"
+  display_name              = "PostgreSQL Replica Performance Metrics"
+
+  query = <<-QUERY
+    AzureMetrics
+    | where TimeGenerated > ago(1h)
+    | where ResourceProvider == "MICROSOFT.DBFORPOSTGRESQL"
+    | where MetricName in ("cpu_percent", "memory_percent", "active_connections")
+    | extend ReplicaName = tostring(split(ResourceId, "/")[-1])
+    | summarize AvgValue = avg(Average), MaxValue = max(Maximum)
+    by ReplicaName, MetricName, bin(TimeGenerated, 5m)
+    | order by TimeGenerated desc
+  QUERY
+}
+
+resource "azurerm_log_analytics_saved_search" "database_slow_queries" {
+  name                       = "Database Slow Queries"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+  category                   = "AdvisorOS"
+  display_name              = "PostgreSQL Slow Queries Analysis"
+
+  query = <<-QUERY
+    AzureDiagnostics
+    | where TimeGenerated > ago(1h)
+    | where ResourceProvider == "MICROSOFT.DBFORPOSTGRESQL"
+    | where Category == "PostgreSQLLogs"
+    | where Message contains "duration"
+    | extend QueryDuration = extract("duration: ([0-9.]+) ms", 1, Message)
+    | where todouble(QueryDuration) > 1000
+    | project TimeGenerated, ResourceId, QueryDuration, Message
+    | order by todouble(QueryDuration) desc
+    | take 50
   QUERY
 }
 

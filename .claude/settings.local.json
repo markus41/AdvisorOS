@@ -56,7 +56,12 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(npm outdated)",
-      "Read(//c/Users/MarkusAhling/.claude/**)"
+      "Read(//c/Users/MarkusAhling/.claude/**)",
+      "Bash(powershell:*)",
+      "Bash(timeout:*)",
+      "SlashCommand(/orchestrated-feature-dev Build job posting management system with multi-channel distribution to LinkedIn/Indeed/ZipRecruiter, applicant tracking with drag-and-drop pipeline, and AI-powered resume parsing using Azure Form Recognizer)",
+      "SlashCommand(/orchestrated-feature-dev:*)",
+      "Bash(npx --package=typescript tsc --noEmit \"src\\server\\api\\routers\\jobPosting.router.ts\")"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,251 @@
+version: '3.8'
+
+services:
+  # Primary Worker - Handles general tasks (critical, emails, webhooks, reports)
+  worker-primary:
+    build:
+      context: ./apps/web
+      dockerfile: ../../docker/Dockerfile.worker
+    container_name: advisoros-worker-primary
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      WORKER_TYPE: primary
+      WORKER_ID: primary-1
+      WORKER_CONCURRENCY: 10
+
+      # Database
+      DATABASE_URL: ${DATABASE_URL}
+
+      # Redis
+      REDIS_URL: ${REDIS_URL}
+
+      # Azure AI Services
+      AZURE_OPENAI_KEY: ${AZURE_OPENAI_KEY}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT}
+
+      # Email
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+
+      # Stripe
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+
+      # Logging
+      LOG_LEVEL: info
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - advisoros-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Document Processing Worker - Specialized for OCR and classification
+  worker-document:
+    build:
+      context: ./apps/web
+      dockerfile: ../../docker/Dockerfile.worker
+    container_name: advisoros-worker-document
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      WORKER_TYPE: document
+      WORKER_ID: document-1
+      WORKER_CONCURRENCY: 8
+
+      # Database
+      DATABASE_URL: ${DATABASE_URL}
+
+      # Redis
+      REDIS_URL: ${REDIS_URL}
+
+      # Azure Form Recognizer
+      AZURE_FORM_RECOGNIZER_KEY: ${AZURE_FORM_RECOGNIZER_KEY}
+      AZURE_FORM_RECOGNIZER_ENDPOINT: ${AZURE_FORM_RECOGNIZER_ENDPOINT}
+
+      # Azure Storage
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME}
+      AZURE_STORAGE_ACCOUNT_KEY: ${AZURE_STORAGE_ACCOUNT_KEY}
+      AZURE_STORAGE_CONTAINER_NAME: ${AZURE_STORAGE_CONTAINER_NAME}
+
+      # Logging
+      LOG_LEVEL: info
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - advisoros-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # AI Processing Worker - Handles ML and AI tasks with rate limiting
+  worker-ai:
+    build:
+      context: ./apps/web
+      dockerfile: ../../docker/Dockerfile.worker
+    container_name: advisoros-worker-ai
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      WORKER_TYPE: ai
+      WORKER_ID: ai-1
+      WORKER_CONCURRENCY: 5
+
+      # Database
+      DATABASE_URL: ${DATABASE_URL}
+
+      # Redis
+      REDIS_URL: ${REDIS_URL}
+
+      # Azure OpenAI
+      AZURE_OPENAI_KEY: ${AZURE_OPENAI_KEY}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT}
+
+      # Azure Text Analytics
+      AZURE_TEXT_ANALYTICS_KEY: ${AZURE_TEXT_ANALYTICS_KEY}
+      AZURE_TEXT_ANALYTICS_ENDPOINT: ${AZURE_TEXT_ANALYTICS_ENDPOINT}
+
+      # Logging
+      LOG_LEVEL: info
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - advisoros-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Scheduled Job Worker - Runs cron jobs and scheduled tasks
+  worker-scheduled:
+    build:
+      context: ./apps/web
+      dockerfile: ../../docker/Dockerfile.worker
+    container_name: advisoros-worker-scheduled
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      WORKER_TYPE: scheduled
+      WORKER_ID: scheduled-1
+      WORKER_CONCURRENCY: 1
+
+      # Database
+      DATABASE_URL: ${DATABASE_URL}
+
+      # Redis
+      REDIS_URL: ${REDIS_URL}
+
+      # Email
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+
+      # Logging
+      LOG_LEVEL: info
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - advisoros-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database (if not already running)
+  postgres:
+    image: postgres:15-alpine
+    container_name: advisoros-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cpa_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cpa_password}
+      POSTGRES_DB: ${POSTGRES_DB:-cpa_platform}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - advisoros-network
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cpa_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for job queues and caching
+  redis:
+    image: redis:7-alpine
+    container_name: advisoros-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - advisoros-network
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  advisoros-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

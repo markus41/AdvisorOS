@@ -1,0 +1,1015 @@
+openapi: 3.0.3
+info:
+  title: AdvisorOS API
+  version: 1.0.0
+  description: |
+    # AdvisorOS API Documentation
+
+    Complete API reference for the AdvisorOS CPA platform. This API provides comprehensive access to:
+    - Client management and engagement tracking
+    - Revenue sharing and advisor compensation
+    - Marketplace and advisor matching
+    - Client portal and collaboration
+    - Financial analytics and reporting
+    - Document processing and OCR
+    - Tax season optimization
+
+    ## Authentication
+
+    All API requests require authentication using either:
+    - **Session-based**: HTTP-only cookies (web applications)
+    - **Token-based**: Bearer tokens in Authorization header (API integrations)
+
+    ## Multi-Tenant Security
+
+    All requests are automatically scoped to your organization. Cross-tenant data access is prevented at the database level.
+
+    ## Rate Limiting
+
+    - Standard: 1,000 requests/hour
+    - Professional: 5,000 requests/hour
+    - Enterprise: 25,000 requests/hour
+
+  contact:
+    name: AdvisorOS API Support
+    email: api-support@advisoros.com
+    url: https://docs.advisoros.com
+  license:
+    name: Proprietary
+    url: https://advisoros.com/terms
+
+servers:
+  - url: https://api.advisoros.com/api/trpc
+    description: Production server
+  - url: https://staging-api.advisoros.com/api/trpc
+    description: Staging server
+  - url: http://localhost:3000/api/trpc
+    description: Local development server
+
+tags:
+  - name: Revenue Management
+    description: Revenue sharing, commission calculation, and advisor compensation
+  - name: Advisor Profiles
+    description: Advisor profile management, verification, and marketplace listings
+  - name: Marketplace
+    description: Client-advisor matching, needs assessment, and marketplace operations
+  - name: Client Portal
+    description: Client portal access, messaging, and dashboard management
+  - name: Financial Analytics
+    description: Financial reporting, analytics, and predictive insights
+  - name: Tax Season
+    description: Tax season optimization and capacity management
+  - name: Feature Analytics
+    description: Feature adoption tracking and usage analytics
+
+security:
+  - BearerAuth: []
+  - SessionAuth: []
+
+paths:
+  /revenue.createRevenueShare:
+    post:
+      tags:
+        - Revenue Management
+      summary: Create revenue share record
+      description: |
+        Creates a new revenue share record for an engagement. This tracks the commission split between the organization and advisors.
+
+        **Required Role**: Admin
+
+        **Use Cases**:
+        - Setting up revenue sharing for new client engagements
+        - Defining commission structures for advisor partnerships
+        - Tracking tax-reportable advisor compensation
+      operationId: createRevenueShare
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - engagementId
+                - advisorId
+                - clientId
+                - commissionPercentage
+                - periodStartDate
+                - periodEndDate
+              properties:
+                engagementId:
+                  type: string
+                  format: cuid
+                  description: Unique identifier of the engagement
+                  example: "clh8k9x4t0000r8g4wz5h9f8w"
+                advisorId:
+                  type: string
+                  format: cuid
+                  description: Unique identifier of the advisor
+                  example: "clh8k9x4t0000r8g4wz5h9f8x"
+                clientId:
+                  type: string
+                  format: cuid
+                  description: Unique identifier of the client
+                  example: "clh8k9x4t0000r8g4wz5h9f8y"
+                commissionPercentage:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+                  description: Commission percentage for the advisor (0-100)
+                  example: 25.5
+                platformFeePercentage:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+                  description: Platform fee percentage retained by organization
+                  example: 10
+                periodStartDate:
+                  type: string
+                  format: date-time
+                  description: Start date of the commission period
+                  example: "2024-01-01T00:00:00Z"
+                periodEndDate:
+                  type: string
+                  format: date-time
+                  description: End date of the commission period
+                  example: "2024-12-31T23:59:59Z"
+                tax1099Reportable:
+                  type: boolean
+                  description: Whether this revenue is 1099 reportable
+                  default: true
+                taxYear:
+                  type: integer
+                  minimum: 2000
+                  maximum: 2100
+                  description: Tax year for IRS reporting
+                  example: 2024
+      responses:
+        '200':
+          description: Revenue share record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenueShare'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /revenue.calculateCommission:
+    get:
+      tags:
+        - Revenue Management
+      summary: Calculate commission for engagement
+      description: |
+        Calculates the commission amount for an engagement based on the revenue share configuration.
+        Returns projected advisor payout, platform fees, and organization revenue.
+
+        **Use Cases**:
+        - Preview commission before finalizing engagement
+        - Financial forecasting and budgeting
+        - Advisor compensation planning
+      operationId: calculateCommission
+      parameters:
+        - name: engagementId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: cuid
+          description: Engagement ID to calculate commission for
+          example: "clh8k9x4t0000r8g4wz5h9f8w"
+        - name: totalRevenue
+          in: query
+          required: true
+          schema:
+            type: number
+            minimum: 0
+          description: Total revenue amount for the engagement
+          example: 10000.00
+      responses:
+        '200':
+          description: Commission calculation completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  engagementId:
+                    type: string
+                    format: cuid
+                  totalRevenue:
+                    type: number
+                    description: Total engagement revenue
+                    example: 10000.00
+                  advisorPayout:
+                    type: number
+                    description: Calculated advisor commission
+                    example: 2550.00
+                  platformFee:
+                    type: number
+                    description: Platform fee amount
+                    example: 1000.00
+                  organizationRevenue:
+                    type: number
+                    description: Net revenue to organization
+                    example: 6450.00
+                  commissionPercentage:
+                    type: number
+                    example: 25.5
+                  platformFeePercentage:
+                    type: number
+                    example: 10
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /revenue.getRevenueReport:
+    get:
+      tags:
+        - Revenue Management
+      summary: Get revenue report
+      description: |
+        Generates a comprehensive revenue report for the organization including breakdowns by:
+        - Advisor performance
+        - Service type
+        - Client segment
+        - Time period
+
+        **Required Role**: Admin
+      operationId: getRevenueReport
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Report start date
+          example: "2024-01-01"
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Report end date
+          example: "2024-12-31"
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum: [advisor, client, service, month]
+          description: Grouping dimension for report
+          example: "advisor"
+      responses:
+        '200':
+          description: Revenue report generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  period:
+                    type: object
+                    properties:
+                      startDate:
+                        type: string
+                        format: date
+                      endDate:
+                        type: string
+                        format: date
+                  summary:
+                    type: object
+                    properties:
+                      totalRevenue:
+                        type: number
+                      totalAdvisorPayouts:
+                        type: number
+                      totalPlatformFees:
+                        type: number
+                      netOrganizationRevenue:
+                        type: number
+                  breakdown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dimension:
+                          type: string
+                        revenue:
+                          type: number
+                        count:
+                          type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /revenue.generate1099:
+    get:
+      tags:
+        - Revenue Management
+      summary: Generate 1099 tax data
+      description: |
+        Generates IRS Form 1099-NEC data for an advisor for tax reporting purposes.
+        Includes all reportable compensation above IRS threshold ($600).
+
+        **Required Role**: Admin
+
+        **Compliance Notes**:
+        - Data includes all payments marked as 1099-reportable
+        - Automatically excludes payments below IRS minimum threshold
+        - Includes backup withholding if applicable
+      operationId: generate1099
+      parameters:
+        - name: advisorId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: cuid
+          description: Advisor ID for 1099 generation
+          example: "clh8k9x4t0000r8g4wz5h9f8x"
+        - name: taxYear
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 2000
+          description: Tax year for reporting
+          example: 2024
+      responses:
+        '200':
+          description: 1099 data generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  advisorId:
+                    type: string
+                  taxYear:
+                    type: integer
+                  totalCompensation:
+                    type: number
+                    description: Total 1099-NEC reportable income
+                  numberOfPayments:
+                    type: integer
+                  payments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        amount:
+                          type: number
+                        engagementId:
+                          type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /advisor.createProfile:
+    post:
+      tags:
+        - Advisor Profiles
+      summary: Create advisor profile
+      description: |
+        Creates a new advisor profile for the authenticated user. This profile is used for:
+        - Marketplace listings
+        - Client matching
+        - Revenue tracking
+        - Verification and credentialing
+      operationId: createAdvisorProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - displayName
+                - title
+                - specializations
+              properties:
+                displayName:
+                  type: string
+                  minLength: 2
+                  maxLength: 100
+                  description: Public display name
+                  example: "Sarah Johnson, CPA"
+                title:
+                  type: string
+                  maxLength: 100
+                  description: Professional title
+                  example: "Senior Tax Advisor"
+                bio:
+                  type: string
+                  maxLength: 2000
+                  description: Professional biography
+                  example: "20+ years experience in corporate tax planning..."
+                specializations:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 1
+                  description: Areas of expertise
+                  example: ["tax_planning", "audit_support", "business_advisory"]
+                certifications:
+                  type: array
+                  items:
+                    type: string
+                  description: Professional certifications
+                  example: ["CPA", "CFP", "EA"]
+                yearsExperience:
+                  type: integer
+                  minimum: 0
+                  description: Years of professional experience
+                  example: 20
+                hourlyRate:
+                  type: number
+                  minimum: 0
+                  description: Hourly rate in USD
+                  example: 250.00
+                isAvailable:
+                  type: boolean
+                  default: true
+                  description: Currently accepting new clients
+      responses:
+        '200':
+          description: Advisor profile created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvisorProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /advisor.listAvailable:
+    get:
+      tags:
+        - Advisor Profiles
+      summary: List available advisors
+      description: |
+        Public endpoint for browsing available advisors in the marketplace.
+        Supports filtering, sorting, and pagination.
+
+        **Public Access**: No authentication required
+
+        **Use Cases**:
+        - Marketplace browsing
+        - Advisor discovery
+        - Client-advisor matching
+      operationId: listAvailableAdvisors
+      parameters:
+        - name: specializations
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter by specializations
+          example: ["tax_planning", "audit_support"]
+        - name: minYearsExperience
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+          description: Minimum years of experience
+          example: 5
+        - name: maxHourlyRate
+          in: query
+          schema:
+            type: number
+            minimum: 0
+          description: Maximum hourly rate filter
+          example: 300
+        - name: verifiedOnly
+          in: query
+          schema:
+            type: boolean
+          description: Show only verified advisors
+          default: false
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: List of available advisors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  advisors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdvisorProfile'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+  /marketplace.createNeedsAssessment:
+    post:
+      tags:
+        - Marketplace
+      summary: Create client needs assessment
+      description: |
+        Creates a comprehensive needs assessment for a client to enable AI-powered advisor matching.
+        The assessment captures:
+        - Service requirements
+        - Industry and business context
+        - Budget parameters
+        - Timeline expectations
+
+        **AI Matching**: Results are used by the AI matching engine to recommend optimal advisors
+      operationId: createNeedsAssessment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - clientId
+                - serviceNeeds
+                - industry
+                - budgetRange
+              properties:
+                clientId:
+                  type: string
+                  format: cuid
+                  description: Client ID
+                serviceNeeds:
+                  type: array
+                  items:
+                    type: string
+                  description: Required services
+                  example: ["tax_filing", "bookkeeping", "cfo_services"]
+                industry:
+                  type: string
+                  description: Client industry
+                  example: "technology"
+                budgetRange:
+                  type: object
+                  properties:
+                    min:
+                      type: number
+                    max:
+                      type: number
+                  description: Monthly budget range
+                  example: { "min": 2000, "max": 5000 }
+                urgency:
+                  type: string
+                  enum: [immediate, within_month, flexible]
+                  description: Timeline urgency
+                  example: "within_month"
+                preferredCertifications:
+                  type: array
+                  items:
+                    type: string
+                  description: Preferred advisor certifications
+                  example: ["CPA", "CFP"]
+      responses:
+        '200':
+          description: Needs assessment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assessmentId:
+                    type: string
+                  clientId:
+                    type: string
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /marketplace.requestMatching:
+    post:
+      tags:
+        - Marketplace
+      summary: Request AI-powered advisor matching
+      description: |
+        Initiates AI-powered matching process to find optimal advisors for a client.
+        The matching algorithm considers:
+        - Service needs alignment
+        - Experience and specializations
+        - Availability and capacity
+        - Budget compatibility
+        - Historical success rates
+
+        **Processing Time**: Typically completes within 30 seconds
+      operationId: requestMatching
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - assessmentId
+              properties:
+                assessmentId:
+                  type: string
+                  format: cuid
+                  description: Needs assessment ID
+                maxMatches:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+                  default: 5
+                  description: Maximum number of advisor matches to return
+      responses:
+        '200':
+          description: Matching completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        advisorProfile:
+                          $ref: '#/components/schemas/AdvisorProfile'
+                        matchScore:
+                          type: number
+                          minimum: 0
+                          maximum: 100
+                          description: AI confidence score (0-100)
+                        matchReason:
+                          type: string
+                          description: Explanation of match quality
+                  processedAt:
+                    type: string
+                    format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /clientPortal.createAccess:
+    post:
+      tags:
+        - Client Portal
+      summary: Create client portal access
+      description: |
+        Grants client portal access to a user with specified permissions.
+
+        **Required Role**: Admin
+
+        **Permission Levels**:
+        - `full_access`: Complete access to all client data and features
+        - `view_only`: Read-only access to documents and reports
+        - `document_upload`: Can upload documents but limited viewing
+        - `messaging_only`: Access only to message center
+      operationId: createPortalAccess
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - clientId
+                - userId
+                - accessLevel
+              properties:
+                clientId:
+                  type: string
+                  format: cuid
+                  description: Client ID
+                userId:
+                  type: string
+                  format: cuid
+                  description: User ID to grant access
+                accessLevel:
+                  type: string
+                  enum: [full_access, view_only, document_upload, messaging_only]
+                  description: Access permission level
+                expiresAt:
+                  type: string
+                  format: date-time
+                  description: Optional expiration date for access
+                permissions:
+                  type: object
+                  properties:
+                    canViewDocuments:
+                      type: boolean
+                    canUploadDocuments:
+                      type: boolean
+                    canViewInvoices:
+                      type: boolean
+                    canSendMessages:
+                      type: boolean
+      responses:
+        '200':
+          description: Portal access created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessId:
+                    type: string
+                  userId:
+                    type: string
+                  clientId:
+                    type: string
+                  accessLevel:
+                    type: string
+                  isActive:
+                    type: boolean
+                  createdAt:
+                    type: string
+                    format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /clientPortal.getDashboard:
+    get:
+      tags:
+        - Client Portal
+      summary: Get client portal dashboard
+      description: |
+        Retrieves personalized dashboard data for the client portal including:
+        - Recent documents
+        - Outstanding invoices
+        - Upcoming deadlines
+        - Recent messages
+        - Quick actions
+      operationId: getClientPortalDashboard
+      parameters:
+        - name: clientId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: cuid
+          description: Client ID
+      responses:
+        '200':
+          description: Dashboard data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  client:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      businessName:
+                        type: string
+                      status:
+                        type: string
+                  recentDocuments:
+                    type: array
+                    items:
+                      type: object
+                  outstandingInvoices:
+                    type: array
+                    items:
+                      type: object
+                  upcomingDeadlines:
+                    type: array
+                    items:
+                      type: object
+                  unreadMessages:
+                    type: integer
+                  quickActions:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication endpoint
+    SessionAuth:
+      type: apiKey
+      in: cookie
+      name: __Secure-next-auth.session-token
+      description: Session cookie for web applications
+
+  schemas:
+    RevenueShare:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        engagementId:
+          type: string
+          format: cuid
+        advisorId:
+          type: string
+          format: cuid
+        clientId:
+          type: string
+          format: cuid
+        commissionPercentage:
+          type: number
+        platformFeePercentage:
+          type: number
+        advisorPayout:
+          type: number
+        organizationRevenue:
+          type: number
+        platformFee:
+          type: number
+        status:
+          type: string
+          enum: [pending, client_paid, advisor_paid, completed, cancelled]
+        periodStartDate:
+          type: string
+          format: date-time
+        periodEndDate:
+          type: string
+          format: date-time
+        tax1099Reportable:
+          type: boolean
+        taxYear:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AdvisorProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        userId:
+          type: string
+          format: cuid
+        displayName:
+          type: string
+        title:
+          type: string
+        bio:
+          type: string
+        specializations:
+          type: array
+          items:
+            type: string
+        certifications:
+          type: array
+          items:
+            type: string
+        yearsExperience:
+          type: integer
+        hourlyRate:
+          type: number
+        isAvailable:
+          type: boolean
+        verificationStatus:
+          type: string
+          enum: [unverified, pending, verified, rejected]
+        verifiedAt:
+          type: string
+          format: date-time
+        averageRating:
+          type: number
+        totalReviews:
+          type: integer
+        totalEngagements:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of items
+        pages:
+          type: integer
+          description: Total number of pages
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Items per page
+        hasNext:
+          type: boolean
+          description: Whether there is a next page
+        hasPrev:
+          type: boolean
+          description: Whether there is a previous page
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid input parameters"
+        details:
+          type: object
+          description: Additional error details
+        path:
+          type: string
+          description: API path where error occurred
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "UNAUTHORIZED"
+            message: "Authentication required. Please provide valid credentials."
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "FORBIDDEN"
+            message: "You do not have permission to perform this action."
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "NOT_FOUND"
+            message: "The requested resource was not found."
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: "VALIDATION_ERROR"
+            message: "Input validation failed"
+            details:
+              fields:
+                email: "Invalid email format"
+                amount: "Must be a positive number"

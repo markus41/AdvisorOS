@@ -45,6 +45,12 @@ variable "postgres_storage_mb" {
   default     = 32768 # 32 GB
 }
 
+variable "enable_dr_replica" {
+  description = "Enable cross-region disaster recovery replica"
+  type        = bool
+  default     = false
+}
+
 # Azure AD B2C Configuration
 variable "b2c_tenant_name" {
   description = "Azure AD B2C tenant name"
