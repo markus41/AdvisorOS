@@ -2552,3 +2552,638 @@ model ApplicationActivity {
   @@index([performedAt])
   @@map("application_activities")
 }
+
+// ============================================================================
+// AGILE DEVELOPMENT TRACKER MODELS
+// ============================================================================
+
+model AgileProject {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Project Details
+  name        String
+  key         String // Short project key (e.g., "ADVOS", "CPA")
+  description String? @db.Text
+  vision      String? @db.Text
+  goals       Json? // Array of project goals
+
+  // Methodology Configuration
+  methodology String @default("scrum") // "scrum", "kanban", "scrumban"
+
+  // Scrum Configuration
+  sprintDuration     Int?     @default(14) // Days
+  sprintStartDay     String?  @default("monday") // Day of week sprints start
+  velocityTracking   Boolean  @default(true)
+  storyPointScale    String?  @default("fibonacci") // "fibonacci", "linear", "tshirt"
+  
+  // Kanban Configuration
+  wipLimitEnabled    Boolean  @default(false)
+  wipLimitPerColumn  Json? // { "in_progress": 3, "review": 2 }
+  
+  // Status & Lifecycle
+  status      String   @default("active") // "planning", "active", "on_hold", "completed", "archived"
+  startDate   DateTime?
+  targetDate  DateTime?
+  completedAt DateTime?
+
+  // Team & Ownership
+  ownerId     String
+  owner       User     @relation("ProjectOwner", fields: [ownerId], references: [id])
+  
+  // Settings
+  isPublic    Boolean  @default(false)
+  settings    Json? // Additional project settings
+
+  // Metadata
+  createdBy   String?
+  updatedBy   String?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  sprints         Sprint[]
+  stories         Story[]
+  epics           Epic[]
+  members         ProjectMember[]
+  labels          Label[]
+  customFields    CustomField[]
+  comments        Comment[]
+  attachments     Attachment[]
+  activities      Activity[]
+
+  @@unique([organizationId, key])
+  @@index([organizationId])
+  @@index([status])
+  @@index([ownerId])
+  @@map("agile_projects")
+}
+
+model ProjectMember {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation("ProjectMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Role & Permissions
+  role        String @default("member") // "owner", "admin", "scrum_master", "product_owner", "developer", "qa", "designer", "member"
+  permissions Json? // Custom permissions
+
+  // Capacity Planning
+  capacity    Float? // Hours per sprint or week
+  availability String? @default("full_time") // "full_time", "part_time", "contractor"
+
+  // Timestamps
+  joinedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, userId])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([userId])
+  @@map("project_members")
+}
+
+model Sprint {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Sprint Details
+  name        String
+  goal        String? @db.Text
+  number      Int // Sprint number within project
+  
+  // Timeline
+  startDate   DateTime
+  endDate     DateTime
+  
+  // Status
+  status      String @default("planned") // "planned", "active", "completed", "cancelled"
+  
+  // Metrics
+  plannedPoints    Int? @default(0)
+  completedPoints  Int? @default(0)
+  carryoverPoints  Int? @default(0)
+  
+  // Retrospective
+  retrospective    Json? // { "went_well": [], "to_improve": [], "action_items": [] }
+  
+  // Metadata
+  createdBy   String?
+  updatedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  stories     Story[]
+  activities  Activity[]
+
+  @@unique([projectId, number])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([status])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("sprints")
+}
+
+model Epic {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Epic Details
+  key         String // e.g., "ADVOS-EPIC-1"
+  title       String
+  description String? @db.Text
+  
+  // Hierarchy
+  parentEpicId String?
+  parentEpic   Epic?   @relation("EpicHierarchy", fields: [parentEpicId], references: [id])
+  childEpics   Epic[]  @relation("EpicHierarchy")
+  
+  // Status & Priority
+  status      String @default("backlog") // "backlog", "planned", "in_progress", "completed", "cancelled"
+  priority    String @default("medium") // "critical", "high", "medium", "low"
+  
+  // Timeline
+  startDate   DateTime?
+  targetDate  DateTime?
+  completedAt DateTime?
+  
+  // Progress Tracking
+  progress    Float? @default(0) // 0-100 percentage
+  
+  // Ownership
+  ownerId     String?
+  owner       User?   @relation("EpicOwner", fields: [ownerId], references: [id])
+  
+  // Metadata
+  color       String? // Hex color for visualization
+  createdBy   String?
+  updatedBy   String?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  stories     Story[]
+  labels      LabelAssignment[]
+  comments    Comment[]
+  attachments Attachment[]
+  activities  Activity[]
+
+  @@unique([projectId, key])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([status])
+  @@index([priority])
+  @@index([ownerId])
+  @@map("epics")
+}
+
+model Story {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Story Details
+  key         String // e.g., "ADVOS-123"
+  title       String
+  description String? @db.Text
+  
+  // Story Type
+  type        String @default("story") // "story", "task", "bug", "spike", "subtask"
+  
+  // Hierarchy
+  epicId      String?
+  epic        Epic?   @relation(fields: [epicId], references: [id])
+  
+  parentStoryId String?
+  parentStory   Story?  @relation("StoryHierarchy", fields: [parentStoryId], references: [id])
+  subtasks      Story[] @relation("StoryHierarchy")
+  
+  // Sprint Assignment
+  sprintId    String?
+  sprint      Sprint? @relation(fields: [sprintId], references: [id])
+  
+  // Status & Workflow
+  status      String @default("backlog") // "backlog", "ready", "in_progress", "review", "testing", "done", "blocked"
+  resolution  String? // "completed", "wont_do", "duplicate", "cannot_reproduce"
+  
+  // Priority & Estimation
+  priority    String @default("medium") // "critical", "high", "medium", "low"
+  storyPoints Int?
+  timeEstimate Float? // Hours
+  timeSpent   Float? // Hours
+  
+  // Assignment
+  assigneeId  String?
+  assignee    User?   @relation("StoryAssignee", fields: [assigneeId], references: [id])
+  
+  reporterId  String?
+  reporter    User?   @relation("StoryReporter", fields: [reporterId], references: [id])
+  
+  // Acceptance Criteria
+  acceptanceCriteria Json? // Array of criteria objects
+  
+  // Dates
+  startDate   DateTime?
+  dueDate     DateTime?
+  completedAt DateTime?
+  
+  // Kanban Specific
+  columnOrder Int? // Position within column
+  swimlaneId  String?
+  
+  // AI Agent Coordination
+  aiAgentType String? // "code_generation", "testing", "documentation", "review"
+  aiStatus    String? // "pending", "in_progress", "completed", "failed"
+  aiMetadata  Json? // AI-specific data
+  
+  // Metadata
+  createdBy   String?
+  updatedBy   String?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  labels          LabelAssignment[]
+  customFieldValues CustomFieldValue[]
+  dependencies    Dependency[] @relation("DependentStory")
+  blockedBy       Dependency[] @relation("BlockingStory")
+  comments        Comment[]
+  attachments     Attachment[]
+  activities      Activity[]
+  timeEntries     TimeEntry[]
+
+  @@unique([projectId, key])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([epicId])
+  @@index([sprintId])
+  @@index([status])
+  @@index([priority])
+  @@index([assigneeId])
+  @@index([type])
+  @@map("stories")
+}
+
+model Dependency {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Dependency Relationship
+  dependentStoryId String
+  dependentStory   Story  @relation("DependentStory", fields: [dependentStoryId], references: [id], onDelete: Cascade)
+
+  blockingStoryId String
+  blockingStory   Story  @relation("BlockingStory", fields: [blockingStoryId], references: [id], onDelete: Cascade)
+
+  // Dependency Type
+  type        String @default("blocks") // "blocks", "is_blocked_by", "relates_to", "duplicates"
+  
+  // Status
+  isActive    Boolean @default(true)
+  resolvedAt  DateTime?
+  
+  // Metadata
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([dependentStoryId, blockingStoryId])
+  @@index([organizationId])
+  @@index([dependentStoryId])
+  @@index([blockingStoryId])
+  @@map("dependencies")
+}
+
+model Label {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Label Details
+  name        String
+  description String?
+  color       String // Hex color
+  
+  // Metadata
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  assignments LabelAssignment[]
+
+  @@unique([projectId, name])
+  @@index([organizationId])
+  @@index([projectId])
+  @@map("labels")
+}
+
+model LabelAssignment {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationships
+  labelId String
+  label   Label  @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  // Polymorphic assignment (can be assigned to stories or epics)
+  storyId String?
+  story   Story?  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  epicId  String?
+  epic    Epic?   @relation(fields: [epicId], references: [id], onDelete: Cascade)
+
+  // Metadata
+  createdAt DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([labelId])
+  @@index([storyId])
+  @@index([epicId])
+  @@map("label_assignments")
+}
+
+model CustomField {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Field Definition
+  name        String
+  description String?
+  fieldType   String // "text", "number", "date", "select", "multi_select", "checkbox", "url"
+  
+  // Configuration
+  isRequired  Boolean @default(false)
+  options     Json? // For select/multi_select types
+  validation  Json? // Validation rules
+  
+  // Display
+  displayOrder Int?
+  
+  // Metadata
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  values      CustomFieldValue[]
+
+  @@unique([projectId, name])
+  @@index([organizationId])
+  @@index([projectId])
+  @@map("custom_fields")
+}
+
+model CustomFieldValue {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationships
+  customFieldId String
+  customField   CustomField @relation(fields: [customFieldId], references: [id], onDelete: Cascade)
+
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  // Value
+  value   Json // Stored as JSON to support different types
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([customFieldId, storyId])
+  @@index([organizationId])
+  @@index([customFieldId])
+  @@index([storyId])
+  @@map("custom_field_values")
+}
+
+model Comment {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Polymorphic relationship (can comment on stories or epics)
+  storyId String?
+  story   Story?  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  epicId  String?
+  epic    Epic?   @relation(fields: [epicId], references: [id], onDelete: Cascade)
+
+  // Comment Details
+  content     String @db.Text
+  contentType String @default("markdown") // "markdown", "plain"
+  
+  // Threading
+  parentCommentId String?
+  parentComment   Comment?  @relation("CommentThread", fields: [parentCommentId], references: [id])
+  replies         Comment[] @relation("CommentThread")
+  
+  // Author
+  authorId String
+  author   User   @relation("CommentAuthor", fields: [authorId], references: [id])
+  
+  // Metadata
+  isEdited  Boolean @default(false)
+  editedAt  DateTime?
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([storyId])
+  @@index([epicId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model Attachment {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Polymorphic relationship
+  storyId String?
+  story   Story?  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  epicId  String?
+  epic    Epic?   @relation(fields: [epicId], references: [id], onDelete: Cascade)
+
+  // File Details
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int // Bytes
+  url         String
+  
+  // Storage
+  storageProvider String @default("local") // "local", "s3", "azure"
+  storagePath     String
+  
+  // Uploader
+  uploadedBy String
+  uploader   User   @relation("AttachmentUploader", fields: [uploadedBy], references: [id])
+  
+  // Metadata
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([storyId])
+  @@index([epicId])
+  @@index([uploadedBy])
+  @@map("attachments")
+}
+
+model Activity {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  projectId String
+  project   AgileProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Polymorphic relationship
+  storyId String?
+  story   Story?  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  epicId  String?
+  epic    Epic?   @relation(fields: [epicId], references: [id], onDelete: Cascade)
+
+  sprintId String?
+  sprint   Sprint? @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+
+  // Activity Details
+  activityType String // "created", "updated", "commented", "status_changed", "assigned", "sprint_added", etc.
+  description  String @db.Text
+  
+  // Change Tracking
+  changes     Json? // { "field": "status", "from": "backlog", "to": "in_progress" }
+  metadata    Json? // Additional activity data
+  
+  // Actor
+  performedBy String?
+  performer   User?   @relation("ActivityPerformer", fields: [performedBy], references: [id])
+  
+  // Timestamps
+  performedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([storyId])
+  @@index([epicId])
+  @@index([sprintId])
+  @@index([activityType])
+  @@index([performedAt])
+  @@map("activities")
+}
+
+model TimeEntry {
+  id String @id @default(cuid())
+
+  // Multi-tenant Security
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Core Relationship
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  // Time Details
+  userId      String
+  user        User     @relation("TimeEntryUser", fields: [userId], references: [id])
+  
+  hours       Float
+  date        DateTime
+  description String?  @db.Text
+  
+  // Metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([storyId])
+  @@index([userId])
+  @@index([date])
+  @@map("time_entries")
+}
